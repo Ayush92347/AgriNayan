@@ -1,0 +1,2671 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriNayan - AI Precision Farming Co-Pilot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        agri: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            dark: '#071d0e',
+                        },
+                        earth: {
+                            50: '#fffbe1',
+                            100: '#fef3c7',
+                            500: '#d97706',
+                            700: '#92400e',
+                            800: '#78350f',
+                            dark: '#2a160d'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, .font-display { font-family: 'Outfit', sans-serif; }
+        .pulse-mic { animation: pulseGlow 1.5s infinite; }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 16px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-agri-500 selection:text-white min-h-screen flex flex-col custom-scrollbar">
+
+    <header class="bg-agri-dark text-slate-300 text-xs py-2.5 px-4 border-b border-agri-800/60 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center text-emerald-400 font-bold">
+                    <i class="fa-solid fa-sparkles text-agri-500 mr-1.5"></i>
+                    <span data-i18n="topTag">AgriNayan AI Co-Pilot: Hinglish & Multi-Voice Enabled</span>
+                </span>
+                <span class="hidden md:inline text-slate-700">|</span>
+                <span class="hidden lg:inline-flex items-center text-slate-300">
+                    <i class="fa-solid fa-phone text-agri-500 mr-1"></i>
+                    <span data-i18n="helpline">Toll-Free Helpline: 1800-AGRI-NAYAN (1800-247-4620)</span>
+                </span>
+            </div>
+            
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="flex items-center bg-slate-900 border border-agri-700/60 rounded-lg px-2 py-1">
+                    <i class="fa-solid fa-user-check text-emerald-400 mr-1.5 text-xs"></i>
+                    <span class="text-slate-400 text-[11px] mr-1 hidden sm:inline" data-i18n="voiceLabel">Voice:</span>
+                    <select id="voicePersonaSelect" onchange="setVoicePersona(this.value)" class="bg-slate-900 text-xs text-emerald-300 font-bold focus:outline-none cursor-pointer py-0.5 border-none">
+                        <option value="ramesh">Ramesh Bhaiya (Hindi/Hinglish)</option>
+                        <option value="priya">Agri Didi Priya (Vernacular Soft)</option>
+                        <option value="gurpreet">Kisan Guru Gurpreet (Punjabi)</option>
+                        <option value="srinivas">Raitu Mitra Srinivas (Telugu)</option>
+                    </select>
+                </div>
+
+                <button onclick="openVoiceModal()" class="flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-agri-600 hover:bg-agri-700 text-white transition text-xs font-bold shadow-sm">
+                    <i class="fa-solid fa-microphone animate-pulse"></i>
+                    <span data-i18n="voiceBtn">AgriNayan Bol</span>
+                </button>
+
+                <!-- FIXED DYNAMIC MULTI-LANGUAGE SELECTOR -->
+                <div class="flex items-center bg-slate-900 border border-emerald-500/60 rounded-lg px-2 py-1 shadow-md">
+                    <i class="fa-solid fa-globe text-emerald-400 mr-1.5"></i>
+                    <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-slate-900 text-xs text-emerald-300 font-bold focus:outline-none cursor-pointer py-0.5 border-none">
+                        <option value="hinglish" selected>Hinglish (Hindi + English)</option>
+                        <option value="hi">हिन्दी (Hindi)</option>
+                        <option value="en">English</option>
+                        <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                        <option value="te">తెలుగు (Telugu)</option>
+                        <option value="ta">தமிழ் (Tamil)</option>
+                        <option value="mr">मराठी (Marathi)</option>
+                        <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                        <option value="gu">ગુજરાતી (Gujarati)</option>
+                        <option value="bn">বাংলা (Bengali)</option>
+                        <option value="ml">മലയാളം (Malayalam)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm sticky top-[41px] z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-agri-500 to-agri-800 flex items-center justify-center text-white shadow-md shadow-agri-600/30">
+                        <i class="fa-solid fa-sprout text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-display font-extrabold text-2xl tracking-tight text-agri-dark">Agri<span class="text-agri-600">Nayan</span></span>
+                        <span class="block text-[10px] font-bold text-agri-700 tracking-wider uppercase" data-i18n="tagline">Precision Farming Co-Pilot</span>
+                    </div>
+                </div>
+
+                <nav class="hidden lg:flex space-x-1">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-2 rounded-xl text-xs font-semibold transition text-agri-700 bg-agri-50 border border-agri-200 flex items-center gap-1.5">
+                        <i class="fa-solid fa-chart-pie text-agri-600"></i> <span data-i18n="navDash">Dashboard</span>
+                    </button>
+                    <button onclick="switchTab('carefarm')" id="nav-carefarm" class="nav-btn px-3 py-2 rounded-xl text-xs font-medium transition text-slate-600 hover:text-agri-700 hover:bg-slate-50 flex items-center gap-1.5">
+                        <i class="fa-solid fa-clipboard-check text-blue-600"></i> <span data-i18n="navCareFarm">View Care Farm</span>
+                    </button>
+                    <button onclick="switchTab('bioeconomy')" id="nav-bioeconomy" class="nav-btn px-3 py-2 rounded-xl text-xs font-medium transition text-slate-600 hover:text-agri-700 hover:bg-slate-50 flex items-center gap-1.5">
+                        <i class="fa-solid fa-recycle text-amber-600"></i> <span data-i18n="navBioEconomy">Bio-Economy</span>
+                    </button>
+                    <button onclick="switchTab('agribazaar')" id="nav-agribazaar" class="nav-btn px-3 py-2 rounded-xl text-xs font-medium transition text-slate-600 hover:text-agri-700 hover:bg-slate-50 flex items-center gap-1.5">
+                        <i class="fa-solid fa-store text-purple-600"></i> <span data-i18n="navBazaar">AgriBazaar</span>
+                    </button>
+                    <button onclick="switchTab('schemes')" id="nav-schemes" class="nav-btn px-3 py-2 rounded-xl text-xs font-medium transition text-slate-600 hover:text-agri-700 hover:bg-slate-50 flex items-center gap-1.5">
+                        <i class="fa-solid fa-building-columns text-indigo-600"></i> <span data-i18n="navSchemes">Govt Schemes</span>
+                    </button>
+                    <button onclick="switchTab('tutorial')" id="nav-tutorial" class="nav-btn px-3 py-2 rounded-xl text-xs font-medium transition text-slate-600 hover:text-agri-700 hover:bg-slate-50 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-question text-teal-600"></i> <span data-i18n="navTutorial">Website Guide</span>
+                    </button>
+                </nav>
+
+                <div class="hidden sm:flex items-center space-x-2">
+                    <button onclick="openVoiceModal()" class="bg-gradient-to-r from-agri-600 to-agri-800 hover:from-agri-700 hover:to-agri-900 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-md transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-microphone text-emerald-300"></i>
+                        <span data-i18n="speakQuestion">Speak Question</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+
+        <div class="bg-amber-50/90 border-b border-amber-200/80 py-2.5 px-4 sticky top-[105px] z-30">
+            <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-slate-900 text-xs" data-i18n="demoBarTitle">Quick Test Mode:</span>
+                        <span class="text-xs text-slate-600 ml-1" data-i18n="demoBarSub">Click to pre-fill sample farm data for Ramesh Kumar (Rampur, UP).</span>
+                    </div>
+                </div>
+                <button onclick="loadDemoFarmerData()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span data-i18n="btnLoadDemo">Load Demo Farmer Data</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-slate-900 via-agri-900 to-slate-900 text-white py-3 px-4 border-b border-agri-700/50">
+            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-400 flex items-center justify-center text-emerald-400 font-bold text-sm">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-extrabold text-emerald-400 block uppercase tracking-wider" data-i18n="ayushGuideTitle">Ayush's Platform Guide</span>
+                        <span class="text-xs text-slate-200" data-i18n="ayushGuideBody">Welcome to AgriNayan! Use the tabs to test soil allocation, view daily farm care checklists, verify Govt subsidies, or monetize stubble.</span>
+                    </div>
+                </div>
+                <button onclick="switchTab('tutorial')" class="text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg border border-emerald-400 shadow-sm transition">
+                    <i class="fa-solid fa-play mr-1"></i> <span data-i18n="btnWatchTutorial">Watch Ayush's Tutorial</span>
+                </button>
+            </div>
+        </div>
+        
+        <section id="tab-dashboard" class="tab-content py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            
+            <div class="relative bg-gradient-to-r from-agri-dark via-agri-900 to-earth-dark rounded-3xl p-6 sm:p-8 text-white shadow-xl overflow-hidden border border-agri-700/50">
+                <div class="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold mb-3 border border-emerald-500/30">
+                            <i class="fa-solid fa-circle-check text-emerald-400"></i> <span data-i18n="activeStatus">Active Field Monitoring</span>
+                        </div>
+                        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight font-display" data-i18n="dashTitle">Smart AI Precision Farming Co-Pilot</h1>
+                        <p class="text-slate-300 mt-2 max-w-2xl text-sm leading-relaxed" data-i18n="dashSubtitle">
+                            Soil details aur zameen ka size daalein. Multi-crop allocation ratio, Live Mandi rates, aur Hinglish audio advisory instant paayein.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-slate-900/90 backdrop-blur-md p-4 rounded-2xl border border-emerald-500/40 w-full lg:w-80 space-y-2.5 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase text-emerald-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-seedling"></i> <span data-i18n="sowingWindowTitle">Bijai Alert (Sowing Window)</span>
+                            </span>
+                            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full font-bold uppercase" data-i18n="perfectBadge">Perfect Window</span>
+                        </div>
+                        <p class="text-xs text-slate-200 leading-snug" id="dashSowingAdviceText" data-i18n="sowingAdvice">
+                            Agle 3 din Gehun aur Sarson ki bijai ke liye perfect hain! Mitti me 78% nami aur 24°C temp hai.
+                        </p>
+                        <button onclick="speakText(document.getElementById('dashSowingAdviceText').innerText)" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-xl flex items-center justify-center gap-1.5 transition shadow-sm">
+                            <i class="fa-solid fa-volume-high"></i> <span data-i18n="listenSowing">Listen Audio Alert</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                <div class="lg:col-span-5 bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                        <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-map-location-dot text-agri-600"></i>
+                            <span data-i18n="profilerTitle">Mitti & Zameen Profiler</span>
+                        </h2>
+                        <button onclick="startFormVoiceInput()" class="flex items-center gap-1 bg-agri-50 hover:bg-agri-100 text-agri-700 border border-agri-200 px-2.5 py-1 rounded-lg text-xs font-bold transition">
+                            <i class="fa-solid fa-microphone text-agri-600"></i> <span data-i18n="speakInput">Voice Input</span>
+                        </button>
+                    </div>
+
+                    <form id="landProfilerForm" onsubmit="event.preventDefault(); runAIEngine();" class="space-y-3.5">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1" data-i18n="villageLabel">Village / Gaon</label>
+                                <input type="text" id="profVillage" value="Rampur" placeholder="e.g. Rampur" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-agri-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1" data-i18n="districtLabel">District / Zila</label>
+                                <input type="text" id="profDistrict" value="Varanasi" placeholder="e.g. Varanasi" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-agri-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1" data-i18n="soilLabel">Soil Type</label>
+                                <select id="soilType" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-2.5 py-2 text-xs font-semibold focus:ring-2 focus:ring-agri-500 focus:outline-none">
+                                    <option value="Loam" data-i18n="soilLoam">Loam Soil (Domat / Matiyar)</option>
+                                    <option value="Clay" data-i18n="soilClay">Clay Soil (Kali Chikni)</option>
+                                    <option value="Sandy" data-i18n="soilSandy">Sandy Loam (Balui Domat)</option>
+                                    <option value="Alluvial" data-i18n="soilAlluvial">Alluvial Soil (Jalodh)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1" data-i18n="seasonLabel">Planting Season</label>
+                                <select id="seasonType" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-2.5 py-2 text-xs font-semibold focus:ring-2 focus:ring-agri-500 focus:outline-none">
+                                    <option value="Rabi" selected data-i18n="seasonRabi">Rabi (Winter - Rabi)</option>
+                                    <option value="Kharif" data-i18n="seasonKharif">Kharif (Monsoon - Kharif)</option>
+                                    <option value="Zaid" data-i18n="seasonZaid">Zaid (Summer - Zaid)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1" data-i18n="landSizeLabel">Land Area (Acres)</label>
+                                <input type="number" id="landSize" value="10" min="1" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2 text-sm font-bold" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1" data-i18n="budgetLabel">Farmer Budget (₹)</label>
+                                <input type="number" id="farmerBudget" value="75000" min="1000" step="1000" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2 text-sm font-bold" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1" data-i18n="waterLabel">Water Source (Paani Ki Suvidha)</label>
+                            <select id="waterSource" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-agri-500 focus:outline-none">
+                                <option value="High" data-i18n="waterHigh">Tubewell + Canal (Pura Paani)</option>
+                                <option value="Medium" data-i18n="waterMed">Precision Drip (Medium)</option>
+                                <option value="Low" data-i18n="waterLow">Rainfed Only (Kewal Baarish)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="w-full bg-agri-600 hover:bg-agri-700 text-white font-bold py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2 text-sm">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btnCalcStrategy">Generate AI Multi-Crop Plan</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3 mb-4">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-chart-pie text-agri-600"></i>
+                                    <span data-i18n="chartTitle">Multi-Crop Land Allocation Ratio</span>
+                                </h3>
+                            </div>
+                            <span id="predictedRoiBadge" class="bg-emerald-100 text-agri-800 text-xs font-extrabold px-3 py-1 rounded-xl border border-emerald-200" data-i18n="profitBadge">
+                                Estimated Profit: +38.5%
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
+                            <div class="sm:col-span-6 flex justify-center">
+                                <div class="w-48 h-48 relative">
+                                    <canvas id="cropChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="sm:col-span-6 space-y-2.5" id="cropLegend"></div>
+                        </div>
+
+                        <div class="mt-4 p-3.5 bg-agri-50 rounded-xl border border-agri-200 text-xs text-agri-900 flex items-start gap-2.5">
+                            <i class="fa-solid fa-lightbulb text-agri-600 shrink-0 mt-0.5"></i>
+                            <div>
+                                <span class="font-bold" data-i18n="copilotInsight">Co-Pilot Audio Insight:</span> 
+                                <span id="coPilotAdviceText" data-i18n="cropInsightText">60% Gehun aur 25% Sarson ke intercropping se mitti ki nitrogen bani rehti hai aur keede ka khatra 40% kam ho jata hai.</span>
+                            </div>
+                            <button onclick="speakText(document.getElementById('coPilotAdviceText').innerText)" class="ml-auto p-1 text-agri-700 hover:text-agri-900 shrink-0">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-line text-emerald-600"></i>
+                                <span data-i18n="mandiTitle">Live Mandi Crop Prices</span>
+                            </h3>
+                            <button onclick="readAloudMandi()" class="text-xs font-bold text-agri-700 hover:text-agri-900 flex items-center gap-1 bg-agri-50 px-2.5 py-1 rounded-lg border border-agri-200">
+                                <i class="fa-solid fa-volume-high"></i> <span data-i18n="readMandi">Audio Readout</span>
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="border border-slate-200 p-3.5 rounded-xl bg-slate-50/50">
+                                <span class="text-xs font-bold text-slate-700 block" data-i18n="cropWheat">Wheat / Gehun (HD-3086)</span>
+                                <span class="text-lg font-extrabold text-slate-900 mt-1 block">₹2,350 <span class="text-[10px] text-slate-500 font-normal">/ Qtl</span></span>
+                                <span class="text-[10px] text-emerald-700 font-bold" data-i18n="mandi1">Khanna Mandi (+2.4%)</span>
+                            </div>
+                            <div class="border border-slate-200 p-3.5 rounded-xl bg-slate-50/50">
+                                <span class="text-xs font-bold text-slate-700 block" data-i18n="cropMustard">Mustard / Sarson (Pusa)</span>
+                                <span class="text-lg font-extrabold text-slate-900 mt-1 block">₹5,420 <span class="text-[10px] text-slate-500 font-normal">/ Qtl</span></span>
+                                <span class="text-[10px] text-emerald-700 font-bold" data-i18n="mandi2">Ludhiana Main (+1.8%)</span>
+                            </div>
+                            <div class="border border-slate-200 p-3.5 rounded-xl bg-slate-50/50">
+                                <span class="text-xs font-bold text-slate-700 block" data-i18n="cropStubble">Paddy Stubble / Parali</span>
+                                <span class="text-lg font-extrabold text-slate-900 mt-1 block">₹1,850 <span class="text-[10px] text-slate-500 font-normal">/ Ton</span></span>
+                                <span class="text-[10px] text-amber-700 font-bold" data-i18n="mandi3">BioEnergy Plant</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-carefarm" class="tab-content hidden py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full uppercase" data-i18n="careBadge">Daily Field Monitoring</span>
+                        <h2 class="text-2xl font-extrabold text-slate-900 font-display mt-1" data-i18n="careTitle">View Care Farm - Daily Checklist</h2>
+                        <p class="text-xs text-slate-600 mt-0.5" data-i18n="careSubtitle">Inspect your farm daily using this precision guide to prevent pest attacks and crop loss.</p>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 p-3 rounded-2xl flex items-center gap-3">
+                        <i class="fa-solid fa-list-check text-blue-600 text-2xl"></i>
+                        <div>
+                            <span class="text-xs text-slate-500 font-semibold block" data-i18n="progressLabel">Checklist Completion</span>
+                            <span class="text-base font-extrabold text-blue-900" id="checklistProgress">0 of 5 Completed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100/80 cursor-pointer transition flex items-start gap-3.5">
+                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 w-5 h-5 text-agri-600 rounded accent-agri-600">
+                        <div>
+                            <span class="font-bold text-slate-900 text-sm block" data-i18n="chk1Title">1. Field Cleanliness & Stubble Residue Check</span>
+                            <span class="text-xs text-slate-600 leading-relaxed block mt-0.5" data-i18n="chk1Sub">Inspect crop rows and drainage lines for plastic waste or fungal decay on leftover stubble.</span>
+                        </div>
+                    </label>
+
+                    <label class="p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100/80 cursor-pointer transition flex items-start gap-3.5">
+                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 w-5 h-5 text-agri-600 rounded accent-agri-600">
+                        <div>
+                            <span class="font-bold text-slate-900 text-sm block" data-i18n="chk2Title">2. Topsoil Moisture Level Inspection</span>
+                            <span class="text-xs text-slate-600 leading-relaxed block mt-0.5" data-i18n="chk2Sub">Ensure the top 2 inches of soil are moist. Irrigate only if moisture drops below 40%.</span>
+                        </div>
+                    </label>
+
+                    <label class="p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100/80 cursor-pointer transition flex items-start gap-3.5">
+                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 w-5 h-5 text-agri-600 rounded accent-agri-600">
+                        <div>
+                            <span class="font-bold text-slate-900 text-sm block" data-i18n="chk3Title">3. Weed Growth & Inter-crop Spacing Check</span>
+                            <span class="text-xs text-slate-600 leading-relaxed block mt-0.5" data-i18n="chk3Sub">Identify early weed sprouts between primary and secondary crop rows before they absorb fertilizer.</span>
+                        </div>
+                    </label>
+
+                    <label class="p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100/80 cursor-pointer transition flex items-start gap-3.5">
+                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 w-5 h-5 text-agri-600 rounded accent-agri-600">
+                        <div>
+                            <span class="font-bold text-slate-900 text-sm block" data-i18n="chk4Title">4. Drip Pipe Emitters & Motor Health</span>
+                            <span class="text-xs text-slate-600 leading-relaxed block mt-0.5" data-i18n="chk4Sub">Check irrigation pump pressure, solar inverter battery, and flush clogged drip nozzles.</span>
+                        </div>
+                    </label>
+
+                    <label class="p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100/80 cursor-pointer transition flex items-start gap-3.5 md:col-span-2">
+                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 w-5 h-5 text-agri-600 rounded accent-agri-600">
+                        <div>
+                            <span class="font-bold text-slate-900 text-sm block" data-i18n="chk5Title">5. Early Pest Attack & Yellow Rust Leaf Inspection</span>
+                            <span class="text-xs text-slate-600 leading-relaxed block mt-0.5" data-i18n="chk5Sub">Check leaf undersides for aphid colonies or yellow rust spots during morning hours for early prevention.</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-bioeconomy" class="tab-content hidden py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div class="bg-gradient-to-r from-earth-800 via-earth-700 to-agri-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl">
+                <span class="bg-amber-400/20 text-amber-300 text-xs font-bold px-3 py-1 rounded-full border border-amber-400/30 uppercase" data-i18n="bioTag">Waste Monetization Blueprint</span>
+                <h2 class="text-3xl font-extrabold text-white mt-2 font-display" data-i18n="bioTitle">Sustainability & Agricultural Bio-Economy</h2>
+                <p class="text-slate-200 text-sm mt-1 max-w-2xl" data-i18n="bioSubtitle">Turn farm waste (stubble/parali/husks) into additional revenue streams instead of burning it.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl font-bold">
+                            <i class="fa-solid fa-fire-flame-simple"></i>
+                        </div>
+                        <h3 class="font-extrabold text-slate-900 text-base" data-i18n="bio1Title">1. Stubble to Bio-Char & Pellets</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="bio1Desc">Collect paddy straw using balers and sell directly to local bio-power plants or compress into fuel pellets.</p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100">
+                        <span class="text-xs font-extrabold text-amber-800 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200 block text-center" data-i18n="bio1Rev">Est. Revenue: ₹1,800 - ₹2,500 / Ton</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold">
+                            <i class="fa-solid fa-stroopwafel"></i>
+                        </div>
+                        <h3 class="font-extrabold text-slate-900 text-base" data-i18n="bio2Title">2. Paddy Straw Mushroom Bedding</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="bio2Desc">Reuse sterilized wheat and rice straw as substrate beds to grow high-margin Oyster mushrooms.</p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100">
+                        <span class="text-xs font-extrabold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200 block text-center" data-i18n="bio2Rev">Est. Revenue: ₹120 - ₹180 / Kg</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-xl font-bold">
+                            <i class="fa-solid fa-worm"></i>
+                        </div>
+                        <h3 class="font-extrabold text-slate-900 text-base" data-i18n="bio3Title">3. Organic Vermicomposting</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="bio3Desc">Convert decomposing leaves and husk into nutrient-dense organic fertilizer using Eisenia fetida earthworms.</p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100">
+                        <span class="text-xs font-extrabold text-purple-800 bg-purple-50 px-3 py-1 rounded-xl border border-purple-200 block text-center" data-i18n="bio3Rev">Est. Revenue: ₹8 - ₹12 / Kg</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-agribazaar" class="tab-content hidden py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-900 font-display" data-i18n="bazaarTitle">AgriBazaar: Low-Cost Tools & Direct Listings</h2>
+                    <p class="text-xs text-slate-600 mt-0.5" data-i18n="bazaarSubtitle">Purchase genuine tools directly from Amazon, BigHaat, and Moglix with subsidy tags.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between p-4">
+                    <div class="space-y-3">
+                        <div class="h-40 bg-slate-100 rounded-xl flex items-center justify-center relative p-4 text-emerald-600 text-5xl">
+                            <i class="fa-solid fa-vial-virus"></i>
+                            <span class="absolute top-3 right-3 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200" data-i18n="tool1Tag">4-in-1 Soil Tester</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm" data-i18n="t1Name">Digital Soil pH, NPK & Moisture Pen</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed" data-i18n="t1Desc">Direct soil reading for moisture, sunlight, pH, and soil temperature.</p>
+                        <div class="flex items-baseline justify-between pt-1">
+                            <div>
+                                <span class="text-base font-extrabold text-slate-900">₹649</span>
+                                <span class="text-xs text-slate-400 line-through ml-1">₹1,299</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://www.amazon.in/s?k=soil+moisture+meter+for+agriculture" target="_blank" class="mt-4 w-full bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs py-2.5 rounded-xl text-center block transition shadow-sm">
+                        <i class="fa-brands fa-amazon mr-1"></i> <span data-i18n="buyAmazon">Buy on Amazon</span>
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between p-4">
+                    <div class="space-y-3">
+                        <div class="h-40 bg-slate-100 rounded-xl flex items-center justify-center relative p-4 text-blue-600 text-5xl">
+                            <i class="fa-solid fa-spray-can-sparkles"></i>
+                            <span class="absolute top-3 right-3 bg-red-100 text-red-700 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-red-200" data-i18n="subTag50">50% Govt Subsidy</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm" data-i18n="t2Name">Battery 16L Knapsack Sprayer</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed" data-i18n="t2Desc">Dual-nozzle rechargeable sprayer for bio-pesticides and liquid fertilizers.</p>
+                        <div class="flex items-baseline justify-between pt-1">
+                            <div>
+                                <span class="text-base font-extrabold text-slate-900">₹2,850</span>
+                                <span class="text-xs text-slate-400 line-through ml-1">₹5,000</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://www.bighaat.com/" target="_blank" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 rounded-xl text-center block transition shadow-sm">
+                        <i class="fa-solid fa-bag-shopping mr-1"></i> <span data-i18n="buyBighaat">Buy on BigHaat</span>
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between p-4">
+                    <div class="space-y-3">
+                        <div class="h-40 bg-slate-100 rounded-xl flex items-center justify-center relative p-4 text-amber-600 text-5xl">
+                            <i class="fa-solid fa-solar-panel"></i>
+                            <span class="absolute top-3 right-3 bg-purple-100 text-purple-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-purple-200" data-i18n="zeroCostTag">Zero Electricity Cost</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm" data-i18n="t3Name">Solar LED Insect Pest Trap</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed" data-i18n="t3Desc">Automatic night light trap for chemical-free pest control covering 2 acres.</p>
+                        <div class="flex items-baseline justify-between pt-1">
+                            <div>
+                                <span class="text-base font-extrabold text-slate-900">₹1,299</span>
+                                <span class="text-xs text-slate-400 line-through ml-1">₹2,500</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://www.amazon.in/s?k=solar+light+trap+for+agriculture" target="_blank" class="mt-4 w-full bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs py-2.5 rounded-xl text-center block transition shadow-sm">
+                        <i class="fa-brands fa-amazon mr-1"></i> <span data-i18n="buyAmazon">Buy on Amazon</span>
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between p-4">
+                    <div class="space-y-3">
+                        <div class="h-40 bg-slate-100 rounded-xl flex items-center justify-center relative p-4 text-teal-600 text-5xl">
+                            <i class="fa-solid fa-faucet-drip"></i>
+                            <span class="absolute top-3 right-3 bg-teal-100 text-teal-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-teal-200" data-i18n="waterSaverTag">Water Saver</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm" data-i18n="t4Name">75-Dripper Micro Drip Kit</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed" data-i18n="t4Desc">Complete DIY drip irrigation kit for vegetable beds and crop rows.</p>
+                        <div class="flex items-baseline justify-between pt-1">
+                            <div>
+                                <span class="text-base font-extrabold text-slate-900">₹899</span>
+                                <span class="text-xs text-slate-400 line-through ml-1">₹1,800</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://www.moglix.com/" target="_blank" class="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 rounded-xl text-center block transition shadow-sm">
+                        <i class="fa-solid fa-cart-shopping mr-1"></i> <span data-i18n="buyMoglix">Buy on Moglix</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-schemes" class="tab-content hidden py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-2xl font-extrabold text-slate-900 font-display" data-i18n="schemesTitle">Government Schemes & Subsidy Eligibility Checker</h2>
+                    <p class="text-xs text-slate-600 mt-1" data-i18n="schemesSub">Check your instant eligibility and click to visit official Govt portals (PM-KISAN, PM-KUSUM, Soil Health Card, SMAM).</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-5 bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3.5">
+                        <h3 class="font-bold text-slate-900 text-sm border-b border-slate-200 pb-2 flex items-center gap-1.5" data-i18n="verifierTitle">
+                            <i class="fa-solid fa-clipboard-check text-indigo-600"></i> Detailed Eligibility Verification Form
+                        </h3>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1" data-i18n="landSizeQ">1. Landholding Category</label>
+                            <select id="schLandSize" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs font-semibold">
+                                <option value="small" data-i18n="optSmallHolder">Small / Marginal Farmer (&lt; 5 Acres / 2 Hectares)</option>
+                                <option value="large" data-i18n="optLargeHolder">Large Landowner (&gt; 5 Acres)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1" data-i18n="categoryQ">2. Farmer Category</label>
+                            <select id="schCategory" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs font-semibold">
+                                <option value="gen">General / OBC</option>
+                                <option value="scst">SC / ST Farmer (Eligible for +10% Extra Subsidy)</option>
+                                <option value="women">Women Farmer (Priority Grant)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1" data-i18n="aadhaarQ">3. Aadhaar-Linked Active Bank Account?</label>
+                            <select id="schAadhaar" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs font-semibold">
+                                <option value="yes" data-i18n="optYesLinked">Yes, Bank Account is Aadhaar Seeded</option>
+                                <option value="no" data-i18n="optNoNotLinked">No, Aadhaar Not Linked Yet</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1" data-i18n="incomeQ">4. Annual Household Agricultural Income</label>
+                            <select id="schIncome" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs font-semibold">
+                                <option value="below">Below ₹2.0 Lakhs / Year</option>
+                                <option value="above">Above ₹2.0 Lakhs / Year</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1" data-i18n="soilCardQ">5. Soil Health Card Issued?</label>
+                            <select id="schSoilCard" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs font-semibold">
+                                <option value="yes">Yes, Issued in last 3 years</option>
+                                <option value="no">No Soil Card / Need New Test</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1" data-i18n="solarQ">6. Need Solar Irrigation Pump (PM-KUSUM)?</label>
+                            <select id="schSolar" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs font-semibold">
+                                <option value="yes" data-i18n="optYesSolar">Yes, Apply for Off-Grid Solar Pump</option>
+                                <option value="no" data-i18n="optNoSolar">No, Diesel / Electric Pump Only</option>
+                            </select>
+                        </div>
+
+                        <button onclick="checkEligibility()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-shield-check"></i> <span data-i18n="btnVerifySchemes">Verify All Scheme Eligibility</span>
+                        </button>
+                    </div>
+
+                    <div class="lg:col-span-7 space-y-4">
+                        <div class="p-4 rounded-2xl border border-emerald-200 bg-emerald-50/60 flex flex-col justify-between space-y-3">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                <div>
+                                    <span class="bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase" data-i18n="catCash">Direct Cash Transfer</span>
+                                    <h4 class="font-extrabold text-slate-900 text-base mt-1" data-i18n="s1Name">PM-KISAN Samman Nidhi Yojana</h4>
+                                    <p class="text-xs text-slate-600" data-i18n="s1Desc">₹6,000 yearly direct bank account transfer in 3 equal installments.</p>
+                                </div>
+                                <span id="badge-pmkisan" class="text-xs font-extrabold bg-emerald-200 text-emerald-900 px-3 py-1 rounded-full border border-emerald-300 shrink-0">
+                                    Pre-Eligible
+                                </span>
+                            </div>
+                            <div class="pt-2 border-t border-emerald-200/60 flex justify-between items-center">
+                                <span class="text-[11px] text-emerald-800 font-semibold"><i class="fa-solid fa-building"></i> Min. Agriculture & Farmers Welfare</span>
+                                <a href="https://pmkisan.gov.in/" target="_blank" rel="noopener noreferrer" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1">
+                                    <span>Apply on Official Portal</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-2xl border border-amber-200 bg-amber-50/60 flex flex-col justify-between space-y-3">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                <div>
+                                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase" data-i18n="catSolar">Solar Pump Subsidy</span>
+                                    <h4 class="font-extrabold text-slate-900 text-base mt-1" data-i18n="s2Name">PM-KUSUM Solar Water Pump Scheme</h4>
+                                    <p class="text-xs text-slate-600" data-i18n="s2Desc">Up to 60% government subsidy for installing standalone off-grid solar agriculture pumps.</p>
+                                </div>
+                                <span id="badge-pmkusum" class="text-xs font-extrabold bg-amber-200 text-amber-900 px-3 py-1 rounded-full border border-amber-300 shrink-0">
+                                    60% Subsidy Approved
+                                </span>
+                            </div>
+                            <div class="pt-2 border-t border-amber-200/60 flex justify-between items-center">
+                                <span class="text-[11px] text-amber-900 font-semibold"><i class="fa-solid fa-solar-panel"></i> MNRE Govt of India</span>
+                                <a href="https://pmkusum.mnre.gov.in/" target="_blank" rel="noopener noreferrer" class="bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1">
+                                    <span>Visit PM-KUSUM Portal</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-2xl border border-purple-200 bg-purple-50/60 flex flex-col justify-between space-y-3">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                <div>
+                                    <span class="bg-purple-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase" data-i18n="catCard">Free Soil Test</span>
+                                    <h4 class="font-extrabold text-slate-900 text-base mt-1" data-i18n="s3Name">National Soil Health Card Scheme</h4>
+                                    <p class="text-xs text-slate-600" data-i18n="s3Desc">Free digital NPK nutrient soil testing and customized fertilizer advisory card from district lab.</p>
+                                </div>
+                                <span id="badge-shc" class="text-xs font-extrabold bg-purple-200 text-purple-900 px-3 py-1 rounded-full border border-purple-300 shrink-0">
+                                    Free Registration
+                                </span>
+                            </div>
+                            <div class="pt-2 border-t border-purple-200/60 flex justify-between items-center">
+                                <span class="text-[11px] text-purple-900 font-semibold"><i class="fa-solid fa-flask-vial"></i> Dept of Ag & Farmers Welfare</span>
+                                <a href="https://soilhealth.dac.gov.in/" target="_blank" rel="noopener noreferrer" class="bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1">
+                                    <span>Visit Soil Health Portal</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-tutorial" class="tab-content hidden py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <span class="bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Video Learning & Interactive Guide</span>
+                        <h2 class="text-2xl font-extrabold text-slate-900 font-display mt-1" data-i18n="tutTitle">How AgriNayan Works - Website Tutorial Guide</h2>
+                        <p class="text-xs text-slate-600 mt-0.5" data-i18n="tutSubtitle">Select your preferred audio/video language and module topic to watch interactive tutorials.</p>
+                    </div>
+
+                    <div class="flex items-center space-x-2 bg-slate-900 text-white px-3 py-2 rounded-xl border border-teal-500/50">
+                        <i class="fa-solid fa-play text-emerald-400"></i>
+                        <span class="text-xs font-bold text-slate-300">Tutorial Language:</span>
+                        <select id="tutLangSelect" onchange="updateTutorialVideo()" class="bg-slate-900 text-xs font-bold text-emerald-300 focus:outline-none border-none">
+                            <option value="hi" selected>हिन्दी (Hindi)</option>
+                            <option value="hinglish">Hinglish</option>
+                            <option value="en">English</option>
+                            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                            <option value="te">తెలుగు (Telugu)</option>
+                            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <div class="lg:col-span-5 space-y-3">
+                        <label class="block text-xs font-bold text-slate-700 uppercase">Select Feature Topic Tutorial</label>
+                        <select id="tutTopicSelect" onchange="updateTutorialVideo()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl p-3 text-xs font-bold focus:ring-2 focus:ring-agri-500">
+                            <option value="overview">1. Ayush's Guided Website Overview</option>
+                            <option value="soil">2. Soil & Land Profiler & Crop Allocation</option>
+                            <option value="carefarm">3. Daily Care Farm Field Inspection</option>
+                            <option value="bioeconomy">4. Stubble & Waste Monetization Blueprint</option>
+                            <option value="bazaar">5. AgriBazaar Budget Tool Buying</option>
+                            <option value="schemes">6. Government Subsidy & Scheme Application</option>
+                        </select>
+
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                            <span class="text-xs font-bold text-agri-700 block uppercase" id="tutTopicBadge">Selected Topic: Ayush's Guided Website Overview</span>
+                            <h4 class="font-bold text-slate-900 text-sm" id="tutTopicTitle">Master AgriNayan Co-Pilot in 5 Minutes</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed" id="tutTopicDesc">Learn how to input your village soil details, check daily irrigation alerts, verify PM-KISAN eligibility, and buy tools with subsidy discounts.</p>
+                        </div>
+
+                        <a id="youtubeDirectBtn" href="https://www.youtube.com/results?search_query=PM+Kisan+online+apply+2026" target="_blank" rel="noopener noreferrer" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-youtube text-lg"></i> Watch Detailed YouTube Video Tutorial
+                        </a>
+                    </div>
+
+                    <div class="lg:col-span-7 bg-slate-900 rounded-3xl p-4 border border-slate-800 text-white shadow-xl space-y-3">
+                        <div class="flex justify-between items-center px-2">
+                            <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle text-red-500 animate-pulse text-[8px]"></i> Video Tutorial Preview
+                            </span>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase" id="tutLangDisplay">Language: Hindi</span>
+                        </div>
+
+                        <div class="aspect-video w-full rounded-2xl bg-slate-950 flex flex-col items-center justify-center text-center p-6 border border-slate-800 relative overflow-hidden group">
+                            <div class="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center text-2xl shadow-xl transition transform group-hover:scale-110 cursor-pointer" onclick="window.open(document.getElementById('youtubeDirectBtn').href, '_blank')">
+                                <i class="fa-solid fa-play ml-1"></i>
+                            </div>
+                            <h3 class="font-extrabold text-white text-base mt-4" id="videoPreviewHeading">AgriNayan - Complete Precision Farming Walkthrough</h3>
+                            <p class="text-xs text-slate-400 mt-1 max-w-md">Click play button above to launch video demonstration on YouTube in your selected regional language.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex items-start gap-4 p-5 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div class="w-10 h-10 rounded-2xl bg-agri-600 text-white font-extrabold flex items-center justify-center text-lg shrink-0">1</div>
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-base" data-i18n="tut1Head">Step 1: Soil & Village Profiling</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mt-1" data-i18n="tut1Body">Enter your Village, District, Soil Type, Land Area, and Farmer Budget on the Dashboard. Click "Generate AI Multi-Crop Plan" to calculate exact land ratios for maximum profit.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 p-5 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div class="w-10 h-10 rounded-2xl bg-blue-600 text-white font-extrabold flex items-center justify-center text-lg shrink-0">2</div>
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-base" data-i18n="tut2Head">Step 2: Daily Care Farm Inspection</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mt-1" data-i18n="tut2Body">Open the "View Care Farm" tab every morning to check items off your farm health checklist (soil dampness, weed growth, drip motor pressure, and aphid colonies).</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 p-5 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-600 text-white font-extrabold flex items-center justify-center text-lg shrink-0">3</div>
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-base" data-i18n="tut3Head">Step 3: Stubble & Waste Monetization</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mt-1" data-i18n="tut3Body">Visit the "Bio-Economy" tab after harvest to convert crop stubble/husks into extra income through Bio-Char pellets, Oyster mushroom beds, or Vermicompost.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 p-5 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div class="w-10 h-10 rounded-2xl bg-purple-600 text-white font-extrabold flex items-center justify-center text-lg shrink-0">4</div>
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-base" data-i18n="tut4Head">Step 4: Buy Tools & Verify Subsidies</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mt-1" data-i18n="tut4Body">Shop for original tools with subsidy discounts in "AgriBazaar" and check your eligibility for PM-KISAN or PM-KUSUM grants in "Govt Schemes".</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="voiceModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-agri-600/40 w-full max-w-xl rounded-3xl p-6 text-white shadow-2xl relative">
+            <button onclick="closeVoiceModal()" class="absolute right-5 top-5 p-2 text-slate-400 hover:text-white rounded-full bg-slate-800">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="text-center mb-4">
+                <span class="inline-flex items-center gap-1.5 bg-agri-500/20 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold mb-2">
+                    <i class="fa-solid fa-sparkles"></i> Interactive Voice Assistant
+                </span>
+                <h3 class="text-2xl font-extrabold font-display text-white">AgriNayan Bol / Suno</h3>
+                <p class="text-slate-400 text-xs mt-1" data-i18n="voiceSub">Speak your question in Hinglish or regional language.</p>
+            </div>
+
+            <div class="bg-slate-950 rounded-2xl p-6 border border-slate-800 flex flex-col items-center justify-center text-center space-y-4 my-3">
+                <button id="modalMicBtn" onclick="toggleSpeechRecognition()" class="w-20 h-20 rounded-full bg-gradient-to-br from-agri-500 to-agri-700 flex items-center justify-center text-white shadow-xl hover:scale-105 transition transform">
+                    <i class="fa-solid fa-microphone text-2xl"></i>
+                </button>
+
+                <div id="voiceListeningState" class="h-5">
+                    <span class="text-xs font-semibold text-slate-400" id="micStatusText" data-i18n="clickMic">Click mic to start speaking...</span>
+                </div>
+
+                <div class="w-full bg-slate-900 p-3.5 rounded-xl text-left border border-slate-800 text-xs space-y-2">
+                    <div>
+                        <span class="text-slate-500 font-bold block" data-i18n="youSaid">You Said:</span>
+                        <p id="userSpokenText" class="text-emerald-300 font-semibold italic">"..."</p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-800">
+                        <span class="text-slate-500 font-bold block" data-i18n="copilotReply">Co-Pilot Reply:</span>
+                        <p id="aiSpokenReply" class="text-slate-200 font-medium leading-relaxed" data-i18n="readyText">Main taiyar hoon. Boliye aap kya poochna chahte hain?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            hinglish: {
+                topTag: "AgriNayan AI Co-Pilot: Hinglish & Multi-Voice Enabled",
+                helpline: "Toll-Free Helpline: 1800-AGRI-NAYAN (1800-247-4620)",
+                voiceLabel: "Voice:",
+                voiceBtn: "AgriNayan Bol",
+                tagline: "Precision Farming Co-Pilot",
+                navDash: "Dashboard",
+                navCareFarm: "View Care Farm",
+                navBioEconomy: "Bio-Economy",
+                navBazaar: "AgriBazaar",
+                navSchemes: "Govt Schemes",
+                navTutorial: "Website Guide",
+                speakQuestion: "Speak Question",
+                demoBarTitle: "Quick Test Mode:",
+                demoBarSub: "Click to pre-fill sample farm data for Ramesh Kumar (Rampur, UP).",
+                btnLoadDemo: "Load Demo Farmer Data",
+                ayushGuideTitle: "Ayush's Platform Guide",
+                ayushGuideBody: "Welcome to AgriNayan! Use the tabs to test soil allocation, view daily farm care checklists, verify Govt subsidies, or monetize stubble.",
+                btnWatchTutorial: "Watch Ayush's Tutorial",
+                activeStatus: "Active Field Monitoring",
+                dashTitle: "Smart AI Precision Farming Co-Pilot",
+                dashSubtitle: "Soil details aur zameen ka size daalein. Multi-crop allocation ratio, Live Mandi rates, aur Hinglish audio advisory instant paayein.",
+                sowingWindowTitle: "Bijai Alert (Sowing Window)",
+                perfectBadge: "Perfect Window",
+                sowingAdvice: "Agle 3 din Gehun aur Sarson ki bijai ke liye perfect hain! Mitti me 78% nami aur 24°C temp hai.",
+                listenSowing: "Listen Audio Alert",
+                profilerTitle: "Mitti & Zameen Profiler",
+                speakInput: "Voice Input",
+                villageLabel: "Village / Gaon",
+                districtLabel: "District / Zila",
+                soilLabel: "Soil Type",
+                soilLoam: "Loam Soil (Domat / Matiyar)",
+                soilClay: "Clay Soil (Kali Chikni)",
+                soilSandy: "Sandy Loam (Balui Domat)",
+                soilAlluvial: "Alluvial Soil (Jalodh)",
+                seasonLabel: "Planting Season",
+                seasonRabi: "Rabi (Winter - Rabi)",
+                seasonKharif: "Kharif (Monsoon - Kharif)",
+                seasonZaid: "Zaid (Summer - Zaid)",
+                landSizeLabel: "Land Area (Acres)",
+                budgetLabel: "Farmer Budget (₹)",
+                waterLabel: "Water Source (Paani Ki Suvidha)",
+                waterHigh: "Tubewell + Canal (Pura Paani)",
+                waterMed: "Precision Drip (Medium)",
+                waterLow: "Rainfed Only (Kewal Baarish)",
+                btnCalcStrategy: "Generate AI Multi-Crop Plan",
+                chartTitle: "Multi-Crop Land Allocation Ratio",
+                profitBadge: "Estimated Profit: +38.5%",
+                copilotInsight: "Co-Pilot Audio Insight:",
+                cropInsightText: "60% Gehun aur 25% Sarson ke intercropping se mitti ki nitrogen bani rehti hai aur keede ka khatra 40% kam ho jata hai.",
+                mandiTitle: "Live Mandi Crop Prices",
+                readMandi: "Audio Readout",
+                cropWheat: "Wheat / Gehun (HD-3086)",
+                cropMustard: "Mustard / Sarson (Pusa)",
+                cropStubble: "Paddy Stubble / Parali",
+                mandi1: "Khanna Mandi (+2.4%)",
+                mandi2: "Ludhiana Main (+1.8%)",
+                mandi3: "BioEnergy Plant",
+                careBadge: "Daily Field Monitoring",
+                careTitle: "View Care Farm - Daily Checklist",
+                careSubtitle: "Inspect your farm daily using this precision guide to prevent pest attacks and crop loss.",
+                progressLabel: "Checklist Completion",
+                chk1Title: "1. Field Cleanliness & Stubble Residue Check",
+                chk1Sub: "Inspect crop rows and drainage lines for plastic waste or fungal decay on leftover stubble.",
+                chk2Title: "2. Topsoil Moisture Level Inspection",
+                chk2Sub: "Ensure the top 2 inches of soil are moist. Irrigate only if moisture drops below 40%.",
+                chk3Title: "3. Weed Growth & Inter-crop Spacing Check",
+                chk3Sub: "Identify early weed sprouts between primary and secondary crop rows before they absorb fertilizer.",
+                chk4Title: "4. Drip Pipe Emitters & Motor Health",
+                chk4Sub: "Check irrigation pump pressure, solar inverter battery, and flush clogged drip nozzles.",
+                chk5Title: "5. Early Pest Attack & Yellow Rust Leaf Inspection",
+                chk5Sub: "Check leaf undersides for aphid colonies or yellow rust spots during morning hours for early prevention.",
+                bioTag: "Waste Monetization Blueprint",
+                bioTitle: "Sustainability & Agricultural Bio-Economy",
+                bioSubtitle: "Turn farm waste (stubble/parali/husks) into additional revenue streams instead of burning it.",
+                bio1Title: "1. Stubble to Bio-Char & Pellets",
+                bio1Desc: "Collect paddy straw using balers and sell directly to local bio-power plants or compress into fuel pellets.",
+                bio1Rev: "Est. Revenue: ₹1,800 - ₹2,500 / Ton",
+                bio2Title: "2. Paddy Straw Mushroom Bedding",
+                bio2Desc: "Reuse sterilized wheat and rice straw as substrate beds to grow high-margin Oyster mushrooms.",
+                bio2Rev: "Est. Revenue: ₹120 - ₹180 / Kg",
+                bio3Title: "3. Organic Vermicomposting",
+                bio3Desc: "Convert decomposing leaves and husk into nutrient-dense organic fertilizer using Eisenia fetida earthworms.",
+                bio3Rev: "Est. Revenue: ₹8 - ₹12 / Kg",
+                bazaarTitle: "AgriBazaar: Low-Cost Tools & Direct Listings",
+                bazaarSubtitle: "Purchase genuine tools directly from Amazon, BigHaat, and Moglix with subsidy tags.",
+                tool1Tag: "4-in-1 Soil Tester",
+                t1Name: "Digital Soil pH, NPK & Moisture Pen",
+                t1Desc: "Direct soil reading for moisture, sunlight, pH, and soil temperature.",
+                buyAmazon: "Buy on Amazon",
+                subTag50: "50% Govt Subsidy",
+                t2Name: "Battery 16L Knapsack Sprayer",
+                t2Desc: "Dual-nozzle rechargeable sprayer for bio-pesticides and liquid fertilizers.",
+                buyBighaat: "Buy on BigHaat",
+                zeroCostTag: "Zero Electricity Cost",
+                t3Name: "Solar LED Insect Pest Trap",
+                t3Desc: "Automatic night light trap for chemical-free pest control covering 2 acres.",
+                waterSaverTag: "Water Saver",
+                t4Name: "75-Dripper Micro Drip Kit",
+                t4Desc: "Complete DIY drip irrigation kit for vegetable beds and crop rows.",
+                buyMoglix: "Buy on Moglix",
+                schemesTitle: "Government Schemes & Subsidy Eligibility Checker",
+                schemesSub: "Check your instant eligibility and click to visit official Govt portals (PM-KISAN, PM-KUSUM, Soil Health Card, SMAM).",
+                verifierTitle: "Eligibility Verification Form",
+                landSizeQ: "1. Landholding Category",
+                optSmallHolder: "Small / Marginal Farmer (< 5 Acres / 2 Hectares)",
+                optLargeHolder: "Large Landowner (> 5 Acres)",
+                aadhaarQ: "3. Aadhaar-Linked Active Bank Account?",
+                optYesLinked: "Yes, Bank Account is Aadhaar Seeded",
+                optNoNotLinked: "No, Aadhaar Not Linked Yet",
+                solarQ: "6. Need Solar Irrigation Pump (PM-KUSUM)?",
+                optYesSolar: "Yes, Apply for Off-Grid Solar Pump",
+                optNoSolar: "No, Diesel / Electric Pump Only",
+                btnVerifySchemes: "Verify All Scheme Eligibility",
+                catCash: "Direct Cash Transfer",
+                s1Name: "PM-KISAN Samman Nidhi Yojana",
+                s1Desc: "₹6,000 yearly direct bank account transfer in 3 equal installments.",
+                catSolar: "Solar Pump Subsidy",
+                s2Name: "PM-KUSUM Solar Water Pump Scheme",
+                s2Desc: "Up to 60% government subsidy for installing standalone off-grid solar agriculture pumps.",
+                catCard: "Free Soil Test",
+                s3Name: "National Soil Health Card Scheme",
+                s3Desc: "Free digital NPK nutrient soil testing and customized fertilizer advisory card from district lab.",
+                tutTitle: "How AgriNayan Works - Website Tutorial Guide",
+                tutSubtitle: "Select your preferred audio/video language and module topic to watch interactive tutorials.",
+                tut1Head: "Step 1: Soil & Village Profiling",
+                tut1Body: "Enter your Village, District, Soil Type, Land Area, and Farmer Budget on the Dashboard. Click \"Generate AI Multi-Crop Plan\" to calculate exact land ratios for maximum profit.",
+                tut2Head: "Step 2: Daily Care Farm Inspection",
+                tut2Body: "Open the \"View Care Farm\" tab every morning to check items off your farm health checklist (soil dampness, weed growth, drip motor pressure, and aphid colonies).",
+                tut3Head: "Step 3: Stubble & Waste Monetization",
+                tut3Body: "Visit the \"Bio-Economy\" tab after harvest to convert crop stubble/husks into extra income through Bio-Char pellets, Oyster mushroom beds, or Vermicompost.",
+                tut4Head: "Step 4: Buy Tools & Verify Subsidies",
+                tut4Body: "Shop for original tools with subsidy discounts in \"AgriBazaar\" and check your eligibility for PM-KISAN or PM-KUSUM grants in \"Govt Schemes\".",
+                voiceSub: "Speak your question in Hinglish or regional language.",
+                clickMic: "Click mic to start speaking...",
+                youSaid: "You Said:",
+                copilotReply: "Co-Pilot Reply:",
+                readyText: "Main taiyar hoon. Boliye aap kya poochna chahte hain?"
+            },
+            hi: {
+                topTag: "कृषि नयन AI सहायक: बहुभाषी एवं वॉयस समर्थित",
+                helpline: "टोल-फ्री हेल्पलाइन: 1800-AGRI-NAYAN (1800-247-4620)",
+                voiceLabel: "आवाज:",
+                voiceBtn: "कृषि नयन बोलें",
+                tagline: "सटीक खेती सह-पायलट",
+                navDash: "डैशबोर्ड",
+                navCareFarm: "केयर फार्म देखें",
+                navBioEconomy: "बायो-इकोनॉमी",
+                navBazaar: "कृषि बाज़ार",
+                navSchemes: "सरकारी योजनाएं",
+                navTutorial: "वेबसाइट गाइड",
+                speakQuestion: "प्रश्न बोलें",
+                demoBarTitle: "त्वरित परीक्षण मोड:",
+                demoBarSub: "रमेश कुमार (रामपुर, यूपी) के लिए नमूना डेटा भरने के लिए क्लिक करें।",
+                btnLoadDemo: "डेमो किसान डेटा भरें",
+                ayushGuideTitle: "आयुष का प्लेटफ़ॉर्म गाइड",
+                ayushGuideBody: "कृषि नयन में आपका स्वागत है! मिट्टी आवंटन का परीक्षण करने, दैनिक देखभाल सूची देखने, या सब्सिडी की जांच के लिए टैब का उपयोग करें।",
+                btnWatchTutorial: "आयुष का ट्यूटोरियल देखें",
+                activeStatus: "सक्रिय खेत निगरानी",
+                dashTitle: "स्मार्ट AI सटीक कृषि सह-पायलट",
+                dashSubtitle: "मिट्टी और भूमि विवरण दर्ज करें। बहु-फसल आवंटन अनुपात, मंडी दरें और हिंदी ऑडियो सलाह तुरंत प्राप्त करें।",
+                sowingWindowTitle: "बुवाई चेतावनी (सटीक समय)",
+                perfectBadge: "उत्तम समय",
+                sowingAdvice: "अगले 3 दिन गेहूं और सरसों की बुवाई के लिए उत्तम हैं! मिट्टी में 78% नमी और 24°C तापमान है।",
+                listenSowing: "ऑडियो अलर्ट सुनें",
+                profilerTitle: "मिट्टी और भूमि प्रोफाइलर",
+                speakInput: "वॉयस इनपुट",
+                villageLabel: "गांव",
+                districtLabel: "जिला",
+                soilLabel: "मिट्टी का प्रकार",
+                soilLoam: "दोमट मिट्टी",
+                soilClay: "चिकनी मिट्टी",
+                soilSandy: "बलुई दोमट",
+                soilAlluvial: "जलोढ़ मिट्टी",
+                seasonLabel: "बुवाई का सीजन",
+                seasonRabi: "रबी (सर्दियों का सीजन)",
+                seasonKharif: "खरीफ (मानसून सीजन)",
+                seasonZaid: "जायद (गर्मी का सीजन)",
+                landSizeLabel: "भूमि क्षेत्र (एकड़)",
+                budgetLabel: "किसान बजट (₹)",
+                waterLabel: "जल स्रोत",
+                waterHigh: "ट्यूबवेल + नहर (पूर्ण जल)",
+                waterMed: "ड्रिप सिंचाई (मध्यम)",
+                waterLow: "केवल वर्षा पर आधारित",
+                btnCalcStrategy: "AI बहु-फसल योजना बनाएं",
+                chartTitle: "बहु-फसल भूमि आवंटन अनुपात",
+                profitBadge: "अनुमानित लाभ: +38.5%",
+                copilotInsight: "सह-पायलट ऑडियो अंतर्दृष्टि:",
+                cropInsightText: "60% गेहूं और 25% सरसों की अंतर-फसल से मिट्टी में नाइट्रोजन बनी रहती है और कीटों का खतरा 40% कम होता है।",
+                mandiTitle: "लाइव मंडी फसल दरें",
+                readMandi: "ऑडियो सुनें",
+                cropWheat: "गेहूं (HD-3086)",
+                cropMustard: "सरसों (पूसा)",
+                cropStubble: "धान की पराली",
+                mandi1: "खन्ना मंडी (+2.4%)",
+                mandi2: "लुधियाना मुख्य (+1.8%)",
+                mandi3: "बायोएनर्जी प्लांट",
+                careBadge: "दैनिक खेत निगरानी",
+                careTitle: "केयर फार्म देखें - दैनिक चेकलिस्ट",
+                careSubtitle: "कीटों के हमलों और फसल के नुकसान को रोकने के लिए रोज़ाना इस चेकलिस्ट का पालन करें।",
+                progressLabel: "चेकलिस्ट प्रगति",
+                chk1Title: "1. खेत की सफाई और पराली की जांच",
+                chk1Sub: "फसल की पंक्तियों और जल निकासी नालियों में प्लास्टिक कचरे या फफूंद की जांच करें।",
+                chk2Title: "2. मिट्टी की नमी की जांच",
+                chk2Sub: "सुनिश्चित करें कि ऊपरी 2 इंच मिट्टी नम है। नमी 40% से नीचे जाने पर ही सिंचाई करें।",
+                chk3Title: "3. खरपतवार और फसल दूरी की जांच",
+                chk3Sub: "उर्वरक सोखने से पहले मुख्य और द्वितीयक फसलों के बीच खरपतवार की जांच करें।",
+                chk4Title: "4. ड्रिप पाइप और मोटर पंप की जांच",
+                chk4Sub: "सिंचाई पंप के दबाव, सोलर इनवर्टर बैटरी और बंद ड्रिप नोजल को साफ करें।",
+                chk5Title: "5. कीट हमले और पीले रतुआ पत्तियों की जांच",
+                chk5Sub: "शुरुआती रोकथाम के लिए सुबह के समय पत्तियों के निचले हिस्से में माहो/चेपा या पीले धब्बों की जांच करें।",
+                bioTag: "कचरे से कमाई योजना",
+                bioTitle: "सस्टेनेबिलिटी एवं बायो-इकोनॉमी",
+                bioSubtitle: "फसल के अवशेषों (पराली/भूसे) को जलाने के बजाय अतिरिक्त आय में बदलें।",
+                bio1Title: "1. पराली से बायो-चार और पेलेट्स",
+                bio1Desc: "धान के भूसे को बेलर से एकत्र कर बायो-पावर प्लांट को बेचें या बायो-फ्यूल पेलेट्स बनाएं।",
+                bio1Rev: "अनुमानित आय: ₹1,800 - ₹2,500 / टन",
+                bio2Title: "2. धान की पराली पर मशरूम खेती",
+                bio2Desc: "गेहूं और चावल के भूसे का उपयोग ऑयस्टर मशरूम उगाने के लिए बेड सामग्री के रूप में करें।",
+                bio2Rev: "अनुमानित आय: ₹120 - ₹180 / किग्रा",
+                bio3Title: "3. जैविक वर्मीकंपोस्ट खाद",
+                bio3Desc: "केंचुओं (Eisenia fetida) का उपयोग करके सड़ने वाले भूसे को जैविक खाद में बदलें।",
+                bio3Rev: "अनुमानित आय: ₹8 - ₹12 / किग्रा",
+                bazaarTitle: "कृषि बाज़ार: कम लागत वाले उपकरण",
+                bazaarSubtitle: "सरकारी सब्सिडी टैग के साथ सीधे अमेज़ॅन, बिगहाट और मोगलिक्स से उपकरण खरीदें।",
+                tool1Tag: "4-इन-1 सॉयल टेस्टर",
+                t1Name: "डिजिटल मिट्टी pH, NPK व नमी पेन",
+                t1Desc: "मिट्टी की नमी, धूप, pH और तापमान का त्वरित परीक्षण।",
+                buyAmazon: "अमेज़न पर खरीदें",
+                subTag50: "50% सरकारी सब्सिडी",
+                t2Name: "बैटरी 16L नैपसैक स्प्रेयर",
+                t2Desc: "जैविक कीटनाशकों और तरल उर्वरकों के लिए रीचार्ज होने वाला स्प्रेयर।",
+                buyBighaat: "बिगहाट पर खरीदें",
+                zeroCostTag: "जीरो बिजली बिल",
+                t3Name: "सोलर एलईडी पेस्ट ट्रैप",
+                t3Desc: "2 एकड़ के लिए रसायन मुक्त कीट सुरक्षा प्रदान करने वाला स्वचालित लाइट ट्रैप।",
+                waterSaverTag: "पानी की बचत",
+                t4Name: "75-ड्रिपर माइक्रो ड्रिप किट",
+                t4Desc: "सब्जियों और फसल पंक्तियों के लिए संपूर्ण DIY ड्रिप सिंचाई किट।",
+                buyMoglix: "मोगलिक्स पर खरीदें",
+                schemesTitle: "सरकारी योजनाएं और सब्सिडी जांचक",
+                schemesSub: "पीएम-किसान, पीएम-कुसुम सोलर पंप और यंत्र अनुदान पात्रता जांचें।",
+                verifierTitle: "पात्रता सत्यापन फॉर्म",
+                landSizeQ: "1. भूमि स्वामित्व आकार",
+                optSmallHolder: "छोटे किसान (< 5 एकड़)",
+                optLargeHolder: "बड़े भूमिधारक (> 5 एकड़)",
+                aadhaarQ: "3. क्या बैंक खाता आधार से लिंक है?",
+                optYesLinked: "हाँ, लिंक है",
+                optNoNotLinked: "नहीं, अभी लिंक नहीं है",
+                solarQ: "6. क्या आप सोलर पंप में रुचि रखते हैं?",
+                optYesSolar: "हाँ, सोलर पंप चाहिए",
+                optNoSolar: "नहीं, केवल बिजली पंप",
+                btnVerifySchemes: "पात्रता की जांच करें",
+                catCash: "प्रत्यक्ष आय अंतरण",
+                s1Name: "पीएम-किसान सम्मान निधि योजना",
+                s1Desc: "हर साल 3 किस्तों में ₹6,000 सीधे बैंक खाते में पाएं।",
+                catSolar: "सोलर पंप अनुदान",
+                s2Name: "पीएम-कुसुम सोलर पंप योजना",
+                s2Desc: "सोलर पंप लगाने पर 60% सरकारी सब्सिडी प्राप्त करें।",
+                catCard: "मुफ्त मृदा कार्ड",
+                s3Name: "मृदा स्वास्थ्य कार्ड मिशन",
+                s3Desc: "जिला कृषि केंद्र से मुफ्त डिजिटल मृदा परीक्षण कार्ड प्राप्त करें।",
+                tutTitle: "कृषि नयन कैसे काम करता है - गाइड",
+                tutSubtitle: "वीडियो भाषा और विषय चुनकर विस्तृत गाइड देखें।",
+                tut1Head: "चरण 1: मिट्टी और गांव प्रोफाइल बनाएं",
+                tut1Body: "डैशबोर्ड पर अपना गांव, जिला, मिट्टी का प्रकार, भूमि क्षेत्र और बजट दर्ज करें। \"AI बहु-फसल योजना बनाएं\" पर क्लिक करें।",
+                tut2Head: "चरण 2: दैनिक केयर फार्म निरीक्षण",
+                tut2Body: "रोज सुबह \"केयर फार्म देखें\" टैब खोलें और अपनी जांच सूची पूरी करें (मिट्टी की नमी, खरपतवार, ड्रिप मोटर दबाव)।",
+                tut3Head: "चरण 3: पराली और कचरे से कमाई",
+                tut3Body: "कटाई के बाद \"बायो-इकोनॉमी\" टैब पर जाएं और पराली को बायो-चार या मशरूम बेड में बदलकर अतिरिक्त कमाई करें।",
+                tut4Head: "चरण 4: उपकरण खरीदें व सब्सिडी जांचें",
+                tut4Body: "\"कृषि बाज़ार\" में सब्सिडी वाले उपकरण खरीदें और \"सरकारी योजनाएं\" टैब में अपनी पात्रता जांचें।",
+                voiceSub: "अपना प्रश्न हिंदी या अपनी क्षेत्रीय भाषा में बोलें।",
+                clickMic: "बोलने के लिए माइक दबाएं...",
+                youSaid: "आपने कहा:",
+                copilotReply: "सह-पायलट का उत्तर:",
+                readyText: "मैं तैयार हूँ। आप क्या पूछना चाहते हैं?"
+            },
+            en: {
+                topTag: "AgriNayan AI Co-Pilot: English & Voice Enabled",
+                helpline: "Toll-Free Helpline: 1800-AGRI-NAYAN (1800-247-4620)",
+                voiceLabel: "Voice:",
+                voiceBtn: "AgriNayan Speak",
+                tagline: "Precision Farming Co-Pilot",
+                navDash: "Dashboard",
+                navCareFarm: "View Care Farm",
+                navBioEconomy: "Bio-Economy",
+                navBazaar: "AgriBazaar",
+                navSchemes: "Govt Schemes",
+                navTutorial: "Website Guide",
+                speakQuestion: "Speak Question",
+                demoBarTitle: "Quick Test Mode:",
+                demoBarSub: "Click to pre-fill sample farm data for Ramesh Kumar (Rampur, UP).",
+                btnLoadDemo: "Load Demo Farmer Data",
+                ayushGuideTitle: "Ayush's Platform Guide",
+                ayushGuideBody: "Welcome to AgriNayan! Use the tabs to test soil allocation, view daily farm care checklists, verify Govt subsidies, or monetize stubble.",
+                btnWatchTutorial: "Watch Ayush's Tutorial",
+                activeStatus: "Active Field Monitoring",
+                dashTitle: "Smart AI Precision Farming Co-Pilot",
+                dashSubtitle: "Enter soil details and land size to receive multi-crop allocation ratios, live Mandi rates, and localized audio advisories.",
+                sowingWindowTitle: "Sowing Alert (Optimum Window)",
+                perfectBadge: "Perfect Window",
+                sowingAdvice: "The next 3 days are optimal for sowing Wheat and Mustard! Soil moisture is at 78% with a temperature of 24°C.",
+                listenSowing: "Listen Audio Alert",
+                profilerTitle: "Soil & Land Profiler",
+                speakInput: "Voice Input",
+                villageLabel: "Village Name",
+                districtLabel: "District",
+                soilLabel: "Soil Type",
+                soilLoam: "Loam Soil",
+                soilClay: "Clay Soil",
+                soilSandy: "Sandy Loam",
+                soilAlluvial: "Alluvial Soil",
+                seasonLabel: "Planting Season",
+                seasonRabi: "Rabi (Winter Season)",
+                seasonKharif: "Kharif (Monsoon Season)",
+                seasonZaid: "Zaid (Summer Season)",
+                landSizeLabel: "Land Area (Acres)",
+                budgetLabel: "Farmer Budget (₹)",
+                waterLabel: "Water Source",
+                waterHigh: "Tubewell + Canal (High Water)",
+                waterMed: "Precision Drip (Medium)",
+                waterLow: "Rainfed Only",
+                btnCalcStrategy: "Generate AI Multi-Crop Plan",
+                chartTitle: "Multi-Crop Land Allocation Ratio",
+                profitBadge: "Estimated Profit: +38.5%",
+                copilotInsight: "Co-Pilot Audio Insight:",
+                cropInsightText: "Intercropping 60% Wheat and 25% Mustard maintains soil nitrogen levels and reduces pest risks by 40%.",
+                mandiTitle: "Live Mandi Crop Prices",
+                readMandi: "Audio Readout",
+                cropWheat: "Wheat (HD-3086)",
+                cropMustard: "Mustard (Pusa)",
+                cropStubble: "Paddy Stubble",
+                mandi1: "Khanna Mandi (+2.4%)",
+                mandi2: "Ludhiana Main (+1.8%)",
+                mandi3: "BioEnergy Plant",
+                careBadge: "Daily Field Monitoring",
+                careTitle: "View Care Farm - Daily Checklist",
+                careSubtitle: "Inspect your farm daily using this precision guide to prevent pest attacks and crop loss.",
+                progressLabel: "Checklist Completion",
+                chk1Title: "1. Field Cleanliness & Stubble Residue Check",
+                chk1Sub: "Inspect crop rows and drainage lines for plastic waste or fungal decay on leftover stubble.",
+                chk2Title: "2. Topsoil Moisture Level Inspection",
+                chk2Sub: "Ensure the top 2 inches of soil are moist. Irrigate only if moisture drops below 40%.",
+                chk3Title: "3. Weed Growth & Inter-crop Spacing Check",
+                chk3Sub: "Identify early weed sprouts between primary and secondary crop rows before they absorb fertilizer.",
+                chk4Title: "4. Drip Pipe Emitters & Motor Health",
+                chk4Sub: "Check irrigation pump pressure, solar inverter battery, and flush clogged drip nozzles.",
+                chk5Title: "5. Early Pest Attack & Yellow Rust Leaf Inspection",
+                chk5Sub: "Check leaf undersides for aphid colonies or yellow rust spots during morning hours for early prevention.",
+                bioTag: "Waste Monetization Blueprint",
+                bioTitle: "Sustainability & Agricultural Bio-Economy",
+                bioSubtitle: "Turn farm waste (stubble/husks) into additional revenue streams instead of burning it.",
+                bio1Title: "1. Stubble to Bio-Char & Pellets",
+                bio1Desc: "Collect paddy straw using balers and sell directly to local bio-power plants or compress into fuel pellets.",
+                bio1Rev: "Est. Revenue: ₹1,800 - ₹2,500 / Ton",
+                bio2Title: "2. Paddy Straw Mushroom Bedding",
+                bio2Desc: "Reuse sterilized wheat and rice straw as substrate beds to grow high-margin Oyster mushrooms.",
+                bio2Rev: "Est. Revenue: ₹120 - ₹180 / Kg",
+                bio3Title: "3. Organic Vermicomposting",
+                bio3Desc: "Convert decomposing leaves and husk into nutrient-dense organic fertilizer using Eisenia fetida earthworms.",
+                bio3Rev: "Est. Revenue: ₹8 - ₹12 / Kg",
+                bazaarTitle: "AgriBazaar: Low-Cost Tools & Direct Listings",
+                bazaarSubtitle: "Purchase genuine tools directly from Amazon, BigHaat, and Moglix with subsidy tags.",
+                tool1Tag: "4-in-1 Soil Tester",
+                t1Name: "Digital Soil pH, NPK & Moisture Pen",
+                t1Desc: "Direct soil reading for moisture, sunlight, pH, and soil temperature.",
+                buyAmazon: "Buy on Amazon",
+                subTag50: "50% Govt Subsidy",
+                t2Name: "Battery 16L Knapsack Sprayer",
+                t2Desc: "Dual-nozzle rechargeable sprayer for bio-pesticides and liquid fertilizers.",
+                buyBighaat: "Buy on BigHaat",
+                zeroCostTag: "Zero Electricity Cost",
+                t3Name: "Solar LED Insect Pest Trap",
+                t3Desc: "Automatic night light trap for chemical-free pest control covering 2 acres.",
+                waterSaverTag: "Water Saver",
+                t4Name: "75-Dripper Micro Drip Kit",
+                t4Desc: "Complete DIY drip irrigation kit for vegetable beds and crop rows.",
+                buyMoglix: "Buy on Moglix",
+                schemesTitle: "Government Schemes & Subsidy Eligibility Checker",
+                schemesSub: "Check your instant eligibility and click to visit official Govt portals (PM-KISAN, PM-KUSUM, Soil Health Card, SMAM).",
+                verifierTitle: "Eligibility Verification Form",
+                landSizeQ: "1. Landholding Category",
+                optSmallHolder: "Small / Marginal Farmer (< 5 Acres / 2 Hectares)",
+                optLargeHolder: "Large Landowner (> 5 Acres)",
+                aadhaarQ: "3. Aadhaar-Linked Active Bank Account?",
+                optYesLinked: "Yes, Bank Account is Aadhaar Seeded",
+                optNoNotLinked: "No, Aadhaar Not Linked Yet",
+                solarQ: "6. Need Solar Irrigation Pump (PM-KUSUM)?",
+                optYesSolar: "Yes, Apply for Off-Grid Solar Pump",
+                optNoSolar: "No, Diesel / Electric Pump Only",
+                btnVerifySchemes: "Verify All Scheme Eligibility",
+                catCash: "Direct Cash Transfer",
+                s1Name: "PM-KISAN Samman Nidhi Yojana",
+                s1Desc: "₹6,000 yearly direct bank account transfer in 3 equal installments.",
+                catSolar: "Solar Pump Subsidy",
+                s2Name: "PM-KUSUM Solar Water Pump Scheme",
+                s2Desc: "Up to 60% government subsidy for installing standalone off-grid solar agriculture pumps.",
+                catCard: "Free Soil Test",
+                s3Name: "National Soil Health Card Scheme",
+                s3Desc: "Free digital NPK nutrient soil testing and customized fertilizer advisory card from district lab.",
+                tutTitle: "How AgriNayan Works - Website Tutorial Guide",
+                tutSubtitle: "Select your preferred audio/video language and module topic to watch interactive tutorials.",
+                tut1Head: "Step 1: Soil & Village Profiling",
+                tut1Body: "Enter your Village, District, Soil Type, Land Area, and Farmer Budget on the Dashboard. Click \"Generate AI Multi-Crop Plan\" to calculate exact land ratios for maximum profit.",
+                tut2Head: "Step 2: Daily Care Farm Inspection",
+                tut2Body: "Open the \"View Care Farm\" tab every morning to check items off your farm health checklist (soil dampness, weed growth, drip motor pressure, and aphid colonies).",
+                tut3Head: "Step 3: Stubble & Waste Monetization",
+                tut3Body: "Visit the \"Bio-Economy\" tab after harvest to convert crop stubble/husks into extra income through Bio-Char pellets, Oyster mushroom beds, or Vermicompost.",
+                tut4Head: "Step 4: Buy Tools & Verify Subsidies",
+                tut4Body: "Shop for original tools with subsidy discounts in \"AgriBazaar\" and check your eligibility for PM-KISAN or PM-KUSUM grants in \"Govt Schemes\".",
+                voiceSub: "Speak your question clearly in English or your native language.",
+                clickMic: "Click mic to start speaking...",
+                youSaid: "You Said:",
+                copilotReply: "Co-Pilot Reply:",
+                readyText: "I am ready. What would you like to ask?"
+            },
+            kn: {
+                topTag: "ಅಗ್ರಿ‌ನಯನ್ AI ಸಹಾಯಕ: ಕನ್ನಡ ಧ್ವನಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
+                helpline: "ಉಚಿತ ಸಹಾಯವಾಣಿ: 1800-AGRI-NAYAN (1800-247-4620)",
+                voiceLabel: "ಧ್ವನಿ:",
+                voiceBtn: "ಅಗ್ರಿ‌ನಯನ್ ಮಾತನಾಡಿ",
+                tagline: "ನಿಖರ ಕೃಷಿ ಸಹ-ಪೈಲಟ್",
+                navDash: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+                navCareFarm: "ಕೇರ್ ಫಾರ್ಮ್ ನೋಡಿ",
+                navBioEconomy: "ಬಯೋ-ಎಕಾನಮಿ",
+                navBazaar: "ಅಗ್ರಿ ಬಜಾರ್",
+                navSchemes: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು",
+                navTutorial: "ವೆಬ್‌ಸೈಟ್ ಮಾರ್ಗದರ್ಶಿ",
+                speakQuestion: "ಪ್ರಶ್ನೆ ಕೇಳಿ",
+                demoBarTitle: "ತ್ವರಿತ ಪರೀಕ್ಷಾ ಮೋಡ್:",
+                demoBarSub: "ರಮೇಶ್ ಕುಮಾರ್ ಅವರ ಮಾದರಿ ಡೇಟಾವನ್ನು ತುಂಬಲು ಕ್ಲಿಕ್ ಮಾಡಿ.",
+                btnLoadDemo: "ಡೆಮೊ ರೈತರ ಡೇಟಾ ಲೋಡ್ ಮಾಡಿ",
+                ayushGuideTitle: "ಆಯುಷ್ ಅವರ ವೇದಿಕೆ ಮಾರ್ಗದರ್ಶಿ",
+                ayushGuideBody: "ಅಗ್ರಿ‌ನಯನ್‌ಗೆ ಸ್ವಾಗತ! ಮಣ್ಣಿನ ಹಂಚಿಕೆಯನ್ನು ಪರೀಕ್ಷಿಸಲು ಮತ್ತು ಯೋಜನೆಗಳನ್ನು ಪರಿಶೀಲಿಸಲು ಟ್ಯಾಬ್‌ಗಳನ್ನು ಬಳಸಿ.",
+                btnWatchTutorial: "ಆಯುಷ್ ಟ್ಯುಟೋರಿಯಲ್ ವೀಕ್ಷಿಸಿ",
+                activeStatus: "ಸಕ್ರಿಯ ಕ್ಷೇತ್ರ ಮೇಲ್ವಿಚಾರಣೆ",
+                dashTitle: "ಸ್ಮಾರ್ಟ್ AI ನಿಖರ ಕೃಷಿ ಸಹ-ಪೈಲಟ್",
+                dashSubtitle: "ಮಣ್ಣಿನ ವಿವರಗಳು ಮತ್ತು ಜಮೀನಿನ ಗಾತ್ರವನ್ನು ನಮೂದಿಸಿ. ಬೆಳೆ ಹಂಚಿಕೆ ಅನುಪಾತ ಮತ್ತು ಮಂಡಿ ದರಗಳನ್ನು ಪಡೆಯಿರಿ.",
+                sowingWindowTitle: "ಬಿತ್ತನೆ ಎಚ್ಚರಿಕೆ (ಸೂಕ್ತ ಸಮಯ)",
+                perfectBadge: "ಉತ್ತಮ ಸಮಯ",
+                sowingAdvice: "ಮುಂದಿನ 3 ದಿನಗಳು ಗೋಧಿ ಮತ್ತು ಸಾಸಿವೆ ಬಿತ್ತನೆಗೆ ಅತ್ಯುತ್ತಮವಾಗಿವೆ! ಮಣ್ಣಿನಲ್ಲಿ 78% ತೇವಾಂಶವಿದೆ.",
+                listenSowing: "ಆಡಿಯೋ ಎಚ್ಚರಿಕೆ ಆಲಿಸಿ",
+                profilerTitle: "ಮಣ್ಣು ಮತ್ತು ಜಮೀನಿನ ಪ್ರೊಫೈಲರ್",
+                speakInput: "ಧ್ವನಿ ನಮೂದು",
+                villageLabel: "ಗ್ರಾಮ",
+                districtLabel: "ಜಿಲ್ಲೆ",
+                soilLabel: "ಮಣ್ಣಿನ ಪ್ರಕಾರ",
+                soilLoam: "ಗೋಡು ಮಣ್ಣು",
+                soilClay: "ಜಿಗುಟು ಮಣ್ಣು",
+                soilSandy: "ಮರಳು ಮಣ್ಣು",
+                soilAlluvial: "ಸರೋವರ ಮಣ್ಣು",
+                seasonLabel: "ಬಿತ್ತನೆ ಋತು",
+                seasonRabi: "ರಬಿ (ಚಳಿಗಾಲ)",
+                seasonKharif: "ಖರೀಫ್ (ಮುಂಗಾರು)",
+                seasonZaid: "ಜೈದ್ (ಬೇಸಿಗೆ)",
+                landSizeLabel: "ಜಮೀನಿನ ವಿಸ್ತೀರ್ಣ (ಎಕರೆ)",
+                budgetLabel: "ರೈತರ ಬಜೆಟ್ (₹)",
+                waterLabel: "ನೀರಿನ ಮೂಲ",
+                waterHigh: " ಕೊಳವೆಬಾವಿ + ಕಾಲುವೆ",
+                waterMed: "ಹನಿ ನೀರಾವರಿ",
+                waterLow: "ಮಳೆ ಆಶ್ರಿತ ಮಾತ್ರ",
+                btnCalcStrategy: "AI ಬೆಳೆ ಯೋಜನೆಯನ್ನು ತಯಾರಿಸಿ",
+                chartTitle: "ಬೆಳೆ ಜಮೀನು ಹಂಚಿಕೆ ಅನುಪಾತ",
+                profitBadge: "ಅಂದಾಜು ಲಾಭ: +38.5%",
+                copilotInsight: "ಸಹ-ಪೈಲಟ್ ಆಡಿಯೋ ಮಾಹಿತಿ:",
+                cropInsightText: "60% ಗೋಧಿ ಮತ್ತು 25% ಸಾಸಿವೆ ಬೆಳೆಯುವುದರಿಂದ ಮಣ್ಣಿನಲ್ಲಿ ನೈಟ್ರೋಜನ್ ಕಾಯ್ದುಕೊಳ್ಳಬಹುದು.",
+                mandiTitle: "ನೇರ ಮಂಡಿ ಬೆಳೆ ದರಗಳು",
+                readMandi: "ಆಡಿಯೋ ಆಲಿಸಿ",
+                cropWheat: "ಗೋಧಿ (HD-3086)",
+                cropMustard: "ಸಾಸಿವೆ (ಪೂಸಾ)",
+                cropStubble: "ಭತ್ತದ ಹುಲ್ಲು",
+                mandi1: "ಖನ್ನಾ ಮಂಡಿ (+2.4%)",
+                mandi2: "ಲುಧಿಯಾನ ಮಂಡಿ (+1.8%)",
+                mandi3: "ಬಯೋ ಎನರ್ಜಿ ಪ್ಲಾಂಟ್",
+                careBadge: "ದೈನಂದಿನ ಕ್ಷೇತ್ರ ಮೇಲ್ವಿಚಾರಣೆ",
+                careTitle: "ಕೇರ್ ಫಾರ್ಮ್ - ದೈನಂದಿನ ಪರಿಶೀಲನಾ ಪಟ್ಟಿ",
+                careSubtitle: "ಕೀಟಗಳ ದಾಳಿಯನ್ನು ತಡೆಗಟ್ಟಲು ಪ್ರತಿದಿನ ಈ ಪರಿಶೀಲನಾ ಪಟ್ಟಿಯನ್ನು ಬಳಸಿ.",
+                progressLabel: "ಪರಿಶೀಲನಾ ಪಟ್ಟಿ ಪ್ರಗತಿ",
+                chk1Title: "1. ಜಮೀನಿನ ನೈರ್ಮಲ್ಯ ಪರೀಕ್ಷೆ",
+                chk1Sub: "ಪ್ಲಾಸ್ಟಿಕ್ ತ್ಯಾಜ್ಯ ಅಥವಾ ಶಿಲೀಂಧ್ರಕ್ಕಾಗಿ ಚರಂಡಿಗಳನ್ನು ಪರೀಕ್ಷಿಸಿ.",
+                chk2Title: "2. ಮಣ್ಣಿನ ತೇವಾಂಶ ಮಟ್ಟದ ಪರೀಕ್ಷೆ",
+                chk2Sub: "ಮೇಲಿನ 2 ಇಂಚು ಮಣ್ಣು ತೇವವಾಗಿದೆ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ.",
+                chk3Title: "3. ಕಳೆ ಬೆಳೆಗಳ ಪರಿಶೀಲನೆ",
+                chk3Sub: "ಗೊಬ್ಬರವನ್ನು ಹೀರಿಕೊಳ್ಳುವ ಮೊದಲು ಸಾಲುಗಳ ನಡುವೆ ಕಳೆಗಳನ್ನು ಗುರುತಿಸಿ.",
+                chk4Title: "4. ಹನಿ ನೀರಾವರಿ ಪೈಪ್ ಪರೀಕ್ಷೆ",
+                chk4Sub: "ಪಂಪ್ ಒತ್ತಡ ಮತ್ತು ಸೋಲಾರ್ ಬ್ಯಾಟರಿಯನ್ನು ಪರೀಕ್ಷಿಸಿ.",
+                chk5Title: "5. ಕೀಟಗಳ ದಾಳಿ ಪರೀಕ್ಷೆ",
+                chk5Sub: "ಎಲೆಗಳ ಕೆಳಭಾಗದಲ್ಲಿ ಕೀಟಗಳ ಚುಕ್ಕೆಗಳನ್ನು ಪರೀಕ್ಷಿಸಿ.",
+                bioTag: "ತ್ಯಾಜ್ಯದಿಂದ ಆದಾಯ ಯೋಜನೆ",
+                bioTitle: "ಸುಸ್ಥಿರತೆ ಮತ್ತು ಜೈವಿಕ ಆರ್ಥಿಕತೆ",
+                bioSubtitle: "ಕೃಷಿ ತ್ಯಾಜ್ಯವನ್ನು ಸುಡುವ ಬದಲು ಹೆಚ್ಚುವರಿ ಆದಾಯವಾಗಿ ಪರಿವರ್ತಿಸಿ.",
+                bio1Title: "1. ಹುಲ್ಲಿನಿಂದ ಬಯೋ-ಚಾರ್",
+                bio1Desc: "ಭತ್ತದ ಹುಲ್ಲನ್ನು ಸಂಗ್ರಹಿಸಿ ಬಯೋ-ಪವರ್ ಪ್ಲಾಂಟ್‌ಗೆ ಮಾರಿ.",
+                bio1Rev: "ಅಂದಾಜು ಆದಾಯ: ₹1,800 - ₹2,500 / ಟನ್",
+                bio2Title: "2. ಅಣಬೆ ಕೃಷಿ",
+                bio2Desc: "ಗೋಧಿ ಮತ್ತು ಭತ್ತದ ಹುಲ್ಲನ್ನು ಅಣಬೆ ಬೆಳೆಯಲು ಬಳಸಿ.",
+                bio2Rev: "ಅಂದಾಜು ಆದಾಯ: ₹120 - ₹180 / ಕೆಜಿ",
+                bio3Title: "3. ಸಾವಯವ ಎರೆಹುಳು ಗೊಬ್ಬರ",
+                bio3Desc: "ಕೊಳೆಯುವ ತ್ಯಾಜ್ಯವನ್ನು ಎರೆಹುಳು ಗೊಬ್ಬರವಾಗಿ ಪರಿವರ್ತಿಸಿ.",
+                bio3Rev: "ಅಂದಾಜು ಆದಾಯ: ₹8 - ₹12 / ಕೆಜಿ",
+                bazaarTitle: "ಅಗ್ರಿ ಬಜಾರ್: ಕಡಿಮೆ ವೆಚ್ಚದ ಉಪಕರಣಗಳು",
+                bazaarSubtitle: "ಸಬ್ಸಿಡಿ ದರದಲ್ಲಿ ಉಪಕರಣಗಳನ್ನು ಖರೀದಿಸಿ.",
+                tool1Tag: "4-ಇನ್-1 ಮಣ್ಣು ಪರೀಕ್ಷಕ",
+                t1Name: "ಡಿಜಿಟಲ್ ಮಣ್ಣಿನ pH ಮತ್ತು ತೇವಾಂಶ ಪೆನ್",
+                t1Desc: "ತೇವಾಂಶ ಮತ್ತು pH ನ ನೇರ ಮಣ್ಣಿನ ಪರೀಕ್ಷೆ.",
+                buyAmazon: "ಅಮೆಜಾನ್‌ನಲ್ಲಿ ಖರೀದಿಸಿ",
+                subTag50: "50% ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿ",
+                t2Name: "ಬ್ಯಾಟರಿ ಸ್ಪೇಯರ್ 16L",
+                t2Desc: "ದ್ರವ ಗೊಬ್ಬರಕ್ಕಾಗಿ ರೀಚಾರ್ಜ್ ಮಾಡಬಹುದಾದ ಸ್ಪ್ರೇಯರ್.",
+                buyBighaat: "ಬಿಗ್‌ಹಾಟ್‌ನಲ್ಲಿ ಖರೀದಿಸಿ",
+                zeroCostTag: "ಉಚಿತ ವಿದ್ಯುತ್",
+                t3Name: "ಸೋಲಾರ್ LED ಕೀಟ ಬಲೆ",
+                t3Desc: "ರಾಸಾಯನಿಕ ಮುಕ್ತ ಕೀಟ ನಿಯಂತ್ರಣಕ್ಕಾಗಿ ಸ್ವಯಂಚಾಲಿತ ದೀಪ.",
+                waterSaverTag: "ನೀರು ಉಳಿಸಿ",
+                t4Name: "ಮೈಕ್ರೋ ಡ್ರಿಪ್ ಕಿಟ್",
+                t4Desc: "ತರಕಾರಿ ಬೆಳೆಗಳಿಗೆ ಸಂಪೂರ್ಣ ಹನಿ ನೀರಾವರಿ ಕಿಟ್.",
+                buyMoglix: "ಮೋಗ್ಲಿಕ್ಸ್‌ನಲ್ಲಿ ಖರೀದಿಸಿ",
+                schemesTitle: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು ಮತ್ತು ಸಬ್ಸಿಡಿ ಪರೀಕ್ಷಕ",
+                schemesSub: "ನಿಮ್ಮ ಅರ್ಹತೆಯನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಅಧಿಕೃತ ಪೋರ್ಟಲ್‌ಗಳಿಗೆ ಭೇಟಿ ನೀಡಿ.",
+                verifierTitle: "ಅರ್ಹತಾ ಪರಿಶೀಲನೆ ನಮೂನೆ",
+                landSizeQ: "1. ಭೂಮಿಯ ವಿಸ್ತೀರ್ಣ",
+                optSmallHolder: "ಸಣ್ಣ ರೈತರು (< 5 ಎಕರೆ)",
+                optLargeHolder: "ದೊಡ್ಡ ಭೂಮಾಲೀಕರು (> 5 ಎಕರೆ)",
+                aadhaarQ: "3. ಬ್ಯಾಂಕ್ ಖಾತೆಗೆ ಆಧಾರ್ ಲಿಂಕ್ ಆಗಿದೆಯೇ?",
+                optYesLinked: "ಹೌದು, ಲಿಂಕ್ ಆಗಿದೆ",
+                optNoNotLinked: "ಇಲ್ಲ, ఇంకా ಲಿಂಕ್ ಆಗಿಲ್ಲ",
+                solarQ: "6. ಸೋಲಾರ್ ಪಂಪ್ ಅಗತ್ಯವಿದೆಯೇ?",
+                optYesSolar: "ಹೌದು, ಸೋಲಾರ್ ಪಂಪ್ ಬೇಕು",
+                optNoSolar: "ಇಲ್ಲ, ಡೀಸೆಲ್/ವಿದ್ಯುತ್ ಪಂಪ್",
+                btnVerifySchemes: "ಅರ್ಹತೆಯನ್ನು ಪರಿಶೀಲಿಸಿ",
+                catCash: "ನೇರ ಹಣ ವರ್ಗಾವಣೆ",
+                s1Name: "ಪಿಎಂ-ಕಿಸಾನ್ ಸಮ್ಮಾನ್ ನಿಧಿ",
+                s1Desc: "ವರ್ಷಕ್ಕೆ ₹6,000 ನೇರ ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ.",
+                catSolar: "ಸೋಲಾರ್ ಪಂಪ್ ಸಬ್ಸಿಡಿ",
+                s2Name: "ಪಿಎಂ-ಕುಸುಮ್ ಸೋಲಾರ್ ಪಂಪ್ ಯೋಜನೆ",
+                s2Desc: "ಸೋಲಾರ್ ಪಂಪ್‌ಗೆ 60% ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿ.",
+                catCard: "ಉಚಿತ ಮಣ್ಣಿನ ಕಾರ್ಡ್",
+                s3Name: "ರಾಷ್ಟ್ರೀಯ ಮಣ್ಣಿನ ಆರೋಗ್ಯ ಕಾರ್ಡ್",
+                s3Desc: "ಉಚಿತ ಡಿಜಿಟಲ್ ಮಣ್ಣಿನ ಪರೀಕ್ಷಾ ಕಾರ್ಡ್ ಪಡೆಯಿರಿ.",
+                tutTitle: "ಅಗ್ರಿ‌ನಯನ್ ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ - ಮಾರ್ಗದರ್ಶಿ",
+                tutSubtitle: "ವೀಡಿಯೊ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ ಮತ್ತು ಮಾರ್ಗದರ್ಶಿಯನ್ನು ವೀಕ್ಷಿಸಿ.",
+                tut1Head: "ಹಂತ 1: ಮಣ್ಣು ಮತ್ತು ಗ್ರಾಮದ ಪ್ರೊಫೈಲ್",
+                tut1Body: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನಲ್ಲಿ ನಿಮ್ಮ ಗ್ರಾಮ ಮತ್ತು ಜಮೀನಿನ ವಿವರಗಳನ್ನು ನಮೂದಿಸಿ.",
+                tut2Head: "ಹಂತ 2: ದೈನಂದಿನ ಜಮೀನು ಪರಿಶೀಲನೆ",
+                tut2Body: "ಪ್ರತಿ ದಿನ ಬೆಳಿಗ್ಗೆ ಜಮೀನಿನ ಆರೋಗ್ಯ ಪರಿಶೀಲನಾ ಪಟ್ಟಿಯನ್ನು ತೆರೆಯಿರಿ.",
+                tut3Head: "ಹಂತ 3: ತ್ಯಾಜ್ಯದಿಂದ ಆದಾಯಗಳಿಸಿ",
+                tut3Body: "ಸುಡುವ ಬದಲು ಕೃಷಿ ತ್ಯಾಜ್ಯವನ್ನು ಆದಾಯವಾಗಿ ಪರಿವರ್ತಿಸಿ.",
+                tut4Head: "ಹಂತ 4: ಉಪಕರಣಗಳನ್ನು ಖರೀದಿಸಿ",
+                tut4Body: "ಸಬ್ಸಿಡಿ ದರದಲ್ಲಿ ಉಪಕರಣಗಳನ್ನು ಖರೀದಿಸಿ ಮತ್ತು ಯೋಜನೆಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ.",
+                voiceSub: "ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಿ.",
+                clickMic: "ಮಾತನಾಡಲು ಮೈಕ್ ಕ್ಲಿಕ್ ಮಾಡಿ...",
+                youSaid: "ನೀವು ಹೇಳಿದ್ದು:",
+                copilotReply: "ಸಹ-ಪೈಲಟ್ ಉತ್ತರ:",
+                readyText: "ನಾನು ಸಿದ್ಧನಾಗಿದ್ದೇನೆ. ನೀವು ಏನು ಕೇಳಲು ಬಯಸುತ್ತೀರಿ?"
+            },
+            te: {
+                topTag: "అగ్రి నయన్ AI కో-పైలట్: తెలుగు వాయిస్ సపోర్ట్",
+                helpline: "టోల్-ఫ్రీ హెల్ప్‌లైన్: 1800-AGRI-NAYAN (1800-247-4620)",
+                voiceLabel: "వాయిస్:",
+                voiceBtn: "అగ్రి నయన్ మాట్లాడండి",
+                tagline: "ఖచ్చితమైన వ్యవసాయ సహాయకుడు",
+                navDash: "డాష్‌బోర్డ్",
+                navCareFarm: "కేర్ ఫార్మ్ చూడండి",
+                navBioEconomy: "బయో-ఎకానమీ",
+                navBazaar: "అగ్రి బజార్",
+                navSchemes: "ప్రభుత్వ పథకాలు",
+                navTutorial: "వెబ్‌సైట్ గైడ్",
+                speakQuestion: "ప్రశ్న అడగండి",
+                demoBarTitle: "త్వరిత పరీక్షా మోడ్:",
+                demoBarSub: "రమేష్ కుమార్ నమూనా డేటాను నింపడానికి క్లిక్ చేయండి.",
+                btnLoadDemo: "డెమో రైతు డేటాను లోడ్ చేయండి",
+                ayushGuideTitle: "ఆయుష్ ప్లాట్‌ఫారమ్ గైడ్",
+                ayushGuideBody: "అగ్రి నయన్‌కు స్వాగతం! నేల కేటాయింపు మరియు పథకాలను పరీక్షించడానికి ట్యాబ్‌లను ఉపయోగించండి.",
+                btnWatchTutorial: "ఆయుష్ ట్యుటోరియల్ చూడండి",
+                activeStatus: "యాక్టివ్ పొలం పర్యవేక్షణ",
+                dashTitle: "స్మార్ట్ AI ఖచ్చితమైన వ్యవసాయ సహాయకుడు",
+                dashSubtitle: "నేల వివరాలు మరియు పొలం పరిమాణాన్ని నమోదు చేయండి. పంట కేటాయింపు నిష్పత్తి మరియు మార్కెట్ ధరలను పొందండి.",
+                sowingWindowTitle: "విత్తనాల హెచ్చరిక (సరైన సమయం)",
+                perfectBadge: "సరైన సమయం",
+                sowingAdvice: "రాబోయే 3 రోజులు గోధుమ మరియు ఆవాల విత్తనానికి అనుకూలం! నేలలో 78% తేమ ఉంది.",
+                listenSowing: "ఆడియో హెచ్చరిక వినండి",
+                profilerTitle: "నేల మరియు పొలం ప్రోఫైలర్",
+                speakInput: "వాయిస్ ఇన్‌పుట్",
+                villageLabel: "గ్రామం",
+                districtLabel: "జిల్లా",
+                soilLabel: "నేల రకం",
+                soilLoam: "బలపమైన నేల",
+                soilClay: "నల్లరేగడి నేల",
+                soilSandy: "ఇసుక నేల",
+                soilAlluvial: "ఒండ్రు నేల",
+                seasonLabel: "పంట కాలం",
+                seasonRabi: "రబీ (చలికాలం)",
+                seasonKharif: "ఖరీఫ్ (వర్షాకాలం)",
+                seasonZaid: "జాయెద్ (వేసవి కాలం)",
+                landSizeLabel: "పొలం వైశాల్యం (ఎకరాలు)",
+                budgetLabel: "రైతు బడ్జెట్ (₹)",
+                waterLabel: "నీటి వనరు",
+                waterHigh: "బోరుబావి + కాలువ",
+                waterMed: "బిందు సేద్యం",
+                waterLow: "కేవలం వర్షాధారం",
+                btnCalcStrategy: "AI బహుళ పంట ప్రణాళికను రూపొందించండి",
+                chartTitle: "బహుళ పంట భూమి కేటాయింపు నిష్పత్తి",
+                profitBadge: "అంచనా లాభం: +38.5%",
+                copilotInsight: "సహాయక ఆడియో సమాచారం:",
+                cropInsightText: "60% గోధుమ మరియు 25% ఆవాలు సాగు చేయడం వల్ల నేలలో నత్రజని పెరుగుతుంది.",
+                mandiTitle: "లైవ్ మార్కెట్ పంట ధరలు",
+                readMandi: "ఆడియో వినండి",
+                cropWheat: "గోధుమ (HD-3086)",
+                cropMustard: "ఆవాలు (పూసా)",
+                cropStubble: "వరి గడ్డి",
+                mandi1: "ఖన్నా మార్కెట్ (+2.4%)",
+                mandi2: "లూధియానా మార్కెట్ (+1.8%)",
+                mandi3: "బయో ఎనర్జీ ప్లాంట్",
+                careBadge: "దినచర్య పొలం పర్యవేక్షణ",
+                careTitle: "కేర్ ఫార్మ్ - రోజువారీ తనిఖీ జాబితా",
+                careSubtitle: "పురుగుల దాడిని నివారించడానికి ప్రతిరోజూ ఈ తనిఖీ జాబితాను ఉపయోగించండి.",
+                progressLabel: "తనిఖీ జాబితా పురోగతి",
+                chk1Title: "1. పొలం పరిశుభ్రత తనిఖీ",
+                chk1Sub: "ప్లాస్టిక్ వ్యర్థాలు లేదా శిలీంధ్రాల కోసం కాలువలను తనిఖీ చేయండి.",
+                chk2Title: "2. నేల తేమ మట్టం తనిఖీ",
+                chk2Sub: "పైన 2 అంగుళాల నేల తేమగా ఉండేలా చూసుకోండి.",
+                chk3Title: "3. కలుపు మొక్కల తనిఖీ",
+                chk3Sub: "ఎరువులు పీల్చుకునే ముందే కలుపు మొక్కలను గుర్తించండి.",
+                chk4Title: "4. డ్రిప్ పైపుల తనిఖీ",
+                chk4Sub: "పంపు ఒత్తిడి మరియు సోలార్ బ్యాటరీని తనిఖీ చేయండి.",
+                chk5Title: "5. పురుగుల దాడి తనిఖీ",
+                chk5Sub: "ఆకుల అడుగుభాగంలో పురుగుల మచ్చలను తనిఖీ చేయండి.",
+                bioTag: "వ్యర్థాల నుండి ఆదాయం",
+                bioTitle: "సుస్థిరత మరియు బయో-ఎకానమీ",
+                bioSubtitle: "వ్యవసాయ వ్యర్థాలను తగలేయకుండా అదనపు ఆదాయంగా మార్చండి.",
+                bio1Title: "1. గడ్డి నుండి బయో-చార్",
+                bio1Desc: "వరి గడ్డిని సేకరించి బయో-పవర్ ప్లాంట్‌కు విక్రయించండి.",
+                bio1Rev: "అంచనా ఆదాయం: ₹1,800 - ₹2,500 / టన్ను",
+                bio2Title: "2. పుట్టగొడుగుల పెంపకం",
+                bio2Desc: "గోధుమ మరియు వరి గడ్డిని పుట్టగొడుగుల పెంపకానికి ఉపయోగించండి.",
+                bio2Rev: "అంచనా ఆదాయం: ₹120 - ₹180 / కేజీ",
+                bio3Title: "3. సేంద్రీయ వర్మీకంపోస్ట్",
+                bio3Desc: "కుళ్ళిన వ్యర్థాలను వానపాముల ఎరువుగా మార్చండి.",
+                bio3Rev: "అంచనా ఆదాయం: ₹8 - ₹12 / కేజీ",
+                bazaarTitle: "అగ్రి బజార్: తక్కువ ధర పరికరాలు",
+                bazaarSubtitle: "సబ్సిడీ ధరల వద్ద పరికరాలను కొనుగోలు చేయండి.",
+                tool1Tag: "4-ఇన్-1 సాయిల్ టెస్టర్",
+                t1Name: "డిజిటల్ నేల pH మరియు తేమ పెన్",
+                t1Desc: "తేమ మరియు pH యొక్క ప్రత్యక్ష నేల పరీక్ష.",
+                buyAmazon: "అమెజాన్‌లో కొనండి",
+                subTag50: "50% ప్రభుత్వ సబ్సిడీ",
+                t2Name: "బ్యాటరీ స్ప్రేయర్ 16L",
+                t2Desc: "ద్రవ ఎరువుల కోసం రీచార్జబుల్ స్ప్రేయర్.",
+                buyBighaat: "బిగ్‌హాట్‌లో కొనండి",
+                zeroCostTag: "ఉచిత విద్యుత్",
+                t3Name: "సోలార్ LED పురుగుల ట్రాప్",
+                t3Desc: "రసాయన రహిత పురుగుల నివారణకు స్వయంచాలక లైట్.",
+                waterSaverTag: "నీటి పొదుపు",
+                t4Name: "మైక్రో డ్రిప్ కిట్",
+                t4Desc: "కూరగాయల పంటలకు సంపూర్ణ డ్రిప్ సేద్యం కిట్.",
+                buyMoglix: "మోగ్లిక్స్‌లో కొనండి",
+                schemesTitle: "ప్రభుత్వ పథకాలు మరియు సబ్సిడీ చెకర్",
+                schemesSub: "మీ అర్హతను తనిఖీ చేయండి మరియు అధికారిక పోర్టల్‌లను సందర్శించండి.",
+                verifierTitle: "అర్హత తనిఖీ ఫారమ్",
+                landSizeQ: "1. భూమి వైశాల్యం",
+                optSmallHolder: "చిన్న రైతులు (< 5 ఎకరాలు)",
+                optLargeHolder: "పెద్ద భూస్వాములు (> 5 ఎకరాలు)",
+                aadhaarQ: "3. బ్యాంకు ఖాతాకు ఆధార్ లింక్ అయిందా?",
+                optYesLinked: "అవును, లింక్ అయింది",
+                optNoNotLinked: "లేదు, ఇంకా లింక్ కాలేదు",
+                solarQ: "6. సోలార్ పంప్ అవసరమా?",
+                optYesSolar: "అవును, సోలార్ పంప్ కావాలి",
+                optNoSolar: "లేదు, డీజిల్/విద్యుత్ పంప్",
+                btnVerifySchemes: "అర్హతను తనిఖీ చేయండి",
+                catCash: "నేరుగా నగదు బదిలీ",
+                s1Name: "పిఎం-కిసాన్ సమ్మాన్ నిధి",
+                s1Desc: "ఏడాదికి ₹6,000 నేరుగా బ్యాంకు ఖాతాలోకి నమోదు.",
+                catSolar: "సోలార్ పంప్ సబ్సిడీ",
+                s2Name: "పిఎం-కుసుమ్ సోలార్ పంప్ పథకం",
+                s2Desc: "సోలార్ పంప్‌కు 60% ప్రభుత్వ సబ్సిడీ.",
+                catCard: "ఉచిత సాయిల్ కార్డ్",
+                s3Name: "జాతీయ సాయిల్ హెల్త్ కార్డ్",
+                s3Desc: "ఉచిత డిజిటల్ నేల పరీక్ష కార్డ్ పొందండి.",
+                tutTitle: "అగ్రి నయన్ ఎలా పనిచేస్తుంది - గైడ్",
+                tutSubtitle: "వీడియో భాషను ఎంచుకోండి మరియు గైడ్‌ను చూడండి.",
+                tut1Head: "దశ 1: నేల మరియు గ్రామం ప్రోఫైల్",
+                tut1Body: "డాష్‌బోర్డ్‌లో మీ గ్రామం మరియు పొలం వివరాలను నమోదు చేయండి.",
+                tut2Head: "దశ 2: రోజువారీ పొలం తనిఖీ",
+                tut2Body: "ప్రతిరోజూ ఉదయం పొలం ఆరోగ్య తనిఖీ జాబితాను తెరిచి చూడండి.",
+                tut3Head: "దశ 3: వ్యర్థాల నుండి ఆదాయం",
+                tut3Body: "కాల్చడానికి బదులుగా కస్ట వ్యర్థాలను ఆదాయంగా మార్చండి.",
+                tut4Head: "దశ 4: పరికరాలను కొనండి",
+                tut4Body: "సబ్సిడీ ధరలతో పరికరాలను కొనుగోలు చేయండి మరియు పథకానికి దరఖాస్తు చేయండి.",
+                voiceSub: "మీ ప్రశ్నను తెలుగులో మాట్లాడండి.",
+                clickMic: "మాట్లాడటానికి మైక్ క్లిక్ చేయండి...",
+                youSaid: "మీరు చెప్పింది:",
+                copilotReply: "సహాయకుని సమాధానం:",
+                readyText: "నేను సిద్ధంగా ఉన్నాను. మీరు ఏమి అడగాలనుకుంటున్నారు?"
+            },
+            ta: {
+                topTag: "அக்ரி நயன் AI உதவி: தமிழ் குரல் ஆதரவு",
+                helpline: "இலவச உதவி எண்: 1800-AGRI-NAYAN (1800-247-4620)",
+                voiceLabel: "குரல்:",
+                voiceBtn: "அக்ரி நயன் பேசுங்கள்",
+                tagline: "துல்லியமான விவசாய ረதாவி",
+                navDash: "டேஷ்போர்டு",
+                navCareFarm: "கேர் ஃபார்ம் காண்க",
+                navBioEconomy: "பயோ-எகானமி",
+                navBazaar: "அக்ரி பஜார்",
+                navSchemes: "அரசு திட்டங்கள்",
+                navTutorial: "இணையதள வழிகாட்டி",
+                speakQuestion: "கேள்வி கேளுங்கள்",
+                demoBarTitle: "விரைவு சோதனை முறை:",
+                demoBarSub: "ரமேஷ் குமாரின் மாதிரி தரவை நிரப்ப கிளிக் செய்யவும்.",
+                btnLoadDemo: "டெமோ விவசாயி தரவை ஏற்று",
+                ayushGuideTitle: "ஆயுஷ் தள வழிகாட்டி",
+                ayushGuideBody: "அக்ரி நயனுக்கு வரவேற்கிறோம்! மண் ஒதுக்கீடு மற்றும் திட்டங்களை சோதிக்க தாவல்களைப் பயன்படுத்தவும்.",
+                btnWatchTutorial: "ஆயுஷ் டுடோரியலைப் பாருங்கள்",
+                activeStatus: "செயலில் உள்ள புல கண்காணிப்பு",
+                dashTitle: "ஸ்மார்ட் AI துல்லிய விவசாய ረதாவி",
+                dashSubtitle: "மண் விவரங்கள் மற்றும் நில அளவை உள்ளிடவும். பயிர் ஒதுக்கீடு விகிதம் மற்றும் சந்தை விலைகளைப் பெறுங்கள்.",
+                sowingWindowTitle: "விதைப்பு எச்சரிக்கை (சரியான நேரம்)",
+                perfectBadge: "சரியான நேரம்",
+                sowingAdvice: "அடுத்த 3 நாட்கள் கோதுமை மற்றும் கடுகு விதைப்பதற்கு ஏற்றது! மண்ணில் 78% ஈரம் உள்ளது.",
+                listenSowing: "ஆடியோ எச்சரிக்கையைக் கேளுங்கள்",
+                profilerTitle: "மண் மற்றும் நில சுயவிவரம்",
+                speakInput: "குரல் உள்ளீடு",
+                villageLabel: "கிராமம்",
+                districtLabel: "மாவட்டம்",
+                soilLabel: "மண் வகை",
+                soilLoam: "வண்டல் மண்",
+                soilClay: "களிமண்",
+                soilSandy: "மணல் மண்",
+                soilAlluvial: "ஆற்று வண்டல் மண்",
+                seasonLabel: "பயிரிடும் பருவம்",
+                seasonRabi: "ரபி (குளிர்காலம்)",
+                seasonKharif: "கரீஃப் (மழைக்காலம்)",
+                seasonZaid: "சையத் (கோடைகாலம்)",
+                landSizeLabel: "நிலப்பரப்பு (ஏக்கர்)",
+                budgetLabel: "விவசாயி பட்ஜெட் (₹)",
+                waterLabel: "நீர் ஆதாரம்",
+                waterHigh: "குழாய் கிணறு + கால்வாய்",
+                waterMed: "சொட்டு நீர் பாசனம்",
+                waterLow: "மழைநீரை மட்டுமே நம்பி",
+                btnCalcStrategy: "AI பல பயிர் திட்டத்தை உருவாக்குங்கள்",
+                chartTitle: "பல பயிர் நில ஒதுக்கீடு விகிதம்",
+                profitBadge: "மதிப்பிடப்பட்ட லாபம்: +38.5%",
+                copilotInsight: "உதவியாளர் ஆடியோ தகவல்:",
+                cropInsightText: "60% கோதுமை மற்றும் 25% கடுகு பயிரிடுவது மண்ணில் நைட்ரஜனை பராமரிக்கிறது.",
+                mandiTitle: "நேரடி சந்தை பயிர் விலைகள்",
+                readMandi: "ஆடியோ கேளுங்கள்",
+                cropWheat: "கோதுமை (HD-3086)",
+                cropMustard: "கடுகு (பூசா)",
+                cropStubble: "நெல் வைக்கோல்",
+                mandi1: "கன்னா சந்தை (+2.4%)",
+                mandi2: "லூதியானா சந்தை (+1.8%)",
+                mandi3: "பயோ எனர்ஜி ஆலை",
+                careBadge: "தினசரி புல கண்காணிப்பு",
+                careTitle: "கேர் ஃபார்ம் - தினசரி சரிபார்ப்பு பட்டியல்",
+                careSubtitle: "பூச்சி தாக்குதல்களைத் தடுக்க தினமும் இந்த சரிபார்ப்பு பட்டியலைப் பயன்படுத்தவும்.",
+                progressLabel: "சரிபார்ப்பு பட்டியல் முன்னேற்றம்",
+                chk1Title: "1. நில தூய்மை சோதனை",
+                chk1Sub: "பிளாஸ்டிக் கழிவுகள் அல்லது பூஞ்சைகளுக்காக வடிகால்களை சோதிக்கவும்.",
+                chk2Title: "2. மண் ஈரப்பதம் சோதனை",
+                chk2Sub: "மேல் 2 அங்குல மண் ஈரமாக இருப்பதை உறுதி செய்யவும்.",
+                chk3Title: "3. களை வளர்ச்சி சோதனை",
+                chk3Sub: "உரங்களை உறிஞ்சுவதற்கு முன் பயிர்களுக்கு இடையேயான களைகளை கண்டறியவும்.",
+                chk4Title: "4. சொட்டு நீர் குழாய் சோதனை",
+                chk4Sub: "பம்பின் அழுத்தம் மற்றும் சோலார் பேட்டரியை சோதிக்கவும்.",
+                chk5Title: "5. பூச்சி தாக்குதல் சோதனை",
+                chk5Sub: "இலைகளின் அடியில் பூச்சி புள்ளிகளை சோதிக்கவும்.",
+                bioTag: "கழிவிலிருந்து வருமானம்",
+                bioTitle: "நிலைத்தன்மை மற்றும் பயோ-எகானமி",
+                bioSubtitle: "விவசாயக் கழிவுகளை எரிப்பதற்குப் பதிலாக கூடுதல் வருமானமாக மாற்றவும்.",
+                bio1Title: "1. வைக்கோலிலிருந்து பயோ-சார்",
+                bio1Desc: "நெல் வைக்கோலை சேகரித்து பயோ-பவர் ஆலைக்கு விற்கவும்.",
+                bio1Rev: "மதிப்பிடப்பட்ட வருமானம்: ₹1,800 - ₹2,500 / டன்",
+                bio2Title: "2. காளான் வளர்ப்பு",
+                bio2Desc: "கோதுமை மற்றும் நெல் வைக்கோலை காளான் வளர்க்க பயன்படுத்தவும்.",
+                bio2Rev: "மதிப்பிடப்பட்ட வருமானம்: ₹120 - ₹180 / கிலோ",
+                bio3Title: "3. இயற்கை மண்புழு உரம்",
+                bio3Desc: "மக்கக்கூடிய கழிவுகளை மண்புழு உரமாக்கவும்.",
+                bio3Rev: "மதிப்பிடப்பட்ட வருமானம்: ₹8 - ₹12 / கிலோ",
+                bazaarTitle: "அக்ரி பஜார்: குறைந்த விலை கருவிகள்",
+                bazaarSubtitle: "மானிய விலையில் கருவிகளை வாங்குங்கள்.",
+                tool1Tag: "4-இன்-1 மண் பரிசோதனையாளர்",
+                t1Name: "டிஜிட்டல் மண் pH மற்றும் ஈரப்பதம் பேனா",
+                t1Desc: "ஈரப்பதம் மற்றும் pH இன் நேரடி மண் சோதனை.",
+                buyAmazon: "அமேசானில் வாங்குங்கள்",
+                subTag50: "50% அரசு மானியம்",
+                t2Name: "பேட்டரி தெளிப்பான் 16L",
+                t2Desc: "திரவ உரங்களுக்கான ரீசார்ஜ் செய்யக்கூடிய தெளிப்பான்.",
+                buyBighaat: "பிக்ஹாட்டில் வாங்குங்கள்",
+                zeroCostTag: "இலவச மின்சாரம்",
+                t3Name: "சோலார் LED பூச்சி பொறி",
+                t3Desc: "இரசாயனமற்ற பூச்சி கட்டுப்பாட்டுக்கான தானியங்கி விளக்கு.",
+                waterSaverTag: "நீர் சேமிப்பு",
+                t4Name: "மைக்ரோ சொட்டு நீர் கிட்",
+                t4Desc: "காய்கறி பயிர்களுக்கான முழுமையான சொட்டு நீர் பாசன கிட்.",
+                buyMoglix: "மோக்லிக்ஸில் வாங்குங்கள்",
+                schemesTitle: "அரசு திட்டங்கள் மற்றும் மானிய சரிபார்ப்பு",
+                schemesSub: "உங்கள் தகுதியை சரிபார்த்து அதிகாரப்பூர்வ இணையதளங்களை பார்வையிடவும்.",
+                verifierTitle: "தகுதி சரிபார்ப்பு படிவம்",
+                landSizeQ: "1. நிலப்பரப்பு அளவு",
+                optSmallHolder: "சிறு விவசாயிகள் (< 5 ஏக்கர்)",
+                optLargeHolder: "பெரிய நில உரிமையாளர்கள் (> 5 ஏக்கர்)",
+                aadhaarQ: "3. வங்கி கணக்குடன் ஆதார் இணைக்கப்பட்டுள்ளதா?",
+                optYesLinked: "ஆம், இணைக்கப்பட்டுள்ளது",
+                optNoNotLinked: "இல்லை, இன்னும் இணைக்கப்படவில்லை",
+                solarQ: "6. சோலார் பம்ப் தேவையா?",
+                optYesSolar: "ஆம், சோலார் பம்ப் வேண்டும்",
+                optNoSolar: "இல்லை, டீசல்/மின்சார பம்ப்",
+                btnVerifySchemes: "தகுதியை சரிபார்க்கவும்",
+                catCash: "நேரடி பண பரிமாற்றம்",
+                s1Name: "பிஎம்-கிசான் சம்மான் நிதி",
+                s1Desc: "ஆண்டுக்கு ₹6,000 நேரடி வங்கி கணக்கு பரிமாற்றம்.",
+                catSolar: "சோலார் பம்ப் மானியம்",
+                s2Name: "பிஎம்-குசும் சோலார் பம்ப் திட்டம்",
+                s2Desc: "சோலார் பம்பிற்கு 60% அரசு மானியம்.",
+                catCard: "இலவச மண் அட்டை",
+                s3Name: "தேசிய மண் வள அட்டை",
+                s3Desc: "இலவச டிஜிட்டல் மண் பரிசோதனை அட்டையைப் பெறுங்கள்.",
+                tutTitle: "அக்ரி நயன் எப்படி வேலை செய்கிறது - வழிகாட்டி",
+                tutSubtitle: "வீடியோ மொழியைத் தேர்ந்தெடுத்து வழிகாட்டியைப் பாருங்கள்.",
+                tut1Head: "படி 1: மண் மற்றும் கிராம சுயவிவரம்",
+                tut1Body: "டேஷ்போர்டில் உங்கள் கிராமம் மற்றும் நில விவரங்களை உள்ளிடவும்.",
+                tut2Head: "படி 2: தினசரி நில ஆய்வு",
+                tut2Body: "ஒவ்வொரு நாள் காலையிலும் நில ஆரோக்கிய சரிபார்ப்பு பட்டியலைத் திறக்கவும்.",
+                tut3Head: "படி 3: கழிவிலிருந்து வருமானம் ஈட்டுங்கள்",
+                tut3Body: "எரிப்பதற்குப் பதிலாக விவசாயக் கழிவுகளை வருமானமாக மாற்றவும்.",
+                tut4Head: "படி 4: கருவிகளை வாங்குங்கள்",
+                tut4Body: "மானிய விலையில் கருவிகளை வாங்கி திட்டத்திற்கு விண்ணப்பிக்கவும்.",
+                voiceSub: "உங்கள் கேள்வியை தமிழில் பேசுங்கள்.",
+                clickMic: "பேச மைக் கிளிக் செய்யவும்...",
+                youSaid: "நீங்கள் கூறியது:",
+                copilotReply: "உதவியாளர் பதில்:",
+                readyText: "நான் தயார். நீங்கள் என்ன கேட்க விரும்புகிறீர்கள்?"
+            },
+            mr: {
+                topTag: "ॲग्री नयन AI सहाय्यक: मराठी व्हॉइस सपोर्ट",
+                helpline: "टोल-फ्री हेल्पलाइन: 1800-AGRI-NAYAN (1800-247-4620)",
+                voiceLabel: "आवाज:",
+                voiceBtn: "ॲग्री नयन बोला",
+                tagline: "अचूक शेती सह-पायलट",
+                navDash: "डॅशबोर्ड",
+                navCareFarm: "केअर फार्म पहा",
+                navBioEconomy: "बायो-इकॉनॉमी",
+                navBazaar: "ॲग्री बाजार",
+                navSchemes: "सरकारी योजना",
+                navTutorial: "वेबसाइट मार्गदर्शक",
+                speakQuestion: "प्रश्न विचारा",
+                demoBarTitle: "जलद चाचणी मोड:",
+                demoBarSub: "रमेश कुमार यांचा नमुना डेटा भरण्यासाठी क्लिक करा.",
+                btnLoadDemo: "डेमो शेतकरी डेटा लोड करा",
+                ayushGuideTitle: "आयुषचे प्लॅटफॉर्म मार्गदर्शक",
+                ayushGuideBody: "ॲग्री नयनमध्ये आपले स्वागत आहे! माती वाटप आणि योजना तपासण्यासाठी टॅब वापरा.",
+                btnWatchTutorial: "आयुषचे ट्यूटोरियल पहा",
+                activeStatus: "सक्रिय शेत देखरेख",
+                dashTitle: "स्मार्ट AI अचूक शेती सह-पायलट",
+                dashSubtitle: "मातीचा तपशील आणि शेताचा आकार टाका. पीक वाटप गुणोत्तर आणि बाजार भाव मिळवा.",
+                sowingWindowTitle: "पेरणी इशारा (योग्य वेळ)",
+                perfectBadge: "योग्य वेळ",
+                sowingAdvice: "पुढील 3 दिवस गव्हाच्या आणि मोहरीच्या पेरणीसाठी उत्तम आहेत! मातीत 78% ओलावा आहे.",
+                listenSowing: "ऑडिओ इशारा ऐका",
+                profilerTitle: "माती आणि शेत प्रोफाइलर",
+                speakInput: "व्हॉइस इनपुट",
+                villageLabel: "गाव",
+                districtLabel: "जिल्हा",
+                soilLabel: "मातीचा प्रकार",
+                soilLoam: "गाळाची माती",
+                soilClay: "काळी माती",
+                soilSandy: "वालुकामय माती",
+                soilAlluvial: "जलोढ माती",
+                seasonLabel: "पेरणीचा हंगाम",
+                seasonRabi: "रब्बी (हिवाळा)",
+                seasonKharif: "खरीप (पावसाळा)",
+                seasonZaid: "उन्हाळी हंगाम",
+                landSizeLabel: "शेताचे क्षेत्रफळ (एकरामध्ये)",
+                budgetLabel: "शेतकऱ्यांचे बजेट (₹)",
+                waterLabel: "पाण्याचा स्त्रोत",
+                waterHigh: "विहीर/बोरवेल + कालवा",
+                waterMed: "ठिबक सिंचन",
+                waterLow: "केवळ पावसावर आधारित",
+                btnCalcStrategy: "AI बहु-पीक योजना तयार करा",
+                chartTitle: "बहु-पीक जमीन वाटप गुणोत्तर",
+                profitBadge: "अंदाजित नफा: +38.5%",
+                copilotInsight: "सह-पायलट ऑडिओ माहिती:",
+                cropInsightText: "60% गहू आणि 25% मोहरी आंतरपीक घेतल्याने मातीतील नायट्रोजन टिकून राहते.",
+                mandiTitle: "थेट बाजार पीक भाव",
+                readMandi: "ऑडिओ ऐका",
+                cropWheat: "गहू (HD-3086)",
+                cropMustard: "मोहरी (पूसा)",
+                cropStubble: "तांदळाचा पेंढा",
+                mandi1: "खन्ना बाजार (+2.4%)",
+                mandi2: "लुधियाना बाजार (+1.8%)",
+                mandi3: "बायो एनर्जी प्लांट",
+                careBadge: "दैनिक शेत देखरेख",
+                careTitle: "केअर फार्म - दैनिक तपासणी सूची",
+                careSubtitle: "कीटकांचा हल्ला रोखण्यासाठी दररोज ही तपासणी सूची वापरा.",
+                progressLabel: "तपासणी सूची प्रगती",
+                chk1Title: "1. शेताच्या स्वच्छतेची तपासणी",
+                chk1Sub: "प्लास्टिक कचरा किंवा बुरशीसाठी पाण्याचे नattribute तपासा.",
+                chk2Title: "2. मातीतील ओलावा पातळी तपासणी",
+                chk2Sub: "वरचा 2 इंच भाग ओलसर असल्याची खात्री करा.",
+                chk3Title: "3. तण वाढ तपासणी",
+                chk3Sub: "खत शोषण्यापूर्वी पिकांमधील तण ओळखा.",
+                chk4Title: "4. ठिबक पाईप तपासणी",
+                chk4Sub: "पंप दाब आणि सोलर बॅटरी तपासा.",
+                chk5Title: "5. कीटक हल्ला तपासणी",
+                chk5Sub: "पानांच्या खाली कीटकांचे डाग तपासा.",
+                bioTag: "कचऱ्यातून उत्पन्न",
+                bioTitle: "शाश्वतता आणि बायो-इकॉनॉमी",
+                bioSubtitle: "शेतातील कचरा जाळण्याऐवजी अतिरिक्त उत्पन्नात बदला.",
+                bio1Title: "1. पेंढ्यापासून बायो-चार",
+                bio1Desc: "तांदळाचा पेंढा गोळा करा आणि बायो-पावर प्लांटला विका.",
+                bio1Rev: "अंदाजित उत्पन्न: ₹1,800 - ₹2,500 / टन",
+                bio2Title: "2. आळिंबी (मशरूम) शेती",
+                bio2Desc: "गहू आणि तांदळाचा पेंढा मशरूम वाढवण्यासाठी वापरा.",
+                bio2Rev: "अंदाजित उत्पन्न: ₹120 - ₹180 / किलो",
+                bio3Title: "3. सेंद्रिय गांडूळ खत",
+                bio3Desc: "कुजणारा कचरा गांडूळ खतात बदला.",
+                bio3Rev: "अंदाजित उत्पन्न: ₹8 - ₹12 / किलो",
+                bazaarTitle: "ॲग्री बाजार: कमी खर्चाची उपकरणे",
+                bazaarSubtitle: "अनुदानित दरात उपकरणे खरेदी करा.",
+                tool1Tag: "4-इन-1 माती तपासक",
+                t1Name: "डिजिटल माती pH आणि ओलावा पेन",
+                t1Desc: "ओलावा आणि pH ची थेट माती चाचणी.",
+                buyAmazon: "ॲमेझॉनवर खरेदी करा",
+                subTag50: "50% सरकारी अनुदान",
+                t2Name: "बॅटरी स्प्रेअर 16L",
+                t2Desc: "द्रव खतांसाठी रिचार्ज करता येणारा स्प्रेअर.",
+                buyBighaat: "बिगहाटवर खरेदी करा",
+                zeroCostTag: "मोफत वीज",
+                t3Name: "सोलर LED कीटक सापळा",
+                t3Desc: "रसायनमुक्त कीटक नियंत्रणासाठी स्वयंचलित दिवा.",
+                waterSaverTag: "पाण्याची बचत",
+                t4Name: "मायक्रो ठिबक किट",
+                t4Desc: "भाजीपाल्यासाठी पूर्ण ठिबक सिंचन किट.",
+                buyMoglix: "मोगलिक्सवर खरेदी करा",
+                schemesTitle: "सरकारी योजना आणि अनुदान तपासक",
+                schemesSub: "तुमची पात्रता तपासा आणि अधिकृत पोर्टलला भेट द्या.",
+                verifierTitle: "पात्रता तपासणी फॉर्म",
+                landSizeQ: "1. जमिनीचे क्षेत्रफळ",
+                optSmallHolder: "छोटे शेतकरी (< 5 एकर)",
+                optLargeHolder: "मोठे जमीनदार (> 5 एकर)",
+                aadhaarQ: "3. बँक खात्याशी आधार लिंक आहे का?",
+                optYesLinked: "होय, लिंक आहे",
+                optNoNotLinked: "नाही, अजून लिंक नाही",
+                solarQ: "6. सोलर पंप हवा आहे का?",
+                optYesSolar: "होय, सोलर पंप हवा आहे",
+                optNoSolar: "नाही, डिझेल/वीज पंप",
+                btnVerifySchemes: "पात्रता तपासा",
+                catCash: "थेट पैसे हस्तांतरण",
+                s1Name: "पीएम-किसान सन्मान निधी",
+                s1Desc: "वर्षाला ₹6,000 थेट बँक खात्यात जमा.",
+                catSolar: "सोलर पंप अनुदान",
+                s2Name: "पीएम-कुसुम सोलर पंप योजना",
+                s2Desc: "सोलर पंपासाठी 60% सरकारी अनुदान.",
+                catCard: "मोफत माती कार्ड",
+                s3Name: "राष्ट्रीय मृदा आरोग्य कार्ड",
+                s3Desc: "मोफत डिजिटल माती चाचणी कार्ड मिळवा.",
+                tutTitle: "ॲग्री नयन कसे काम करते - मार्गदर्शक",
+                tutSubtitle: "व्हिडिओ भाषा निवडा आणि मार्गदर्शक पहा.",
+                tut1Head: "पायरी 1: माती आणि गावाची माहिती",
+                tut1Body: "डॅशबोर्डवर तुमच्या गावाची आणि जमिनीची माहिती टाका.",
+                tut2Head: "पायरी 2: दैनिक शेत पाहणी",
+                tut2Body: "दररोज सकाळी शेत आरोग्य तपासणी सूची उघडा.",
+                tut3Head: "पायरी 3: कचऱ्यातून उत्पन्न मिळवा",
+                tut3Body: "जाळण्याऐवजी शेतातील कचरा उत्पन्नात बदला.",
+                tut4Head: "पायरी 4: उपकरणे खरेदी करा",
+                tut4Body: "अनुदानित दरात उपकरणे खरेदी करा आणि योजनेसाठी अर्ज करा.",
+                voiceSub: "तुमचा प्रश्न मराठीत बोला.",
+                clickMic: "बोलण्यासाठी माइक वर क्लिक करा...",
+                youSaid: "तुम्ही म्हणालात:",
+                copilotReply: "सह-पायलटचे उत्तर:",
+                readyText: "मी तयार आहे. तुम्हाला काय विचारायचे आहे?"
+            },
+            pa: {
+                topTag: "ਐਗਰੀ ਨਯਨ AI ਸਹਾਇਕ: ਪੰਜਾਬੀ ਆਵਾਜ਼ ਸਹਾਇਤਾ",
+                helpline: "ਟੋਲ-ਫ੍ਰੀ ਹੈਲਪਲਾਈਨ: 1800-AGRI-NAYAN (1800-247-4620)",
+                voiceLabel: "ਆਵਾਜ਼:",
+                voiceBtn: "ਐਗਰੀ ਨਯਨ ਬੋਲੋ",
+                tagline: "ਸਟੀਕ ਖੇਤੀ ਸਹਿ-ਪਾਇਲਟ",
+                navDash: "ਡੈਸ਼ਬੋਰਡ",
+                navCareFarm: "ਕੇਅਰ ਫਾਰਮ ਦੇਖੋ",
+                navBioEconomy: "ਬਾਇਓ-ਇਕਾਨਮੀ",
+                navBazaar: "ਐਗਰੀ ਬਾਜ਼ਾਰ",
+                navSchemes: "ਸਰਕਾਰੀ ਸਕੀਮਾਂ",
+                navTutorial: "ਵੇਬਸਾਈਟ ਗਾਈਡ",
+                speakQuestion: "ਸਵਾਲ ਪੁੱਛੋ",
+                demoBarTitle: "ਤੇਜ਼ ਜਾਂਚ ਮੋਡ:",
+                demoBarSub: "ਰਮੇਸ਼ ਕੁਮਾਰ ਦਾ ਨਮੂਨਾ ਡੇਟਾ ਭਰਨ ਲਈ ਕਲਿੱਕ ਕਰੋ।",
+                btnLoadDemo: "ਡੇਮੋ ਕਿਸਾਨ ਡੇਟਾ ਲੋਡ ਕਰੋ",
+                ayushGuideTitle: "ਆਯੁਸ਼ ਦਾ ਪਲੇਟਫਾਰਮ ਗਾਈਡ",
+                ayushGuideBody: "ਐਗਰੀ ਨਯਨ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ! ਮਿੱਟੀ ਦੀ ਵੰਡ ਅਤੇ ਸਕੀਮਾਂ ਦੀ ਜਾਂਚ ਕਰਨ ਲਈ ਟੈਬਾਂ ਦੀ ਵਰਤੋਂ ਕਰੋ।",
+                btnWatchTutorial: "ਆਯੁਸ਼ ਦਾ ਟਿਊਟੋਰੀਅਲ ਦੇਖੋ",
+                activeStatus: "ਸਰਗਰਮ ਖੇਤ ਨਿਗਰਾਨੀ",
+                dashTitle: "ਸਮਾਰਟ AI ਸਟੀਕ ਖੇਤੀ ਸਹਿ-ਪਾਇਲਟ",
+                dashSubtitle: "ਮਿੱਟੀ ਦੇ ਵੇਰਵੇ ਅਤੇ ਖੇਤ ਦਾ ਆਕਾਰ ਦਰਜ ਕਰੋ। ਫਸਲ ਵੰਡ ਅਨੁਪਾਤ ਅਤੇ ਮੰਡੀ ਦੇ ਭਾਅ ਪ੍ਰਾਪਤ ਕਰੋ।",
+                sowingWindowTitle: "ਬਿਜਾਈ ਚੇਤਾਵਨੀ (ਸਹੀ ਸਮਾਂ)",
+                perfectBadge: "ਸਹੀ ਸਮਾਂ",
+                sowingAdvice: "ਅਗਲੇ 3 ਦਿਨ ਕਣਕ ਅਤੇ ਸਰ੍ਹੋਂ ਦੀ ਬਿਜਾਈ ਲਈ ਬਹੁਤ ਵਧੀਆ ਹਨ! ਮਿੱਟੀ ਵਿੱਚ 78% ਨਮੀ ਹੈ।",
+                listenSowing: "ਆਡੀਓ ਚੇਤਾਵਨੀ ਸੁਣੋ",
+                profilerTitle: "ਮਿੱਟੀ ਅਤੇ ਖੇਤ ਪ੍ਰੋਫਾਈਲਰ",
+                speakInput: "ਆਵਾਜ਼ ਇਨਪੁੱਟ",
+                villageLabel: "ਪਿੰਡ",
+                districtLabel: "ਜ਼ਿਲ੍ਹਾ",
+                soilLabel: "ਮਿੱਟੀ ਦੀ ਕਿਸਮ",
+                soilLoam: "ਮੈਰਾ ਮਿੱਟੀ",
+                soilClay: "ਚਿਕਣੀ ਮਿੱਟੀ",
+                soilSandy: "ਰੇਤਲੀ ਮਿੱਟੀ",
+                soilAlluvial: "ਜਲੌਢ ਮਿੱਟੀ",
+                seasonLabel: "ਬਿਜਾਈ ਦਾ ਸੀਜ਼ਨ",
+                seasonRabi: "ਹਾੜ੍ਹੀ (ਸਰਦੀਆਂ)",
+                seasonKharif: "ਸਾਉਣੀ (ਝੋਨਾ ਸੀਜ਼ਨ)",
+                seasonZaid: "ਜ਼ੈਦ (ਗਰਮੀਆਂ)",
+                landSizeLabel: "ਜ਼ਮੀਨ ਦਾ ਰਕਬਾ (ਏਕੜ)",
+                budgetLabel: "ਕਿਸਾਨ ਦਾ ਬਜਟ (₹)",
+                waterLabel: "ਪਾਣੀ ਦਾ ਸਰੋਤ",
+                waterHigh: "ਟਿਊਬਵੈੱਲ + ਨਹਿਰ",
+                waterMed: "ਟਿਪਕਾ ਸਿੰਚਾਈ",
+                waterLow: "ਸਿਰਫ਼ ਬਾਰਿਸ਼ 'ਤੇ ਨਿਰਭਰ",
+                btnCalcStrategy: "AI ਬਹੁ-ਫਸਲੀ ਯੋਜਨਾ ਬਣਾਓ",
+                chartTitle: "ਬਹੁ-ਫਸਲੀ ਜ਼ਮੀਨ ਵੰਡ ਅਨੁਪਾਤ",
+                profitBadge: "ਅਨੁਮਾਨਿਤ ਮੁਨਾਫ਼ਾ: +38.5%",
+                copilotInsight: "ਸਹਿ-ਪਾਇਲਟ ਆਡੀਓ ਜਾਣਕਾਰੀ:",
+                cropInsightText: "60% ਕਣਕ ਅਤੇ 25% ਸਰ੍ਹੋਂ ਦੀ ਬਿਜਾਈ ਨਾਲ ਮਿੱਟੀ ਦੀ ਉਪਜਾਊ ਸ਼ਕਤੀ ਬਣੀ ਰਹਿੰਦੀ ਹੈ।",
+                mandiTitle: "ਲਾਈਵ ਮੰਡੀ ਫਸਲ ਭਾਅ",
+                readMandi: "ਆਡੀਓ ਸੁਣੋ",
+                cropWheat: "ਕਣਕ (HD-3086)",
+                cropMustard: "ਸਰ੍ਹੋਂ (ਪੂਸਾ)",
+                cropStubble: "ਝੋਨੇ ਦੀ ਪਰਾਲੀ",
+                mandi1: "ਖੰਨਾ ਮੰਡੀ (+2.4%)",
+                mandi2: "ਲੁਧਿਆਣਾ ਮੁੱਖ ਮੰਡੀ (+1.8%)",
+                mandi3: "ਬਾਇਓ ਐਨਰਜੀ ਪਲਾਂਟ",
+                careBadge: "ਰੋਜ਼ਾਨਾ ਖੇਤ ਨਿਗਰਾਨੀ",
+                careTitle: "ਕੇਅਰ ਫਾਰਮ - ਰੋਜ਼ਾਨਾ ਜਾਂਚ ਸੂਚੀ",
+                careSubtitle: "ਕੀੜਿਆਂ ਦੇ ਹਮਲੇ ਨੂੰ ਰੋਕਣ ਲਈ ਰੋਜ਼ਾਨਾ ਇਸ ਜਾਂਚ ਸੂਚੀ ਦੀ ਵਰਤੋਂ ਕਰੋ।",
+                progressLabel: "ਜਾਂਚ ਸੂਚੀ ਪ੍ਰਗਤੀ",
+                chk1Title: "1. ਖੇਤ ਦੀ ਸਫ਼ਾਈ ਦੀ ਜਾਂਚ",
+                chk1Sub: "ਪਲਾਸਟਿਕ ਦੇ ਕੂੜੇ ਜਾਂ ਉੱਲੀ ਲਈ ਖਾਲਾਂ ਦੀ ਜਾਂਚ ਕਰੋ।",
+                chk2Title: "2. ਮਿੱਟੀ ਦੀ ਨਮੀ ਦੀ ਜਾਂਚ",
+                chk2Sub: "ਯਕੀਨੀ ਬਣਾਓ ਕਿ ਉੱਪਰਲੀ 2 ਇੰਚ ਮਿੱਟੀ ਨਰਮ ਹੈ।",
+                chk3Title: "3. ਨਦੀਨਾਂ ਦੀ ਜਾਂਚ",
+                chk3Sub: "ਖਾਦ ਚੂਸਣ ਤੋਂ ਪਹਿਲਾਂ ਲਾਈਨਾਂ ਵਿਚਕਾਰ ਨਦੀਨਾਂ ਦੀ ਪਛਾਣ ਕਰੋ।",
+                chk4Title: "4. ਡ੍ਰਿਪ ਪਾਈਪਾਂ ਦੀ ਜਾਂਚ",
+                chk4Sub: "ਪੰਪ ਦਾ ਦਬਾਅ ਅਤੇ ਸੋਲਰ ਬੈਟਰੀ ਦੀ ਜਾਂਚ ਕਰੋ।",
+                chk5Title: "5. ਕੀੜਿਆਂ ਦੇ ਹਮਲੇ ਦੀ ਜਾਂਚ",
+                chk5Sub: "ਪੱਤਿਆਂ ਦੇ ਹੇਠਾਂ ਤੇਲੇ ਜਾਂ ਪੀਲੀ ਕੁੰਗੀ ਦੀ ਜਾਂਚ ਕਰੋ।",
+                bioTag: "ਕੂੜੇ ਤੋਂ ਕਮਾਈ ਯੋਜਨਾ",
+                bioTitle: "ਸਥਿਰਤਾ ਅਤੇ ਬਾਇਓ-ਇਕਾਨਮੀ",
+                bioSubtitle: "ਪਰਾਲੀ ਨੂੰ ਸਾੜਨ ਦੀ ਬਜਾਏ ਵਾਧੂ ਆਮਦਨ ਵਿੱਚ ਬਦਲੋ।",
+                bio1Title: "1. ਪਰਾਲੀ ਤੋਂ ਬਾਇਓ-ਚਾਰ",
+                bio1Desc: "ਪਰਾਲੀ ਦੀਆਂ ਗੰਢਾਂ ਬਣਾ ਕੇ ਬਾਇਓ-ਪਾਵਰ ਪਲਾਂਟ ਨੂੰ ਵੇਚੋ।",
+                bio1Rev: "ਅਨੁਮਾਨਿਤ ਆਮਦਨ: ₹1,800 - ₹2,500 / ਟਨ",
+                bio2Title: "2. ਖੁੰਬਾਂ (ਮਸ਼ਰੂਮ) ਦੀ ਖੇਤੀ",
+                bio2Desc: "ਕਣਕ ਅਤੇ ਝੋਨੇ ਦੀ ਪਰਾਲੀ ਦੀ ਵਰਤੋਂ ਖੁੰਬਾਂ ਉਗਾਉਣ ਲਈ ਕਰੋ।",
+                bio2Rev: "ਅਨੁਮਾਨਿਤ ਆਮਦਨ: ₹120 - ₹180 / ਕਿਲੋ",
+                bio3Title: "3. ਜੈਵਿਕ ਵਰਮੀਕੰਪੋਸਟ",
+                bio3Desc: "ਗਲਣ ਵਾਲੇ ਰਹਿੰਦ-ਖੂੰਹਦ ਨੂੰ ਗੰਡੋਇਆਂ ਦੀ ਖਾਦ ਵਿੱਚ ਬਦਲੋ।",
+                bio3Rev: "ਅਨੁਮਾਨਿਤ ਆਮਦਨ: ₹8 - ₹12 / ਕਿਲੋ",
+                bazaarTitle: "ਐਗਰੀ ਬਾਜ਼ਾਰ: ਘੱਟ ਲਾਗਤ ਵਾਲੇ ਸੰਦ",
+                bazaarSubtitle: "ਸਬਸਿਡੀ ਵਾਲੇ ਰੇਟਾਂ 'ਤੇ ਸੰਦ ਖਰੀਦੋ।",
+                tool1Tag: "4-ਇਨ-1 ਮਿੱਟੀ ਟੈਸਟਰ",
+                t1Name: "ਡਿਜੀਟਲ ਮਿੱਟੀ pH ਅਤੇ ਨਮੀ ਪੈੱਨ",
+                t1Desc: "ਨਮੀ ਅਤੇ pH ਦੀ ਸਿੱਧੀ ਮਿੱਟੀ ਜਾਂਚ।",
+                buyAmazon: "ਐਮਾਜ਼ਾਨ 'ਤੇ ਖਰੀਦੋ",
+                subTag50: "50% ਸਰਕਾਰੀ ਸਬਸਿਡੀ",
+                t2Name: "ਬੈਟਰੀ ਸਪਰੇਅਰ 16L",
+                t2Desc: "ਤਰਲ ਖਾਦਾਂ ਲਈ ਰੀਚਾਰਜਯੋਗ ਸਪਰੇਅਰ।",
+                buyBighaat: "ਬਿਗਹਾਟ 'ਤੇ ਖਰੀਦੋ",
+                zeroCostTag: "ਮੁਫ਼ਤ ਬਿਜਲੀ",
+                t3Name: "ਸੋਲਰ LED ਕੀੜਾ ਜਾਲ",
+                t3Desc: "ਜ਼ਹਿਰ ਮੁਕਤ ਕੀਟ ਨਿਯੰਤਰਣ ਲਈ ਸਵੈਚਲਿਤ ਲਾਈਟ।",
+                waterSaverTag: "ਪਾਣੀ ਦੀ ਬਚਤ",
+                t4Name: "ਮਾਈਕ੍ਰੋ ਡ੍ਰਿਪ ਕਿੱਟ",
+                t4Desc: "ਸਬਜ਼ੀਆਂ ਲਈ ਮੁਕੰਮਲ ਡ੍ਰਿਪ ਸਿੰਚਾਈ ਕਿੱਟ।",
+                buyMoglix: "ਮੋਗਲਿਕਸ 'ਤੇ ਖਰੀਦੋ",
+                schemesTitle: "ਸਰਕਾਰੀ ਸਕੀਮਾਂ ਅਤੇ ਸਬਸਿਡੀ ਜਾਂਚਕਰਤਾ",
+                schemesSub: "ਆਪਣੀ ਯੋਗਤਾ ਦੀ ਜਾਂਚ ਕਰੋ ਅਤੇ ਅਧਿਕਾਰਤ ਪੋਰਟਲਾਂ 'ਤੇ ਜਾਓ।",
+                verifierTitle: "ਯੋਗਤਾ ਜਾਂਚ ਫਾਰਮ",
+                landSizeQ: "1. ਜ਼ਮੀਨ ਦਾ ਰਕਬਾ",
+                optSmallHolder: "ਛੋਟੇ ਕਿਸਾਨ (< 5 ਏਕੜ)",
+                optLargeHolder: "ਵੱਡੇ ਜ਼ਮੀਨਦਾਰ (> 5 ਏਕੜ)",
+                aadhaarQ: "3. ਕੀ ਬੈਂਕ ਖਾਤੇ ਨਾਲ ਆਧਾਰ ਲਿੰਕ ਹੈ?",
+                optYesLinked: "ਹਾਂ, ਲਿੰਕ ਹੈ",
+                optNoNotLinked: "ਨਹੀਂ, ਅਜੇ ਲਿੰਕ ਨਹੀਂ ਹੈ",
+                solarQ: "6. ਕੀ ਸੋਲਰ ਪੰਪ ਦੀ ਲੋੜ ਹੈ?",
+                optYesSolar: "ਹਾਂ, ਸੋਲਰ ਪੰਪ ਚਾਹੀਦਾ ਹੈ",
+                optNoSolar: "ਨਹੀਂ, ਡੀਜ਼ਲ/ਬਿਜਲੀ ਪੰਪ",
+                btnVerifySchemes: "ਯੋਗਤਾ ਦੀ ਜਾਂਚ ਕਰੋ",
+                catCash: "ਸਿੱਧੀ ਨਕਦ ਬਦਲੀ",
+                s1Name: "ਪੀਐੱਮ-ਕਿਸਾਨ ਸਨਮਾਨ ਨਿਧੀ",
+                s1Desc: "ਸਾਲਾਨਾ ₹6,000 ਸਿੱਧੇ ਬੈਂਕ ਖਾਤੇ ਵਿੱਚ।",
+                catSolar: "ਸੋਲਰ ਪੰਪ ਸਬਸਿਡੀ",
+                s2Name: "ਪੀਐੱਮ-ਕੁਸੁਮ ਸੋਲਰ ਪੰਪ ਸਕੀਮ",
+                s2Desc: "ਸੋਲਰ ਪੰਪ 'ਤੇ 60% ਸਰਕਾਰੀ ਸਬਸਿਡੀ।",
+                catCard: "ਮੁਫ਼ਤ ਮਿੱਟੀ ਕਾਰਡ",
+                s3Name: "ਰਾਸ਼ਟਰੀ ਮਿੱਟੀ ਸਿਹਤ ਕਾਰਡ",
+                s3Desc: "ਮੁਫ਼ਤ ਡਿਜੀਟਲ ਮਿੱਟੀ ਜਾਂਚ ਕਾਰਡ ਪ੍ਰਾਪਤ ਕਰੋ।",
+                tutTitle: "ਐਗਰੀ ਨਯਨ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ - ਗਾਈਡ",
+                tutSubtitle: "ਵੀਡੀਓ ਭਾਸ਼ਾ ਚੁਣੋ ਅਤੇ ਗਾਈਡ ਦੇਖੋ।",
+                tut1Head: "ਪੜਾਅ 1: ਮਿੱਟੀ ਅਤੇ ਪਿੰਡ ਦੀ ਜਾਣਕਾਰੀ",
+                tut1Body: "ਡੈਸ਼ਬੋਰਡ 'ਤੇ ਆਪਣੇ ਪਿੰਡ ਅਤੇ ਜ਼ਮੀਨ ਦੇ ਵੇਰਵੇ ਦਰਜ ਕਰੋ।",
+                tut2Head: "ਪੜਾਅ 2: ਰੋਜ਼ਾਨਾ ਖੇਤ ਦੀ ਜਾਂਚ",
+                tut2Body: "ਹਰ ਰੋਜ਼ ਸਵੇਰੇ ਖੇਤ ਦੀ ਸਿਹਤ ਜਾਂਚ ਸੂਚੀ ਖੋਲ੍ਹੋ।",
+                tut3Head: "ਪੜਾਅ 3: ਪਰਾਲੀ ਤੋਂ ਕਮਾਈ ਕਰੋ",
+                tut3Body: "ਸਾੜਨ ਦੀ ਬਜਾਏ ਖੇਤੀਬਾੜੀ ਦੇ ਰਹਿੰਦ-ਖੂੰਹਦ ਨੂੰ ਆਮਦਨ ਵਿੱਚ ਬਦਲੋ।",
+                tut4Head: "ਪੜਾਅ 4: ਸੰਦ ਖਰੀਦੋ",
+                tut4Body: "ਸਬਸਿਡੀ ਵਾਲੇ ਰੇਟਾਂ 'ਤੇ ਸੰਦ ਖਰੀਦੋ ਅਤੇ ਸਕੀਮ ਲਈ ਅਰਜ਼ੀ ਦਿਓ।",
+                voiceSub: "ਆਪਣਾ ਸਵਾਲ ਪੰਜਾਬੀ ਵਿੱਚ ਬੋਲੋ।",
+                clickMic: "ਬੋਲਣ ਲਈ ਮਾਈਕ 'ਤੇ ਕਲਿੱਕ ਕਰੋ...",
+                youSaid: "ਤੁਸੀਂ ਕਿਹਾ:",
+                copilotReply: "ਸਹਿ-ਪਾਇਲਟ ਦਾ ਜਵਾਬ:",
+                readyText: "ਮੈਂ ਤਿਆਰ ਹਾਂ। ਤੁਸੀਂ ਕੀ ਪੁੱਛਣਾ ਚਾਹੁੰਦੇ ਹੋ?"
+            },
+            gu: {
+                topTag: "એગ્રી નયન AI સહાયક: ગુજરાતી વોઈસ સપોર્ટ",
+                helpline: "ટોલ-ફ્રી હેલ્પલાઈન: 1800-AGRI-NAYAN (1800-247-4620)",
+                voiceLabel: "અવાજ:",
+                voiceBtn: "એગ્રી નયન બોલો",
+                tagline: "સચોટ ખેતી સહ-પાઈલટ",
+                navDash: "ડેશબોર્ડ",
+                navCareFarm: "કેર ફાર્મ જુઓ",
+                navBioEconomy: "બાયો-ઇકોનોમી",
+                navBazaar: "એગ્રી બજાર",
+                navSchemes: "સરકારી યોજનાઓ",
+                navTutorial: "વેબસાઇટ માર્ગદર્શિકા",
+                speakQuestion: "પ્રશ્ન પૂછો",
+                demoBarTitle: "ઝડપી પરીક્ષણ મોડ:",
+                demoBarSub: "રમેશ કુમારનો નમૂના ડેટા ભરવા માટે ક્લિક કરો.",
+                btnLoadDemo: "ડેમો ખેડૂત ડેટા લોડ કરો",
+                ayushGuideTitle: "આયુષનું પ્લેટફોર્મ માર્ગદર્શિકા",
+                ayushGuideBody: "એગ્રી નયનમાં આપનું સ્વાગત છે! જમીનની ફાળવણી અને યોજનાઓ ચકાસવા માટે ટેબનો ઉપયોગ કરો.",
+                btnWatchTutorial: "આયુષનું ટ્યુટોરીયલ જુઓ",
+                activeStatus: "સક્રિય ખેતર મોનિટરિંગ",
+                dashTitle: "સ્માર્ટ AI સચોટ ખેતી સહ-પાઈલટ",
+                dashSubtitle: "જમીનની વિગતો અને ખેતરનું કદ દાખલ કરો. પાક ફાળવણી ગુણોત્તર અને બજાર ભાવ મેળવો.",
+                sowingWindowTitle: "વાવણી ચેતવણી (યોગ્ય સમય)",
+                perfectBadge: "યોગ્ય સમય",
+                sowingAdvice: "આગામી 3 દિવસ ઘઉં અને રાયડાની વાવણી માટે ઉત્તમ છે! જમીનમાં 78% ભેજ છે.",
+                listenSowing: "ઓડિયો ચેતવણી સાંભળો",
+                profilerTitle: "જમીન અને ખેતર પ્રોફાઇલર",
+                speakInput: "વોઇસ ઇનપુટ",
+                villageLabel: "ગામ",
+                districtLabel: "જિલ્લો",
+                soilLabel: "જમીનનો પ્રકાર",
+                soilLoam: "ગોરાડુ જમીન",
+                soilClay: "કાળી ચીકણી જમીન",
+                soilSandy: "રેતાળ જમીન",
+                soilAlluvial: "કાંપની જમીન",
+                seasonLabel: "વાવેતરની ઋતુ",
+                seasonRabi: "રવિ (શિયાળો)",
+                seasonKharif: "ખરીફ (ચોમાસુ)",
+                seasonZaid: "જાયદ (ઉનાળો)",
+                landSizeLabel: "જમીનનું ક્ષેત્રફળ (એકર)",
+                budgetLabel: "ખેડૂતનું બજેટ (₹)",
+                waterLabel: "પાણીનો સ્ત્રોત",
+                waterHigh: "ટ્યુબવેલ + કેનાલ",
+                waterMed: "ટપક સિંચાઈ",
+                waterLow: "માત્ર વરસાદ આધારિત",
+                btnCalcStrategy: "AI બહુ-પાક યોજના બનાવો",
+                chartTitle: "બહુ-પાક જમીન ફાળવણી ગુણોત્તર",
+                profitBadge: "અંદાજિત નફો: +38.5%",
+                copilotInsight: "સહ-પાઈલટ ઓડિયો માહિતી:",
+                cropInsightText: "60% ઘઉં અને 25% રાયડાનું વાવેતર કરવાથી જમીનમાં નાઇટ્રોજન જળવાઈ રહે છે.",
+                mandiTitle: "લાઇવ બજાર પાક ભાવ",
+                readMandi: "ઓડિયો સાંભળો",
+                cropWheat: "ઘઉં (HD-3086)",
+                cropMustard: "રાયડો (પૂસા)",
+                cropStubble: "ડાંગરનું પરાળ",
+                mandi1: "ખન્ના બજાર (+2.4%)",
+                mandi2: "લુધિયાણા મુખ્ય બજાર (+1.8%)",
+                mandi3: "બાયો એનર્જી પ્લાન્ટ",
+                careBadge: "દૈનિક ખેતર મોનિટરિંગ",
+                careTitle: "કેર ફાર્મ - દૈનિક તપાસ સૂચિ",
+                careSubtitle: "જીવાતોના હુમલાને રોકવા માટે દરરોજ આ તપાસ સૂચિનો ઉપયોગ કરો.",
+                progressLabel: "તપાસ સૂચિ પ્રગતિ",
+                chk1Title: "1. ખેતરની સ્વચ્છતાની તપાસ",
+                chk1Sub: "પ્લાસ્ટિક કચરા અથવા ફૂગ માટે નિકાલની લાઈનો ચકાસો.",
+                chk2Title: "2. જમીન ભેજ સ્તરની તપાસ",
+                chk2Sub: "ઉપરનો 2 ઇંચ ભાગ ભેજવાળો છે તે સુનિશ્ચિત કરો.",
+                chk3Title: "3. નીંદણ વૃદ્ધિની તપાસ",
+                chk3Sub: "ખાતર શોષાય તે પહેલાં હરોળ વચ્ચે નીંદણ ઓળખો.",
+                chk4Title: "4. ટપક પાઇપની તપાસ",
+                chk4Sub: "પંપનું દબાણ અને સોલર બેટરી ચકાસો.",
+                chk5Title: "5. જીવાત હુમલાની તપાસ",
+                chk5Sub: "પાંદડાની નીચે જીવાતના ડાઘ ચકાસો.",
+                bioTag: "કચરામાંથી કમાણી યોજના",
+                bioTitle: "સક્ષમતા અને બાયો-ઇકોનોમી",
+                bioSubtitle: "ખેતરના કચરાને બાળવાને બદલે વધારાની આવકમાં બદલો.",
+                bio1Title: "1. પરાળમાંથી બાયો-ચાર",
+                bio1Desc: "ડાંગરના પરાળને એકત્રિત કરી બાયો-પાવર પ્લાન્ટને વેચો.",
+                bio1Rev: "અંદાજિત આવક: ₹1,800 - ₹2,500 / ટન",
+                bio2Title: "2. મશરૂમની ખેતી",
+                bio2Desc: "ઘઉં અને ડાંગરના પરાળનો ઉપયોગ મશરૂમ ઉગાડવા માટે કરો.",
+                bio2Rev: "અંદાજિત આવક: ₹120 - ₹180 / કિલો",
+                bio3Title: "3. સેન્દ્રીય વર્મીકમ્પોસ્ટ",
+                bio3Desc: "કોહવાટ વાળા કચરાને અળસિયાના ખાતરમાં બદલો.",
+                bio3Rev: "અંદાજિત આવક: ₹8 - ₹12 / કિલો",
+                bazaarTitle: "એગ્રી બજાર: ઓછા ખર્ચના સાધનો",
+                bazaarSubtitle: "સબસિડી વાળા ભાવે સાધનો ખરીદો.",
+                tool1Tag: "4-ઇન-1 સોઇલ ટેસ્ટર",
+                t1Name: "ડિજિટલ જમીન pH અને ભેજ પેન",
+                t1Desc: "ભેજ અને pH નું સીધું જમીન પરીક્ષણ.",
+                buyAmazon: "એમેઝોન પર ખરીદો",
+                subTag50: "50% સરકારી સબસિડી",
+                t2Name: "બેટરી સ્પ્રેયર 16L",
+                t2Desc: "પ્રવાહી ખાતરો માટે રિચાર્જેબલ સ્પ્રેયર.",
+                buyBighaat: "બિગહાટ પર ખરીદો",
+                zeroCostTag: "મફત વીજળી",
+                t3Name: "સોલર LED જીવાત ટ્રેપ",
+                t3Desc: "રસાયણ મુક્ત જીવાત નિયંત્રણ માટે સ્વચાલિત લાઈટ.",
+                waterSaverTag: "પાણીની બચત",
+                t4Name: "માઇક્રો ડ્રિપ કિટ",
+                t4Desc: "શાકભાજી માટે સંપૂર્ણ ટપક સિંચાઈ કિટ.",
+                buyMoglix: "મોગલિક્સ પર ખરીદો",
+                schemesTitle: "સરકારી યોજનાઓ અને સબસિડી ચેકર",
+                schemesSub: "તમારી પાત્રતા તપાસો અને સત્તાવાર પોર્ટલની મુલાકાત લો.",
+                verifierTitle: "પાત્રતા ચકાસણી ફોર્મ",
+                landSizeQ: "1. જમીનનું ક્ષેત્રફળ",
+                optSmallHolder: "નાના ખેડૂતો (< 5 એકર)",
+                optLargeHolder: "મોટા જમીનદારો (> 5 એકર)",
+                aadhaarQ: "3. શું બેંક ખાતા સાથે આધાર લિંક છે?",
+                optYesLinked: "હા, લિંક છે",
+                optNoNotLinked: "ના, હજુ લિંક નથી",
+                solarQ: "6. શું સોલર પંપની જરૂર છે?",
+                optYesSolar: "હા, સોલર પંપ જોઈએ છે",
+                optNoSolar: "ના, ડીઝલ/વીજળી પંપ",
+                btnVerifySchemes: "પાત્રતા તપાસો",
+                catCash: "સીધી રોકડ ટ્રાન્સફર",
+                s1Name: "પીએમ-કિશાન સન્માન નિધિ",
+                s1Desc: "વર્ષે ₹6,000 સીધા બેંક ખાતામાં.",
+                catSolar: "સોલર પંપ સબસિડી",
+                s2Name: "પીએમ-કુસુમ સોલર પંપ યોજના",
+                s2Desc: "સોલર પંપ પર 60% સરકારી સબસિડી.",
+                catCard: "મફત જમીન હેલ્થ કાર્ડ",
+                s3Name: "રાષ્ટ્રીય જમીન હેલ્થ કાર્ડ",
+                s3Desc: "મફત ડિજિટલ જમીન પરીક્ષણ કાર્ડ મેળવો.",
+                tutTitle: "એગ્રી નયન કેવી રીતે કામ કરે છે - ગાઇડ",
+                tutSubtitle: "વિડિઓ ભાષા પસંદ કરો અને માર્ગદર્શિકા જુઓ.",
+                tut1Head: "પગલું 1: જમીન અને ગામની માહિતી",
+                tut1Body: "ડેશબોર્ડ પર તમારા ગામ અને જમીનની વિગતો દાખલ કરો.",
+                tut2Head: "પગલું 2: દૈનિક ખેતર તપાસ",
+                tut2Body: "દરરોજ સવારે ખેતર હેલ્થ તપાસ સૂચિ ખોલો.",
+                tut3Head: "પગલું 3: કચરામાંથી કમાણી કરો",
+                tut3Body: "બાળવાને બદલે ખેતીના કચરાને આવકમાં બદલો.",
+                tut4Head: "પગલું 4: સાધનો ખરીદો",
+                tut4Body: "સબસિડી વાળા ભાવે સાધનો ખરીદો અને યોજના માટે અરજી કરો.",
+                voiceSub: "તમારો પ્રશ્ન ગુજરાતીમાં બોલો.",
+                clickMic: "બોલવા માટે માઇક પર ક્લિક કરો...",
+                youSaid: "તમે કહ્યું:",
+                copilotReply: "સહ-પાઈલટનો જવાબ:",
+                readyText: "હું તૈયાર છું. તમે શું પૂછવા માંગો છો?"
+            },
+            bn: {
+                topTag: "এগ্রি নয়ন AI সহায়ক: বাংলা ভয়েস সহায়তা",
+                helpline: "টোল-ফ্রি হেল্পলাইন: 1800-AGRI-NAYAN (1800-247-4620)",
+                voiceLabel: "ভয়েস:",
+                voiceBtn: "এগ্রি নয়ন বলুন",
+                tagline: "সঠিক কৃষি সহ-পাইলট",
+                navDash: "ড্যাশবোর্ড",
+                navCareFarm: "কেয়ার ফার্ম দেখুন",
+                navBioEconomy: "বায়ো-ইকোনমি",
+                navBazaar: "এগ্রি বাজার",
+                navSchemes: "সরকারি প্রকল্প",
+                navTutorial: "ওয়েবসাইট গাইড",
+                speakQuestion: "প্রশ্ন জিজ্ঞাসা করুন",
+                demoBarTitle: "দ্রুত পরীক্ষা মোড:",
+                demoBarSub: "রমেশ কুমারের নমুনা তথ্য পূরণ করতে ক্লিক করুন।",
+                btnLoadDemo: "ডেমো কৃষক তথ্য লোড করুন",
+                ayushGuideTitle: "আয়ুশের প্ল্যাটফর্ম গাইড",
+                ayushGuideBody: "এগ্রি নয়নে স্বাগতম! মাটি বরাদ্দ এবং প্রকল্প পরীক্ষা করতে ট্যাব ব্যবহার করুন।",
+                btnWatchTutorial: "আয়ুশের টিউটোরিয়াল দেখুন",
+                activeStatus: "সক্রিয় জমি নজরদারি",
+                dashTitle: "স্মার্ট AI সঠিক কৃষি সহ-পাইলট",
+                dashSubtitle: "মাটির বিবরণ এবং জমির পরিমাণ লিখুন। ফসল বরাদ্দের অনুপাত এবং বাজারের দাম পান।",
+                sowingWindowTitle: "বপন সতর্কতা (সঠিক সময়)",
+                perfectBadge: "সঠিক সময়",
+                sowingAdvice: "আগামী ৩ দিন গম এবং সরিষা বোনার জন্য উপযুক্ত! মাটিতে ৭৮% আর্দ্রতা রয়েছে।",
+                listenSowing: "অডিও সতর্কতা শুনুন",
+                profilerTitle: "মাটি ও জমির প্রোফাইলার",
+                speakInput: "ভয়েস ইনপুট",
+                villageLabel: "গ্রাম",
+                districtLabel: "জেলা",
+                soilLabel: "মাটির ধরন",
+                soilLoam: "দোআঁশ মাটি",
+                soilClay: "এঁটেল মাটি",
+                soilSandy: "বেলে দোআঁশ মাটি",
+                soilAlluvial: "পলি মাটি",
+                seasonLabel: "বপনের মরশুম",
+                seasonRabi: "রবি (শীতকাল)",
+                seasonKharif: "খরিফ (বর্ষাকাল)",
+                seasonZaid: "জায়েদ (গ্রীষ্মকাল)",
+                landSizeLabel: "জমির পরিমাণ (একর)",
+                budgetLabel: "কৃষকের বাজেট (₹)",
+                waterLabel: "পানির উৎস",
+                waterHigh: "নলকূপ + ক্যানেল",
+                waterMed: "ড্রিপ সেচ",
+                waterLow: "কেবলমাত্র বৃষ্টি নির্ভর",
+                btnCalcStrategy: "AI বহু-ফসল পরিকল্পনা তৈরি করুন",
+                chartTitle: "বহু-ফসল জমি বরাদ্দ অনুপাত",
+                profitBadge: "আনুপাতিক লাভ: +৩৮.৫%",
+                copilotInsight: "সহ-পাইলট অডিও তথ্য:",
+                cropInsightText: "৬০% গম এবং ২৫% সরিষা চাষ করলে মাটির নাইট্রোজেন বজায় থাকে।",
+                mandiTitle: "লাইভ বাজার ফসলের দাম",
+                readMandi: "অডিও শুনুন",
+                cropWheat: "গম (HD-3086)",
+                cropMustard: "সরিষা (পুসা)",
+                cropStubble: "ধানের খড়",
+                mandi1: "খান্না বাজার (+২.৪%)",
+                mandi2: "লুধিয়ানা প্রধান বাজার (+১.৮%)",
+                mandi3: "বায়ো এনার্জি প্ল্যান্ট",
+                careBadge: "দৈনিক জমি নজরদারি",
+                careTitle: "কেয়ার ফার্ম - দৈনিক চেকলিস্ট",
+                careSubtitle: "পোকার আক্রমণ রোধ করতে প্রতিদিন এই চেকলিস্ট ব্যবহার করুন।",
+                progressLabel: "চেকলিস্ট অগ্রগতি",
+                chk1Title: "১. জমি পরিচ্ছন্নতা পরীক্ষা",
+                chk1Sub: "প্লাস্টিক বর্জ্য বা ছত্রাকের জন্য ড্রেন লাইন পরীক্ষা করুন।",
+                chk2Title: "২. মাটির আর্দ্রতা পরীক্ষা",
+                chk2Sub: "উপরের ২ ইঞ্চি মাটি ভেজা আছে কিনা নিশ্চিত করুন।",
+                chk3Title: "৩. আগাছা বৃদ্ধি পরীক্ষা",
+                chk3Sub: "সার শোষণের আগেই ফসলের সারির মাঝে আগাছা চিহ্নিত করুন।",
+                chk4Title: "৪. ড্রিপ পাইপ পরীক্ষা",
+                chk4Sub: "পাম্পের চাপ এবং সোলার ব্যাটারি পরীক্ষা করুন।",
+                chk5Title: "৫. পোকার আক্রমণ পরীক্ষা",
+                chk5Sub: "পাতার নিচে পোকার দাগ পরীক্ষা করুন।",
+                bioTag: "বর্জ্য থেকে আয় পরিকল্পনা",
+                bioTitle: "স্থায়িত্ব এবং বায়ো-ইকোনমি",
+                bioSubtitle: "কৃষি বর্জ্য পোড়ানোর বদলে অতিরিক্ত আয়ে রূপান্তর করুন।",
+                bio1Title: "১. খড় থেকে বায়ো-চার",
+                bio1Desc: "ধানের খড় সংগ্রহ করে বায়ো-পাওয়ার প্ল্যান্টে বিক্রি করুন।",
+                bio1Rev: "আনুমানিক আয়: ₹১,৮০০ - ₹২,৫০০ / টন",
+                bio2Title: "২. মাশরুম চাষ",
+                bio2Desc: "গম ও ধানের খড় ব্যবহার করে মাশরুম চাষ করুন।",
+                bio2Rev: "আনুমানিক আয়: ₹১২০ - ₹১৮০ / কেজি",
+                bio3Title: "৩. জৈব ভার্মিকম্পোস্ট",
+                bio3Desc: "পচনশীল বর্জ্য কেঁচো সারে পরিণত করুন।",
+                bio3Rev: "আনুমানিক আয়: ₹৮ - ₹১২ / কেজি",
+                bazaarTitle: "এগ্রি বাজার: কম খরচের যন্ত্রপাতি",
+                bazaarSubtitle: "রতুকা মূল্যে যন্ত্রপাতি কিনুন।",
+                tool1Tag: "৪-ইন-১ সয়েল টেস্টার",
+                t1Name: "ডিজিটাল মাটি pH ও আর্দ্রতা পেন",
+                t1Desc: "আর্দ্রতা ও pH এর সরাসরি মাটি পরীক্ষা।",
+                buyAmazon: "অ্যামাজনে কিনুন",
+                subTag50: "৫০% সরকারি ভর্তুকি",
+                t2Name: "ব্যাটারি স্প্রেয়ার 16L",
+                t2Desc: "তরল সারের জন্য রিচার্জেবল স্প্রেয়ার।",
+                buyBighaat: "বিগহাটে কিনুন",
+                zeroCostTag: "বিনামূল্যে বিদ্যুৎ",
+                t3Name: "সোলার LED পোকা ট্র্যাপ",
+                t3Desc: "রাসায়নিক মুক্ত পোকা নিয়ন্ত্রণের জন্য স্বয়ংক্রিয় আলো।",
+                waterSaverTag: "পানি সাশ্রয়ী",
+                t4Name: "মাইক্রো ড্রিপ কিট",
+                t4Desc: "সবজি চাষের জন্য সম্পূর্ণ ড্রিপ সেচ কিট।",
+                buyMoglix: "মোগলিক্সে কিনুন",
+                schemesTitle: "সরকারি প্রকল্প ও ভর্তুকি চেকার",
+                schemesSub: "আপনার যোগ্যতা পরীক্ষা করুন এবং অফিসিয়াল পোর্টালে যান।",
+                verifierTitle: "যোগ্যতা যাচাইকরণ ফর্ম",
+                landSizeQ: "১. জমির পরিমাণ",
+                optSmallHolder: "ক্ষুদ্র কৃষক (< ৫ একর)",
+                optLargeHolder: "বড় জমি মালিক (> ৫ একর)",
+                aadhaarQ: "৩. ব্যাংক অ্যাকাউন্টের সাথে আধার লিঙ্ক আছে?",
+                optYesLinked: "হ্যাঁ, লিঙ্ক আছে",
+                optNoNotLinked: "না, এখনো লিঙ্ক নেই",
+                solarQ: "৬. সোলার পাম্প প্রয়োজন?",
+                optYesSolar: "হ্যাঁ, সোলার পাম্প চাই",
+                optNoSolar: "না, ডিজেল/বিদ্যুৎ পাম্প",
+                btnVerifySchemes: "যোগ্যতা পরীক্ষা করুন",
+                catCash: "সরাসরি টাকা হস্তান্তর",
+                s1Name: "পিএম-কিষাণ সম্মান নিধি",
+                s1Desc: "বছরে ₹৬,০০০ সরাসরি ব্যাংক অ্যাকাউন্টে।",
+                catSolar: "সোলার পাম্প ভর্তুকি",
+                s2Name: "পিএম-কুসুম সোলার পাম্প প্রকল্প",
+                s2Desc: "সোলার পাম্পের জন্য ৬০% সরকারি ভর্তুকি।",
+                catCard: "বিনামূল্যে মাটি কার্ড",
+                s3Name: "জাতীয় মাটি স্বাস্থ্য কার্ড",
+                s3Desc: "বিনামূল্যে ডিজিটাল মাটি পরীক্ষা কার্ড পান।",
+                tutTitle: "এগ্রি নয়ন কিভাবে কাজ করে - গাইড",
+                tutSubtitle: "ভিডিও ভাষা নির্বাচন করুন এবং গাইড দেখুন।",
+                tut1Head: "ধাপ ১: মাটি ও গ্রামের তথ্য",
+                tut1Body: "ড্যাশবোর্ডে আপনার গ্রাম ও জমির বিবরণ লিখুন।",
+                tut2Head: "ধাপ ২: দৈনিক জমি পরীক্ষা",
+                tut2Body: "প্রতিদিন সকালে জমি স্বাস্থ্য চেকলিস্ট খুলুন।",
+                tut3Head: "ধাপ ৩: বর্জ্য থেকে আয় করুন",
+                tut3Body: "পোড়ানোর বদলে কৃষি বর্জ্যকে আয়ে রূপান্তর করুন।",
+                tut4Head: "ধাপ ৪: যন্ত্রপাতি কিনুন",
+                tut4Body: "ভর্তুকি মূল্যে যন্ত্রপাতি কিনুন এবং প্রকল্পে আবেদন করুন।",
+                voiceSub: "আপনার প্রশ্ন বাংলায় বলুন।",
+                clickMic: "বলতে মাইকে ক্লিক করুন...",
+                youSaid: "আপনি বলেছেন:",
+                copilotReply: "সহ-পাইলটের উত্তর:",
+                readyText: "আমি প্রস্তুত। আপনি কি জিজ্ঞাসা করতে চান?"
+            },
+            ml: {
+                topTag: "അഗ്രി നയൻ AI സഹായി: മലയാളം വോയിസ് സപ്പോർട്ട്",
+                helpline: "ടോൾ ഫ്രീ ഹെൽപ്പ് ലൈൻ: 1800-AGRI-NAYAN (1800-247-4620)",
+                voiceLabel: "ശബ്ദം:",
+                voiceBtn: "അഗ്രി നയൻ സംസാരിക്കൂ",
+                tagline: "കൃത്യമായ കാർഷിക സഹായകൻ",
+                navDash: "ഡാഷ്ബോർഡ്",
+                navCareFarm: "കെയർ ഫാം കാണുക",
+                navBioEconomy: "ബയോ-ഇക്കോണമി",
+                navBazaar: "അഗ്രി ബസാർ",
+                navSchemes: "സർക്കാർ പദ്ധതികൾ",
+                navTutorial: "വെബ്സൈറ്റ് ഗൈഡ്",
+                speakQuestion: "ചോദ്യം ചോദിക്കൂ",
+                demoBarTitle: "ദ്രുത പരിശോധന മോഡ്:",
+                demoBarSub: "രമേഷ് കുമാറിന്റെ സാമ്പിൾ ഡാറ്റ പൂരിപ്പിക്കാൻ ക്ലിക്ക് ചെയ്യുക.",
+                btnLoadDemo: "ഡെമോ കർഷക ഡാറ്റ ലോഡ് ചെയ്യുക",
+                ayushGuideTitle: "ആയുഷിന്റെ പ്ലാറ്റ്‌ഫോം ഗൈഡ്",
+                ayushGuideBody: "അഗ്രി നയനിലേക്ക് സ്വാഗതം! മണ്ണ് വിഭജനവും പദ്ധതികളും പരിശോധിക്കാൻ ടാബുകൾ ഉപയോഗിക്കുക.",
+                btnWatchTutorial: "ആയുഷിന്റെ ട്യൂട്ടോറിയൽ കാണുക",
+                activeStatus: "സജീവ ഫാം നിരീക്ഷണം",
+                dashTitle: "സ്മാർട്ട് AI കൃത്യമായ കാർഷിക സഹായകൻ",
+                dashSubtitle: "മണ്ണിന്റെ വിവരങ്ങളും വിസ്തീർണ്ണവും നൽകുക. വിള വിഭജന അനുപാതവും വിപണി വിലകളും നേടുക.",
+                sowingWindowTitle: "വിത്ത് വിതയ്ക്കൽ മുന്നറിയിപ്പ് (ശരിയായ സമയം)",
+                perfectBadge: "ശരിയായ സമയം",
+                sowingAdvice: "അടുത്ത 3 ദിവസങ്ങൾ ഗോതമ്പും കടുക് വിതയ്ക്കാൻ ഏറ്റവും അനുയോജ്യമാണ്! മണ്ണിൽ 78% ഈർപ്പമുണ്ട്.",
+                listenSowing: "ഓഡിയോ മുന്നറിയിപ്പ് കേൾക്കുക",
+                profilerTitle: "മണ്ണും സ്ഥലവും പ്രൊഫൈലർ",
+                speakInput: "വോയിസ് ഇൻപുട്ട്",
+                villageLabel: "ഗ്രാമം",
+                districtLabel: "ജില്ല",
+                soilLabel: "മണ്ണിന്റെ തരം",
+                soilLoam: "പലതരം മണ്ണ്",
+                soilClay: "കരിമണ്ണ്",
+                soilSandy: "മണൽ മണ്ണ്",
+                soilAlluvial: "എക്കൽ മണ്ണ്",
+                seasonLabel: "വിളവെടുപ്പ് കാലം",
+                seasonRabi: "റബി (ശൈത്യകാലം)",
+                seasonKharif: "ഖരീഫ് (മഴക്കാലം)",
+                seasonZaid: "സൈദ് (വേനൽക്കാലം)",
+                landSizeLabel: "സ്ഥലത്തിന്റെ വിസ്തീർണ്ണം (ഏക്കർ)",
+                budgetLabel: "കർഷകന്റെ ബജറ്റ് (₹)",
+                waterLabel: "ജലസ്രോതസ്സ്",
+                waterHigh: "കിണർ/കുഴൽക്കിണർ + കനാൽ",
+                waterMed: "തുള്ളിനന (ഡ്രിപ്പ്)",
+                waterLow: "മഴയെ മാത്രം ആശ്രയിച്ച്",
+                btnCalcStrategy: "AI ബഹുവിള പ്ലാൻ തയ്യാറാക്കുക",
+                chartTitle: "ബഹുവിള ഭൂമി വിഭജന അനുപാതം",
+                profitBadge: "പ്രതീക്ഷിക്കുന്ന ലാഭം: +38.5%",
+                copilotInsight: "സഹായകന്റെ ഓഡിയോ വിവരങ്ങൾ:",
+                cropInsightText: "60% ഗോതമ്പും 25% കടുകും കൃഷി ചെയ്യുന്നത് മണ്ണിലെ നൈട്രജൻ നിലനിർത്താൻ സഹായിക്കുന്നു.",
+                mandiTitle: "തത്സമയ വിപണി വിള വിലകൾ",
+                readMandi: "ഓഡിയോ കേൾക്കുക",
+                cropWheat: "ഗോതമ്പ് (HD-3086)",
+                cropMustard: "കടുക് (പൂസ)",
+                cropStubble: "വൈക്കോൽ",
+                mandi1: "ഖന്ന മാർക്കറ്റ് (+2.4%)",
+                mandi2: "ലുധിയാന മാർക്കറ്റ് (+1.8%)",
+                mandi3: "ബയോ എനർജി പ്ലാന്റ്",
+                careBadge: "ദിനംപ്രതിയുള്ള ഫാം നിരീക്ഷണം",
+                careTitle: "കെയർ ഫാം - ദിനചര്യ പരിശോധന പട്ടിക",
+                careSubtitle: "കീടബാധ തടയാൻ ദിവസവും ഈ പരിശോധന പട്ടിക ഉപയോഗിക്കുക.",
+                progressLabel: "പരിശോധന പട്ടിക പുരോഗതി",
+                chk1Title: "1. ഫാമിന്റെ ശുചിത്വ പരിശോധന",
+                chk1Sub: "പ്ലാസ്റ്റിക് മാലിന്യങ്ങളോ ഫംഗസോ ഉണ്ടോ എന്ന് ചാലുകൾ പരിശോധിക്കുക.",
+                chk2Title: "2. മണ്ണിലെ ഈർപ്പത്തിന്റെ അളവ്",
+                chk2Sub: "മുകളിലെ 2 ഇഞ്ച് മണ്ണ് ഈർപ്പമുള്ളതാണെന്ന് ഉറപ്പാക്കുക.",
+                chk3Title: "3. കളകളുടെ വളർച്ച പരിശോധന",
+                chk3Sub: "വളം വലിച്ചെടുക്കുന്നതിന് മുൻപ് കളകൾ തിരിച്ചറിയുക.",
+                chk4Title: "4. ഡ്രിപ്പ് പൈപ്പ് പരിശോധന",
+                chk4Sub: "പമ്പിന്റെ മർദ്ദവും സോളാർ ബാറ്ററിയും പരിശോധിക്കുക.",
+                chk5Title: "5. കീടബാധ പരിശോധന",
+                chk5Sub: "ഇലകളുടെ അടിയിൽ കീടങ്ങളുടെ പാടുകൾ ഉണ്ടോ എന്ന് പരിശോധിക്കുക.",
+                bioTag: "മാലിന്യത്തിൽ നിന്ന് വരുമാനം",
+                bioTitle: "സുസ്ഥിരതയും ബയോ-ഇക്കോണമിയും",
+                bioSubtitle: "കാർഷിക മാലിന്യങ്ങൾ കത്തിക്കാതെ അധിക വരുമാനമാക്കി മാറ്റുക.",
+                bio1Title: "1. വൈക്കോലിൽ നിന്ന് ബയോ-ചാർ",
+                bio1Desc: "വൈക്കോൽ ശേഖരിച്ച് ബയോ-പവർ പ്ലാന്റിലേക്ക് വിൽക്കുക.",
+                bio1Rev: "പ്രതീക്ഷിക്കുന്ന വരുമാനം: ₹1,800 - ₹2,500 / ടൺ",
+                bio2Title: "2. കൂൺ കൃഷി",
+                bio2Desc: "വൈക്കോൽ കൂൺ കൃഷിക്കായി ഉപയോഗിക്കുക.",
+                bio2Rev: "പ്രതീക്ഷിക്കുന്ന വരുമാനം: ₹120 - ₹180 / കിലോ",
+                bio3Title: "3. ജൈവ കമ്പോസ്റ്റ്",
+                bio3Desc: "അഴുകുന്ന മാലിന്യങ്ങൾ മണ്ണര കമ്പോസ്റ്റാക്കി മാറ്റുക.",
+                bio3Rev: "പ്രതീക്ഷിക്കുന്ന വരുമാനം: ₹8 - ₹12 / കിലോ",
+                bazaarTitle: "അഗ്രി ബസാർ: കുറഞ്ഞ ചെലവിലുള്ള ഉപകരണങ്ങൾ",
+                bazaarSubtitle: "സബ്‌സിഡി നിരക്കിൽ ഉപകരണങ്ങൾ വാങ്ങുക.",
+                tool1Tag: "4-ഇൻ-1 സോയിൽ ടെസ്റ്റർ",
+                t1Name: "ഡിജിറ്റൽ മണ്ണ് pH & ഈർപ്പം പേന",
+                t1Desc: "ഈർപ്പത്തിന്റെയും pH ന്റെയും നേരിട്ടുള്ള മണ്ണ് പരിശോധന.",
+                buyAmazon: "ആമസോണിൽ വാങ്ങുക",
+                subTag50: "50% സർക്കാർ സബ്‌സിഡി",
+                t2Name: "ബാറ്ററി സ്പ്രേയർ 16L",
+                t2Desc: "ദ്രാവക വളങ്ങൾക്കായി റീചാർജ് ചെയ്യാവുന്ന സ്പ്രേയർ.",
+                buyBighaat: "ബിഗ്ഹട്ടിൽ വാങ്ങുക",
+                zeroCostTag: "സൗജന്യ വൈദ്യുതി",
+                t3Name: "സോളാർ LED കീടക്കെണി",
+                t3Desc: "രാസവസ്തുക്കളില്ലാത്ത കീട നിയന്ത്രണത്തിനായുള്ള ലൈറ്റ് കെണി.",
+                waterSaverTag: "ജല സംരക്ഷണം",
+                t4Name: "മൈക്രോ ഡ്രിപ്പ് കിറ്റ്",
+                t4Desc: "പച്ചക്കറികൾക്കായുള്ള ഡ്രിപ്പ് നന കിറ്റ്.",
+                buyMoglix: "മോഗ്ലിക്സിൽ വാങ്ങുക",
+                schemesTitle: "സർക്കാർ പദ്ധതികളും സബ്‌സിഡി പരിശോധനയും",
+                schemesSub: "നിങ്ങളുടെ യോഗ്യത പരിശോധിച്ച് ഔദ്യോഗിക പോർട്ടലുകൾ സന്ദർശിക്കുക.",
+                verifierTitle: "യോഗ്യതാ പരിശോധന ഫോം",
+                landSizeQ: "1. സ്ഥലത്തിന്റെ വിസ്തീർണ്ണം",
+                optSmallHolder: "ചെറുകിട കർഷകർ (< 5 ഏക്കർ)",
+                optLargeHolder: "വലിയ ഭൂവുടമകൾ (> 5 ഏക്കർ)",
+                aadhaarQ: "3. ബാങ്ക് അക്കൗണ്ടുമായി ആധാർ ബന്ധിപ്പിച്ചിട്ടുണ്ടോ?",
+                optYesLinked: "അതെ, ബന്ധിപ്പിച്ചിട്ടുണ്ട്",
+                optNoNotLinked: "ഇല്ല, ഇതുവരെ ബന്ധിപ്പിച്ചിട്ടില്ല",
+                solarQ: "6. സോളാർ പമ്പ് ആവശ്യമുണ്ടോ?",
+                optYesSolar: "അതെ, സോളാർ പമ്പ് വേണം",
+                optNoSolar: "ഇല്ല, ഡീസൽ/വൈദ്യുതി പമ്പ്",
+                btnVerifySchemes: "യോഗ്യത പരിശോധിക്കുക",
+                catCash: "നേരിട്ടുള്ള പണ കൈമാറ്റം",
+                s1Name: "പിഎം-കിസാൻ സമ്മാൻ നിധി",
+                s1Desc: "വർഷത്തിൽ ₹6,000 നേരിട്ട് ബാങ്ക് അക്കൗണ്ടിലേക്ക്.",
+                catSolar: "സോളാർ പമ്പ് സബ്‌സിഡി",
+                s2Name: "പിഎം-കുസും സോളാർ പമ്പ് പദ്ധതി",
+                s2Desc: "സോളാർ പമ്പിന് 60% സർക്കാർ സബ്‌സിഡി.",
+                catCard: "സൗജന്യ മണ്ണ് കാർഡ്",
+                s3Name: "ദേശീയ മണ്ണ് ആരോഗ്യ കാർഡ്",
+                s3Desc: "സൗജന്യ ഡിജിറ്റൽ മണ്ണ് പരിശോധന കാർഡ് നേടുക.",
+                tutTitle: "അഗ്രി നയൻ എങ്ങനെ പ്രവർത്തിക്കുന്നു - ഗൈഡ്",
+                tutSubtitle: "വീഡിയോ ഭാഷ തിരഞ്ഞെടുത്ത് ഗൈഡ് കാണുക.",
+                tut1Head: "ഘട്ടം 1: മണ്ണും ഗ്രാമ വിവരങ്ങളും",
+                tut1Body: "ഡാഷ്ബോർഡിൽ നിങ്ങളുടെ ഗ്രാമത്തിന്റെയും സ്ഥലത്തിന്റെയും വിവരങ്ങൾ നൽകുക.",
+                tut2Head: "ഘട്ടം 2: ദിനചര്യ ഫാം പരിശോധന",
+                tut2Body: "എല്ലാ ദിവസവും രാവിലെ ഫാം ആരോഗ്യ പരിശോധന പട്ടിക തുറക്കുക.",
+                tut3Head: "ഘട്ടം 3: മാലിന്യത്തിൽ നിന്ന് വരുമാനം നേടുക",
+                tut3Body: "കത്തിക്കുന്നതിന് പകരം കാർഷിക മാലിന്യങ്ങളെ വരുമാനമാക്കി മാറ്റുക.",
+                tut4Head: "ഘട്ടം 4: ഉപകരണങ്ങൾ വാങ്ങുക",
+                tut4Body: "സബ്‌സിഡി നിരക്കിൽ ഉപകരണങ്ങൾ വാങ്ങി പദ്ധതിക്ക് അപേക്ഷിക്കുക.",
+                voiceSub: "നിങ്ങളുടെ ചോദ്യം മലയാളത്തിൽ പറയൂ.",
+                clickMic: "സംസാരിക്കാൻ മൈക്ക് ക്ലിക് ചെയ്യുക...",
+                youSaid: "നിങ്ങൾ പറഞ്ഞത്:",
+                copilotReply: "സഹായകന്റെ മറുപടി:",
+                readyText: "ഞാൻ തയ്യാറാണ്. നിങ്ങൾക്ക് എന്താണ് ചോദിക്കേണ്ടത്?"
+            }
+        };
+
+        const voicePersonas = {
+            ramesh: { name: "Ramesh Bhaiya", langCode: "hi-IN", pitch: 0.85, rate: 0.9 },
+            priya: { name: "Agri Didi Priya", langCode: "hi-IN", pitch: 1.15, rate: 1.0 },
+            gurpreet: { name: "Kisan Guru Gurpreet", langCode: "pa-IN", pitch: 0.95, rate: 1.0 },
+            srinivas: { name: "Raitu Mitra Srinivas", langCode: "te-IN", pitch: 0.9, rate: 1.0 }
+        };
+
+        let currentLang = 'hinglish';
+        let activeVoicePersona = 'ramesh';
+        let cropChartInstance = null;
+        let recognition = null;
+        let isListening = false;
+        let synth = window.speechSynthesis;
+
+        // FULL 11-LANGUAGE TRANSLATION ENGINE
+        function changeLanguage(langKey) {
+            currentLang = langKey;
+            const dict = translations[langKey] || translations['hinglish'];
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key] !== undefined) {
+                    el.innerText = dict[key];
+                }
+            });
+
+            runAIEngine();
+        }
+
+        function setVoicePersona(personaKey) {
+            activeVoicePersona = personaKey;
+        }
+
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) return;
+            synth.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            const persona = voicePersonas[activeVoicePersona] || voicePersonas['ramesh'];
+
+            utterance.lang = persona.langCode;
+            utterance.pitch = persona.pitch;
+            utterance.rate = persona.rate;
+
+            synth.speak(utterance);
+        }
+
+        function readAloudMandi() {
+            const dict = translations[currentLang] || translations.hinglish;
+            speakText(`${dict.cropWheat || 'Wheat'}: ₹2,350. ${dict.cropMustard || 'Mustard'}: ₹5,420.`);
+        }
+
+        function updateChecklist() {
+            const checkedCount = document.querySelectorAll('.chk-item:checked').length;
+            document.getElementById('checklistProgress').innerText = `${checkedCount} of 5 Completed`;
+        }
+
+        // WORKING DEMO FARMER DATA LOADER
+        function loadDemoFarmerData() {
+            document.getElementById('profVillage').value = 'Rampur';
+            document.getElementById('profDistrict').value = 'Varanasi';
+            document.getElementById('soilType').value = 'Loam';
+            document.getElementById('seasonType').value = 'Rabi';
+            document.getElementById('landSize').value = '10';
+            document.getElementById('farmerBudget').value = '75000';
+            
+            runAIEngine();
+            alert('Demo Farmer Data Loaded: Ramesh Kumar (10 Acres, Rampur, Varanasi, Budget ₹75,000)');
+        }
+
+        // GOVT SCHEMES VERIFICATION LOGIC
+        function checkEligibility() {
+            const land = document.getElementById('schLandSize').value;
+            const category = document.getElementById('schCategory').value;
+            const isAadhaar = document.getElementById('schAadhaar').value === 'yes';
+            const income = document.getElementById('schIncome').value;
+            const isSolar = document.getElementById('schSolar').value === 'yes';
+
+            const pmkisan = document.getElementById('badge-pmkisan');
+            const pmkusum = document.getElementById('badge-pmkusum');
+            const smam = document.getElementById('badge-smam');
+
+            if (isAadhaar && income === 'below') {
+                pmkisan.innerText = 'Pre-Eligible (100% Direct Transfer Approved)';
+                pmkisan.className = 'text-xs font-extrabold bg-emerald-200 text-emerald-900 px-3 py-1 rounded-full border border-emerald-300 shrink-0';
+            } else {
+                pmkisan.innerText = 'Action Required (Link Aadhaar)';
+                pmkisan.className = 'text-xs font-extrabold bg-red-200 text-red-900 px-3 py-1 rounded-full border border-red-300 shrink-0';
+            }
+
+            if (isSolar) {
+                const subsidyRate = (category === 'scst' || land === 'small') ? '70% Max Subsidy' : '60% Subsidy Approved';
+                pmkusum.innerText = subsidyRate;
+                pmkusum.className = 'text-xs font-extrabold bg-amber-200 text-amber-900 px-3 py-1 rounded-full border border-amber-300 shrink-0';
+            } else {
+                pmkusum.innerText = 'Not Applied';
+                pmkusum.className = 'text-xs font-extrabold bg-slate-200 text-slate-800 px-3 py-1 rounded-full border border-slate-300 shrink-0';
+            }
+
+            if (smam) {
+                if (category === 'scst' || category === 'women') {
+                    smam.innerText = '50% Higher Subsidy Approved';
+                    smam.className = 'text-xs font-extrabold bg-blue-200 text-blue-900 px-3 py-1 rounded-full border border-blue-300 shrink-0';
+                } else {
+                    smam.innerText = '40% Standard Grant Ready';
+                    smam.className = 'text-xs font-extrabold bg-blue-100 text-blue-800 px-3 py-1 rounded-full border border-blue-200 shrink-0';
+                }
+            }
+        }
+
+        // TUTORIAL VIDEO & MODULE UPDATE ENGINE
+        function updateTutorialVideo() {
+            const lang = document.getElementById('tutLangSelect').value;
+            const topic = document.getElementById('tutTopicSelect').value;
+
+            const langNames = {
+                hi: "Hindi",
+                hinglish: "Hinglish",
+                en: "English",
+                kn: "Kannada",
+                te: "Telugu",
+                pa: "Punjabi"
+            };
+
+            const topics = {
+                overview: {
+                    badge: "Selected Topic: Ayush's Guided Website Overview",
+                    title: "Master AgriNayan Co-Pilot in 5 Minutes",
+                    desc: "Learn how to input your village soil details, check daily irrigation alerts, verify PM-KISAN eligibility, and buy tools with subsidy discounts.",
+                    ytQuery: "PM+Kisan+online+apply+2026",
+                    heading: "AgriNayan - Complete Precision Farming Walkthrough"
+                },
+                soil: {
+                    badge: "Selected Topic: Soil Profiler & Crop Allocation",
+                    title: "How to Calculate Multi-Crop Ratio",
+                    desc: "Watch how entering land area and soil type generates a profit-optimized doughnut chart for wheat, mustard, and pulses.",
+                    ytQuery: "soil+testing+and+crop+recommendation+system",
+                    heading: "AI Multi-Crop Allocation & Soil Analysis"
+                },
+                carefarm: {
+                    badge: "Selected Topic: Daily Care Farm Field Inspection",
+                    title: "5-Step Morning Field Checklist Guide",
+                    desc: "Discover how to inspect soil moisture levels, identify early weed growth, and clean drip emitters.",
+                    ytQuery: "drip+irrigation+maintenance+and+pest+inspection",
+                    heading: "Care Farm Daily Field Checklist Tutorial"
+                },
+                bioeconomy: {
+                    badge: "Selected Topic: Stubble & Waste Monetization Blueprint",
+                    title: "Turn Parali Stubble into Bio-Char & Cash",
+                    desc: "Learn how to baler straw, manufacture fuel pellets, or cultivate high-margin Oyster mushrooms.",
+                    ytQuery: "parali+se+biochar+and+mushroom+farming",
+                    heading: "Agricultural Bio-Economy & Stubble Monetization"
+                },
+                bazaar: {
+                    badge: "Selected Topic: AgriBazaar Tool Buying",
+                    title: "How to Buy Subsidized Tools Online",
+                    desc: "Walkthrough of buying digital soil meters, solar pest traps, and battery sprayers with Amazon and BigHaat redirection.",
+                    ytQuery: "solar+light+trap+agriculture+bighaat",
+                    heading: "AgriBazaar Low-Cost Tool Store Walkthrough"
+                },
+                schemes: {
+                    badge: "Selected Topic: Government Subsidy Application",
+                    title: "How to Apply for PM-KISAN & PM-KUSUM Solar",
+                    desc: "Step-by-step tutorial on checking eligibility and navigating directly to official central government portals.",
+                    ytQuery: "pm+kusum+solar+pump+scheme+online+apply",
+                    heading: "PM-KISAN & PM-KUSUM Subsidy Portal Tutorial"
+                }
+            };
+
+            const selected = topics[topic] || topics['overview'];
+
+            document.getElementById('tutLangDisplay').innerText = `Language: ${langNames[lang] || 'Hindi'}`;
+            document.getElementById('tutTopicBadge').innerText = selected.badge;
+            document.getElementById('tutTopicTitle').innerText = selected.title;
+            document.getElementById('tutTopicDesc').innerText = selected.desc;
+            document.getElementById('videoPreviewHeading').innerText = `${selected.heading} (${langNames[lang]})`;
+            document.getElementById('youtubeDirectBtn').href = `https://www.youtube.com/results?search_query=${selected.ytQuery}`;
+        }
+
+        function runAIEngine() {
+            const acres = parseFloat(document.getElementById('landSize').value) || 10;
+            const dict = translations[currentLang] || translations.hinglish;
+
+            const ratios = [60, 25, 15];
+            const names = [
+                dict.cropWheat || "Wheat (Gehun)",
+                dict.cropMustard || "Mustard (Sarson)",
+                "Chana / Gram"
+            ];
+
+            initCropChart(ratios, names);
+
+            const container = document.getElementById('cropLegend');
+            container.innerHTML = '';
+            ratios.forEach((percent, idx) => {
+                const cropAcres = ((acres * percent) / 100).toFixed(1);
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs';
+                row.innerHTML = `<span class="font-bold text-slate-800">${names[idx]}</span><span class="font-extrabold text-agri-800">${cropAcres} Acres (${percent}%)</span>`;
+                container.appendChild(row);
+            });
+        }
+
+        function initCropChart(dataValues, labels) {
+            const ctx = document.getElementById('cropChart').getContext('2d');
+            if (cropChartInstance) cropChartInstance.destroy();
+
+            cropChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: ['#16a34a', '#f59e0b', '#8b5cf6'],
+                        borderWidth: 2
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '65%' }
+            });
+        }
+
+        function toggleSpeechRecognition() {
+            if (isListening) {
+                stopListening();
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Speech recognition is not supported on this browser.");
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.lang = 'hi-IN';
+            
+            recognition.onstart = function() {
+                isListening = true;
+                document.getElementById('micStatusText').innerText = "Listening...";
+                document.getElementById('modalMicBtn').classList.add('pulse-mic');
+            };
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('userSpokenText').innerText = `"${transcript}"`;
+                
+                let reply = "Aapke 10 acre khet ke liye 6 acre gehun aur 2.5 acre sarson sabse zyada munafa degi.";
+                if (transcript.includes('mandi') || transcript.includes('rate')) {
+                    reply = "Aaj Khanna mandi me gehun 2350 rupaye prati quintal hai.";
+                }
+                document.getElementById('aiSpokenReply').innerText = reply;
+                speakText(reply);
+            };
+
+            recognition.onend = stopListening;
+            recognition.start();
+        }
+
+        function stopListening() {
+            isListening = false;
+            if (recognition) recognition.stop();
+            document.getElementById('modalMicBtn').classList.remove('pulse-mic');
+            document.getElementById('micStatusText').innerText = "Click mic to start speaking...";
+        }
+
+        function openVoiceModal() {
+            document.getElementById('voiceModal').classList.remove('hidden');
+        }
+
+        function closeVoiceModal() {
+            synth.cancel();
+            stopListening();
+            document.getElementById('voiceModal').classList.add('hidden');
+        }
+
+        function startFormVoiceInput() {
+            openVoiceModal();
+            setTimeout(toggleSpeechRecognition, 300);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-agri-700', 'bg-agri-50', 'border', 'border-agri-200', 'font-semibold');
+                btn.classList.add('text-slate-600', 'font-medium');
+            });
+
+            const activeBtn = document.getElementById('nav-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('text-agri-700', 'bg-agri-50', 'border', 'border-agri-200', 'font-semibold');
+                activeBtn.classList.remove('text-slate-600', 'font-medium');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onload = function() {
+            runAIEngine();
+            changeLanguage('hinglish');
+            updateTutorialVideo();
+        };
+    </script>
+</body>
+</html>
