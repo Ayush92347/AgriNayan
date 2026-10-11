@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AgriNayan - AI Precision Farming Co-Pilot</title>
+    <title>AgriNayan - AI Precision Farming & Expanded Bio-Economy Co-Pilot</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -52,14 +52,13 @@
         .pulse-mic { animation: pulseGlow 1.5s infinite; }
         @keyframes pulseGlow {
             0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-            70% { box-shadow: 0 0 0 16px rgba(34, 197, 94, 0); }
+            70% { box-shadow: 0 0 0 18px rgba(34, 197, 94, 0); }
             100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        /* Mobile padding fix for bottom navbar */
-        body { padding-bottom: 70px; }
+        body { padding-bottom: 75px; }
         @media (min-width: 768px) { body { padding-bottom: 0px; } }
     </style>
 </head>
@@ -80,29 +79,18 @@
             </div>
             
             <div class="flex items-center space-x-2">
-                <!-- VOICE PERSONA -->
-                <div class="hidden sm:flex items-center bg-slate-900 border border-agri-700/60 rounded-lg px-2 py-1">
-                    <i class="fa-solid fa-user-check text-emerald-400 mr-1 text-xs"></i>
-                    <select id="voicePersonaSelect" onchange="setVoicePersona(this.value)" class="bg-slate-900 text-xs text-emerald-300 font-bold focus:outline-none cursor-pointer py-0.5 border-none">
-                        <option value="ramesh">Ramesh Bhaiya (Hindi/Hinglish)</option>
-                        <option value="priya">Agri Didi Priya (Soft)</option>
-                        <option value="gurpreet">Kisan Guru Gurpreet (Punjabi)</option>
-                        <option value="srinivas">Raitu Mitra Srinivas (Telugu)</option>
-                    </select>
-                </div>
-
                 <button onclick="speakCurrentSowingAlert()" class="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition text-xs font-bold shadow-sm">
                     <i class="fa-solid fa-volume-high animate-pulse"></i>
                     <span data-i18n="voiceBtn">Audio Alert</span>
                 </button>
 
-                <!-- DYNAMIC MULTI-LANGUAGE SELECTOR -->
+                <!-- DYNAMIC 11-LANGUAGE SELECTOR -->
                 <div class="flex items-center bg-slate-900 border border-emerald-500/60 rounded-lg px-2 py-1 shadow-md">
                     <i class="fa-solid fa-globe text-emerald-400 mr-1"></i>
                     <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-slate-900 text-xs text-emerald-300 font-bold focus:outline-none cursor-pointer py-0.5 border-none">
-                        <option value="hinglish" selected>Hinglish (Hindi + English)</option>
-                        <option value="hi">हिन्दी (Hindi)</option>
                         <option value="en">English</option>
+                        <option value="hinglish" selected>Hinglish</option>
+                        <option value="hi">हिन्दी (Hindi)</option>
                         <option value="kn">ಕನ್ನಡ (Kannada)</option>
                         <option value="te">తెలుగు (Telugu)</option>
                         <option value="ta">தமிழ் (Tamil)</option>
@@ -153,9 +141,9 @@
                 </div>
 
                 <div class="hidden sm:flex items-center space-x-2">
-                    <button onclick="openVoiceModal()" class="bg-gradient-to-r from-agri-600 to-agri-800 hover:from-agri-700 hover:to-agri-900 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-md transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-microphone text-emerald-300"></i>
-                        <span data-i18n="speakQuestion">Speak Question</span>
+                    <button onclick="openVoiceModal()" class="bg-gradient-to-r from-agri-600 to-agri-800 hover:from-agri-700 hover:to-agri-900 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-md transition flex items-center gap-1.5 border border-emerald-400/40">
+                        <i class="fa-solid fa-microphone text-emerald-300 animate-pulse"></i>
+                        <span data-i18n="speakQuestion">AgriNayan Bol</span>
                     </button>
                 </div>
             </div>
@@ -239,8 +227,8 @@
                             <i class="fa-solid fa-map-location-dot text-agri-600"></i>
                             <span data-i18n="profilerTitle">Mitti & Zameen Profiler</span>
                         </h2>
-                        <button onclick="startFormVoiceInput()" class="flex items-center gap-1 bg-agri-50 hover:bg-agri-100 text-agri-700 border border-agri-200 px-2.5 py-1 rounded-lg text-xs font-bold transition">
-                            <i class="fa-solid fa-microphone text-agri-600"></i> <span data-i18n="speakInput">Voice Input</span>
+                        <button onclick="openVoiceModal()" class="flex items-center gap-1 bg-agri-50 hover:bg-agri-100 text-agri-700 border border-agri-200 px-2.5 py-1 rounded-lg text-xs font-bold transition">
+                            <i class="fa-solid fa-microphone text-agri-600"></i> <span data-i18n="speakInput">AgriNayan Bol</span>
                         </button>
                     </div>
 
@@ -248,11 +236,11 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1" data-i18n="villageLabel">Village / Gaon</label>
-                                <input type="text" id="profVillage" value="Rampur" placeholder="e.g. Rampur" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-agri-500 focus:outline-none">
+                                <input type="text" id="profVillage" value="Rampur" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-agri-500 focus:outline-none">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1" data-i18n="districtLabel">District / Zila</label>
-                                <input type="text" id="profDistrict" value="Varanasi" placeholder="e.g. Varanasi" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-agri-500 focus:outline-none">
+                                <input type="text" id="profDistrict" value="Varanasi" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-agri-500 focus:outline-none">
                             </div>
                         </div>
 
@@ -260,18 +248,18 @@
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1" data-i18n="soilLabel">Soil Type</label>
                                 <select id="soilType" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-2.5 py-2 text-xs font-semibold focus:ring-2 focus:ring-agri-500 focus:outline-none">
-                                    <option value="Loam" data-i18n="soilLoam">Loam Soil (Domat / Matiyar)</option>
+                                    <option value="Loam" data-i18n="soilLoam">Loam Soil (Domat)</option>
                                     <option value="Clay" data-i18n="soilClay">Clay Soil (Kali Chikni)</option>
-                                    <option value="Sandy" data-i18n="soilSandy">Sandy Loam (Balui Domat)</option>
+                                    <option value="Sandy" data-i18n="soilSandy">Sandy Loam (Balui)</option>
                                     <option value="Alluvial" data-i18n="soilAlluvial">Alluvial Soil (Jalodh)</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1" data-i18n="seasonLabel">Planting Season</label>
                                 <select id="seasonType" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-2.5 py-2 text-xs font-semibold focus:ring-2 focus:ring-agri-500 focus:outline-none">
-                                    <option value="Rabi" selected data-i18n="seasonRabi">Rabi (Winter - Rabi)</option>
-                                    <option value="Kharif" data-i18n="seasonKharif">Kharif (Monsoon - Kharif)</option>
-                                    <option value="Zaid" data-i18n="seasonZaid">Zaid (Summer - Zaid)</option>
+                                    <option value="Rabi" selected data-i18n="seasonRabi">Rabi (Winter)</option>
+                                    <option value="Kharif" data-i18n="seasonKharif">Kharif (Monsoon)</option>
+                                    <option value="Zaid" data-i18n="seasonZaid">Zaid (Summer)</option>
                                 </select>
                             </div>
                         </div>
@@ -433,50 +421,165 @@
 
         <section id="tab-bioeconomy" class="tab-content hidden py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             <div class="bg-gradient-to-r from-earth-800 via-earth-700 to-agri-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl">
-                <span class="bg-amber-400/20 text-amber-300 text-xs font-bold px-3 py-1 rounded-full border border-amber-400/30 uppercase" data-i18n="bioTag">Waste Monetization Blueprint</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2 font-display" data-i18n="bioTitle">Sustainability & Agricultural Bio-Economy</h2>
-                <p class="text-slate-200 text-xs sm:text-sm mt-1 max-w-2xl" data-i18n="bioSubtitle">Turn farm waste (stubble/parali/husks) into additional revenue streams instead of burning it.</p>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <span class="bg-amber-400/20 text-amber-300 text-xs font-bold px-3 py-1 rounded-full border border-amber-400/30 uppercase" data-i18n="bioTag">Waste Monetization Blueprint</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2 font-display" data-i18n="bioTitle">Sustainability & Agricultural Bio-Economy</h2>
+                        <p class="text-slate-200 text-xs sm:text-sm mt-1 max-w-2xl" data-i18n="bioSubtitle">Turn farm waste (stubble/parali/husks) into additional revenue streams instead of burning it. Click any card below to view the full operational blueprint & financial ROI.</p>
+                    </div>
+                    <div class="bg-slate-900/80 backdrop-blur-md p-3.5 rounded-2xl border border-amber-400/30 text-right">
+                        <span class="text-xs text-slate-400 font-bold block">Central Subsidy Coverage</span>
+                        <span class="text-base font-extrabold text-amber-300">50% - 80% Capital Grants</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- MODEL 1 CARD -->
+                <div onclick="openBioModal('biochar')" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between space-y-4 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-bl-full group-hover:scale-110 transition"></div>
                     <div class="space-y-3">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl font-bold">
-                            <i class="fa-solid fa-fire-flame-simple"></i>
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl font-bold shadow-sm">
+                                <i class="fa-solid fa-fire-flame-simple"></i>
+                            </div>
+                            <span class="text-[10px] font-extrabold uppercase bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full border border-amber-200">High Demand</span>
                         </div>
-                        <h3 class="font-extrabold text-slate-900 text-base" data-i18n="bio1Title">1. Stubble to Bio-Char & Pellets</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="bio1Desc">Collect paddy straw using balers and sell directly to local bio-power plants or compress into fuel pellets.</p>
+                        <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-agri-600 transition" data-i18n="bio1Title">1. Stubble to Bio-Char & Pellets</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="bio1Desc">Collect paddy straw using balers and sell directly to local thermal power plants or compress into high-calorific fuel pellets.</p>
                     </div>
-                    <div class="pt-3 border-t border-slate-100">
-                        <span class="text-xs font-extrabold text-amber-800 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200 block text-center" data-i18n="bio1Rev">Est. Revenue: ₹1,800 - ₹2,500 / Ton</span>
+                    <div class="space-y-2 pt-3 border-t border-slate-100">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-500 font-semibold">Net Profit:</span>
+                            <span class="font-bold text-amber-800" data-i18n="bio1Rev">₹1,800 - ₹2,500 / Ton</span>
+                        </div>
+                        <button class="w-full bg-slate-900 hover:bg-agri-700 text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm">
+                            <span>View Full Blueprint & ROI</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+                <!-- MODEL 2 CARD -->
+                <div onclick="openBioModal('mushroom')" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between space-y-4 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full group-hover:scale-110 transition"></div>
                     <div class="space-y-3">
-                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold">
-                            <i class="fa-solid fa-stroopwafel"></i>
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold shadow-sm">
+                                <i class="fa-solid fa-stroopwafel"></i>
+                            </div>
+                            <span class="text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-900 px-2.5 py-1 rounded-full border border-emerald-200">Quick Yield (25 Days)</span>
                         </div>
-                        <h3 class="font-extrabold text-slate-900 text-base" data-i18n="bio2Title">2. Paddy Straw Mushroom Bedding</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="bio2Desc">Reuse sterilized wheat and rice straw as substrate beds to grow high-margin Oyster mushrooms.</p>
+                        <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-agri-600 transition" data-i18n="bio2Title">2. Paddy Straw Mushroom Bedding</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="bio2Desc">Reuse sterilized wheat and rice straw as substrate beds to grow high-margin Oyster & Milky mushrooms with minimal water.</p>
                     </div>
-                    <div class="pt-3 border-t border-slate-100">
-                        <span class="text-xs font-extrabold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200 block text-center" data-i18n="bio2Rev">Est. Revenue: ₹120 - ₹180 / Kg</span>
+                    <div class="space-y-2 pt-3 border-t border-slate-100">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-500 font-semibold">Market Rate:</span>
+                            <span class="font-bold text-emerald-800" data-i18n="bio2Rev">₹120 - ₹180 / Kg</span>
+                        </div>
+                        <button class="w-full bg-slate-900 hover:bg-agri-700 text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm">
+                            <span>View Full Blueprint & ROI</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+                <!-- MODEL 3 CARD -->
+                <div onclick="openBioModal('vermi')" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between space-y-4 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full group-hover:scale-110 transition"></div>
                     <div class="space-y-3">
-                        <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-xl font-bold">
-                            <i class="fa-solid fa-worm"></i>
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-xl font-bold shadow-sm">
+                                <i class="fa-solid fa-worm"></i>
+                            </div>
+                            <span class="text-[10px] font-extrabold uppercase bg-purple-100 text-purple-900 px-2.5 py-1 rounded-full border border-purple-200">Organic Fertilizer</span>
                         </div>
-                        <h3 class="font-extrabold text-slate-900 text-base" data-i18n="bio3Title">3. Organic Vermicomposting</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="bio3Desc">Convert decomposing leaves and husk into nutrient-dense organic fertilizer using Eisenia fetida earthworms.</p>
+                        <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-agri-600 transition" data-i18n="bio3Title">3. Premium Vermicomposting & Vermiwash</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="bio3Desc">Convert decomposing leaves, husk, and cow dung into nutrient-dense organic fertilizer and liquid vermiwash spray using earthworms.</p>
                     </div>
-                    <div class="pt-3 border-t border-slate-100">
-                        <span class="text-xs font-extrabold text-purple-800 bg-purple-50 px-3 py-1 rounded-xl border border-purple-200 block text-center" data-i18n="bio3Rev">Est. Revenue: ₹8 - ₹12 / Kg</span>
+                    <div class="space-y-2 pt-3 border-t border-slate-100">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-500 font-semibold">Organic Rate:</span>
+                            <span class="font-bold text-purple-800" data-i18n="bio3Rev">₹8 - ₹12 / Kg</span>
+                        </div>
+                        <button class="w-full bg-slate-900 hover:bg-agri-700 text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm">
+                            <span>View Full Blueprint & ROI</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
                     </div>
                 </div>
+
+                <!-- MODEL 4 CARD -->
+                <div onclick="openBioModal('cbg')" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between space-y-4 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full group-hover:scale-110 transition"></div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-xl font-bold shadow-sm">
+                                <i class="fa-solid fa-gas-pump"></i>
+                            </div>
+                            <span class="text-[10px] font-extrabold uppercase bg-blue-100 text-blue-900 px-2.5 py-1 rounded-full border border-blue-200">SATAT Scheme</span>
+                        </div>
+                        <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-agri-600 transition">4. Compressed Biogas (CBG / Bio-CNG)</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Process paddy straw through anaerobic digestion to supply high-purity compressed biogas directly to PSU oil marketing companies.</p>
+                    </div>
+                    <div class="space-y-2 pt-3 border-t border-slate-100">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-500 font-semibold">Govt Off-Take Rate:</span>
+                            <span class="font-bold text-blue-800">₹46 - ₹54 / Kg CBG</span>
+                        </div>
+                        <button class="w-full bg-slate-900 hover:bg-agri-700 text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm">
+                            <span>View Full Blueprint & ROI</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MODEL 5 CARD -->
+                <div onclick="openBioModal('silage')" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between space-y-4 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-teal-500/5 rounded-bl-full group-hover:scale-110 transition"></div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center text-xl font-bold shadow-sm">
+                                <i class="fa-solid fa-cow"></i>
+                            </div>
+                            <span class="text-[10px] font-extrabold uppercase bg-teal-100 text-teal-900 px-2.5 py-1 rounded-full border border-teal-200">Dairy Feed Demand</span>
+                        </div>
+                        <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-agri-600 transition">5. Paddy Straw Silage & Fodder Blocks</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Treat paddy straw with urea, molasses, and mineral mixture to produce high-digestibility silage blocks for commercial dairy farms.</p>
+                    </div>
+                    <div class="space-y-2 pt-3 border-t border-slate-100">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-500 font-semibold">Feed Block Price:</span>
+                            <span class="font-bold text-teal-800">₹4 - ₹6 / Kg Feed</span>
+                        </div>
+                        <button class="w-full bg-slate-900 hover:bg-agri-700 text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm">
+                            <span>View Full Blueprint & ROI</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MODEL 6 CARD -->
+                <div onclick="openBioModal('pulp')" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between space-y-4 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-bl-full group-hover:scale-110 transition"></div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl font-bold shadow-sm">
+                                <i class="fa-solid fa-box-open"></i>
+                            </div>
+                            <span class="text-[10px] font-extrabold uppercase bg-indigo-100 text-indigo-900 px-2.5 py-1 rounded-full border border-indigo-200">Eco-Packaging</span>
+                        </div>
+                        <h3 class="font-extrabold text-slate-900 text-lg group-hover:text-agri-600 transition">6. Agri-Paper Pulp & Eco-Packaging</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Extract cellulose fiber from agricultural waste straw to supply corrugated paper mills and biodegradable tableware factories.</p>
+                    </div>
+                    <div class="space-y-2 pt-3 border-t border-slate-100">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-500 font-semibold">Pulp Sale Value:</span>
+                            <span class="font-bold text-indigo-800">₹14 - ₹20 / Kg Pulp</span>
+                        </div>
+                        <button class="w-full bg-slate-900 hover:bg-agri-700 text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm">
+                            <span>View Full Blueprint & ROI</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -823,7 +926,6 @@
         </button>
     </div>
 
-    <!-- VOICE MODAL -->
     <div id="voiceModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-agri-600/40 w-full max-w-xl rounded-3xl p-6 text-white shadow-2xl relative">
             <button onclick="closeVoiceModal()" class="absolute right-5 top-5 p-2 text-slate-400 hover:text-white rounded-full bg-slate-800">
@@ -832,10 +934,10 @@
 
             <div class="text-center mb-4">
                 <span class="inline-flex items-center gap-1.5 bg-agri-500/20 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold mb-2">
-                    <i class="fa-solid fa-sparkles"></i> Interactive Voice Assistant
+                    <i class="fa-solid fa-sparkles"></i> Interactive AI Voice Co-Pilot
                 </span>
                 <h3 class="text-2xl font-extrabold font-display text-white">AgriNayan Bol / Suno</h3>
-                <p class="text-slate-400 text-xs mt-1">Speak your question in Hinglish or regional language.</p>
+                <p class="text-slate-400 text-xs mt-1">Speak or select a quick query in your language.</p>
             </div>
 
             <div class="bg-slate-950 rounded-2xl p-6 border border-slate-800 flex flex-col items-center justify-center text-center space-y-4 my-3">
@@ -844,25 +946,209 @@
                 </button>
 
                 <div id="voiceListeningState" class="h-5">
-                    <span class="text-xs font-semibold text-slate-400" id="micStatusText">Click mic to start speaking...</span>
+                    <span class="text-xs font-semibold text-slate-400" id="micStatusText">Click mic to speak query...</span>
                 </div>
 
                 <div class="w-full bg-slate-900 p-3.5 rounded-xl text-left border border-slate-800 text-xs space-y-2">
                     <div>
-                        <span class="text-slate-500 font-bold block">You Said:</span>
-                        <p id="userSpokenText" class="text-emerald-300 font-semibold italic">"..."</p>
+                        <span class="text-slate-500 font-bold block">You Asked:</span>
+                        <p id="userSpokenText" class="text-emerald-300 font-semibold italic">"Gehun aur sarson ki bijai kab karein?"</p>
                     </div>
                     <div class="pt-2 border-t border-slate-800">
-                        <span class="text-slate-500 font-bold block">Co-Pilot Reply:</span>
-                        <p id="aiSpokenReply" class="text-slate-200 font-medium leading-relaxed">Main taiyar hoon. Boliye aap kya poochna chahte hain?</p>
+                        <span class="text-slate-500 font-bold block">AgriNayan AI Co-Pilot:</span>
+                        <p id="aiSpokenReply" class="text-slate-200 font-medium leading-relaxed">Agle 3 din Gehun aur Sarson ke liye perfect hain! Khet me 78% nami hai.</p>
+                    </div>
+                </div>
+
+                <div class="w-full pt-2">
+                    <span class="text-[11px] text-slate-400 font-bold block mb-2 text-left">Quick Query Buttons:</span>
+                    <div class="grid grid-cols-2 gap-2 text-left">
+                        <button onclick="handleQuickQuery('weather')" class="bg-slate-800 hover:bg-slate-700 text-xs p-2 rounded-lg text-emerald-300 border border-slate-700">🌧️ Weather & Sowing</button>
+                        <button onclick="handleQuickQuery('fertilizer')" class="bg-slate-800 hover:bg-slate-700 text-xs p-2 rounded-lg text-amber-300 border border-slate-700">🌱 Fertilizer & NPK</button>
+                        <button onclick="handleQuickQuery('pmkisan')" class="bg-slate-800 hover:bg-slate-700 text-xs p-2 rounded-lg text-purple-300 border border-slate-700">🏛️ PM-KISAN Money</button>
+                        <button onclick="handleQuickQuery('stubble')" class="bg-slate-800 hover:bg-slate-700 text-xs p-2 rounded-lg text-teal-300 border border-slate-700">♻️ Stubble Income</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="bioModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-white w-full max-w-3xl rounded-3xl p-5 sm:p-8 text-slate-900 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto border border-slate-200 custom-scrollbar">
+            <button onclick="closeBioModal()" class="absolute right-5 top-5 w-9 h-9 flex items-center justify-center text-slate-500 hover:text-slate-900 rounded-full bg-slate-100 hover:bg-slate-200 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="flex items-center space-x-3 mb-4">
+                <div id="bioModalIcon" class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl font-bold shadow-sm">
+                    <i class="fa-solid fa-fire-flame-simple"></i>
+                </div>
+                <div>
+                    <span id="bioModalTag" class="text-[10px] font-extrabold uppercase bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full border border-amber-200">High Demand</span>
+                    <h3 id="bioModalTitle" class="text-xl sm:text-2xl font-extrabold font-display text-slate-900 mt-1">Bio-Char & Thermal Fuel Pellets Blueprint</h3>
+                </div>
+            </div>
+
+            <p id="bioModalOverview" class="text-xs sm:text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-6">
+                Operational model for converting unburnt paddy straw into high-calorific fuel pellets and bio-char soil conditioner.
+            </p>
+
+            <div class="space-y-6">
+                
+                <!-- WORKFLOW -->
+                <div>
+                    <h4 class="font-extrabold text-slate-900 text-sm uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                        <i class="fa-solid fa-diagram-project text-agri-600"></i> 4-Step Operational Workflow
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="bioModalWorkflow">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- ROI & FINANCIALS -->
+                <div class="bg-slate-900 text-white rounded-2xl p-5 border border-slate-800 space-y-3">
+                    <h4 class="font-extrabold text-emerald-400 text-sm uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-calculator text-emerald-400"></i> Financial ROI & Profit Breakdown
+                    </h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs" id="bioModalFinancials">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- MACHINERY REQUIRED -->
+                <div>
+                    <h4 class="font-extrabold text-slate-900 text-sm uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                        <i class="fa-solid fa-screwdriver-wrench text-amber-600"></i> Required Machinery & Hardware
+                    </h4>
+                    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700" id="bioModalMachinery">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+
+                <!-- BUYER CHANNELS & SUBSIDIES -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
+                        <h5 class="font-bold text-emerald-900 text-xs uppercase mb-2 flex items-center gap-1">
+                            <i class="fa-solid fa-handshake"></i> Target Buyers & Off-Takers
+                        </h5>
+                        <p id="bioModalBuyers" class="text-xs text-emerald-800 leading-relaxed">Local Thermal Power Stations, FPOs, Industrial Boilers.</p>
+                    </div>
+
+                    <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200">
+                        <h5 class="font-bold text-amber-900 text-xs uppercase mb-2 flex items-center gap-1">
+                            <i class="fa-solid fa-building-columns"></i> Government Subsidies & Grants
+                        </h5>
+                        <p id="bioModalSubsidies" class="text-xs text-amber-800 leading-relaxed">50% Capital Grant under Central SMAM & SATAT Schemes.</p>
+                    </div>
+                </div>
+
+                <!-- QUALITY STANDARDS -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h5 class="font-bold text-slate-900 text-xs uppercase mb-1 flex items-center gap-1">
+                        <i class="fa-solid fa-shield-check text-indigo-600"></i> Quality & Safety Compliance Standards
+                    </h5>
+                    <p id="bioModalQuality" class="text-xs text-slate-600 leading-relaxed">Moisture &lt; 10%, Calorific value &gt; 3800 kcal/kg, zero sand contamination.</p>
+                </div>
+
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+                <button onclick="closeBioModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md transition">
+                    Close Blueprint Details
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const translations = {
+            en: {
+                topTag: "AgriNayan AI Co-Pilot",
+                helpline: "Toll-Free Helpline: 1800-AGRI-NAYAN (1800-247-4620)",
+                voiceBtn: "Audio Alert",
+                tagline: "Precision Farming Co-Pilot",
+                navDash: "Dashboard",
+                navCareFarm: "View Care Farm",
+                navBioEconomy: "Bio-Economy",
+                navBazaar: "AgriBazaar",
+                navSchemes: "Govt Schemes",
+                navTutorial: "Website Guide",
+                speakQuestion: "AgriNayan Bol",
+                demoBarTitle: "Quick Test Mode:",
+                demoBarSub: "Click to pre-fill sample farm data for Ramesh Kumar (Rampur, UP).",
+                btnLoadDemo: "Load Demo Farmer Data",
+                ayushGuideTitle: "Ayush's Platform Guide",
+                ayushGuideBody: "Welcome to AgriNayan! Use the tabs to test soil allocation, view daily farm care checklists, verify Govt subsidies, or monetize stubble.",
+                btnWatchTutorial: "Watch Tutorial",
+                activeStatus: "Active Field Monitoring",
+                dashTitle: "Smart AI Precision Farming Co-Pilot",
+                dashSubtitle: "Enter soil details and land size to receive instant crop allocation ratios, live Mandi rates, and regional audio advisories.",
+                sowingWindowTitle: "Sowing Window Alert",
+                perfectBadge: "Perfect Window",
+                sowingAdvice: "The next 3 days are ideal for sowing Wheat and Mustard! Topsoil moisture is 78% with a 24°C temperature.",
+                listenSowing: "Listen Audio Alert",
+                profilerTitle: "Mitti & Zameen Profiler",
+                speakInput: "AgriNayan Bol",
+                villageLabel: "Village Name",
+                districtLabel: "District Name",
+                soilLabel: "Soil Type",
+                soilLoam: "Loam Soil",
+                soilClay: "Clay Soil",
+                soilSandy: "Sandy Loam",
+                soilAlluvial: "Alluvial Soil",
+                seasonLabel: "Planting Season",
+                seasonRabi: "Rabi (Winter)",
+                seasonKharif: "Kharif (Monsoon)",
+                seasonZaid: "Zaid (Summer)",
+                landSizeLabel: "Land Area (Acres)",
+                budgetLabel: "Farmer Budget (₹)",
+                waterLabel: "Water Source",
+                waterHigh: "Tubewell + Canal (Full Water)",
+                waterMed: "Precision Drip (Medium)",
+                waterLow: "Rainfed Only",
+                btnCalcStrategy: "Generate AI Multi-Crop Plan",
+                chartTitle: "Multi-Crop Land Allocation Ratio",
+                profitBadge: "Estimated Profit: +38.5%",
+                copilotInsight: "Co-Pilot Audio Insight:",
+                cropInsightText: "Intercropping 60% Wheat and 25% Mustard maintains soil nitrogen balance and reduces pest risks by 40%.",
+                mandiTitle: "Live Mandi Crop Prices",
+                cropWheat: "Wheat (HD-3086)",
+                cropMustard: "Mustard (Pusa)",
+                cropStubble: "Paddy Stubble / Parali",
+                careBadge: "Daily Field Monitoring",
+                careTitle: "View Care Farm - Daily Checklist",
+                careSubtitle: "Inspect your farm daily using this precision guide to prevent pest attacks and crop loss.",
+                progressLabel: "Checklist Completion",
+                chk1Title: "1. Field Cleanliness & Stubble Residue Check",
+                chk1Sub: "Inspect crop rows and drainage lines for plastic waste or fungal decay on leftover stubble.",
+                chk2Title: "2. Topsoil Moisture Level Inspection",
+                chk2Sub: "Ensure the top 2 inches of soil are moist. Irrigate only if moisture drops below 40%.",
+                chk3Title: "3. Weed Growth & Inter-crop Spacing Check",
+                chk3Sub: "Identify early weed sprouts between primary and secondary crop rows before they absorb fertilizer.",
+                chk4Title: "4. Drip Pipe Emitters & Motor Health",
+                chk4Sub: "Check irrigation pump pressure, solar inverter battery, and flush clogged drip nozzles.",
+                chk5Title: "5. Early Pest Attack & Yellow Rust Leaf Inspection",
+                chk5Sub: "Check leaf undersides for aphid colonies or yellow rust spots during morning hours for early prevention.",
+                bioTag: "Waste Monetization Blueprint",
+                bioTitle: "Sustainability & Agricultural Bio-Economy",
+                bioSubtitle: "Turn farm waste (stubble/parali/husks) into additional revenue streams instead of burning it.",
+                bio1Title: "1. Stubble to Bio-Char & Pellets",
+                bio1Desc: "Collect paddy straw using balers and sell directly to local bio-power plants or compress into fuel pellets.",
+                bio1Rev: "Est. Revenue: ₹1,800 - ₹2,500 / Ton",
+                bio2Title: "2. Paddy Straw Mushroom Bedding",
+                bio2Desc: "Reuse sterilized wheat and rice straw as substrate beds to grow high-margin Oyster mushrooms.",
+                bio2Rev: "Est. Revenue: ₹120 - ₹180 / Kg",
+                bio3Title: "3. Organic Vermicomposting",
+                bio3Desc: "Convert decomposing leaves and husk into nutrient-dense organic fertilizer using Eisenia fetida earthworms.",
+                bio3Rev: "Est. Revenue: ₹8 - ₹12 / Kg",
+                bazaarTitle: "AgriBazaar: Low-Cost Tools & Direct Listings",
+                bazaarSubtitle: "Purchase genuine tools directly from Amazon, BigHaat, and Moglix with subsidy tags.",
+                schemesTitle: "Government Schemes & Subsidy Eligibility Checker",
+                schemesSub: "Check your instant eligibility and click to visit official Govt portals (PM-KISAN, PM-KUSUM, Soil Health Card, SMAM).",
+                verifierTitle: "Eligibility Verification Form",
+                tutTitle: "How AgriNayan Works - Website Tutorial Guide",
+                tutSubtitle: "Select your preferred audio/video language and module topic to watch interactive tutorials."
+            },
             hinglish: {
                 topTag: "AgriNayan AI Co-Pilot",
                 helpline: "Toll-Free Helpline: 1800-AGRI-NAYAN (1800-247-4620)",
@@ -874,7 +1160,7 @@
                 navBazaar: "AgriBazaar",
                 navSchemes: "Govt Schemes",
                 navTutorial: "Website Guide",
-                speakQuestion: "Speak Question",
+                speakQuestion: "AgriNayan Bol",
                 demoBarTitle: "Quick Test Mode:",
                 demoBarSub: "Click to pre-fill sample farm data for Ramesh Kumar (Rampur, UP).",
                 btnLoadDemo: "Load Demo Farmer Data",
@@ -889,18 +1175,18 @@
                 sowingAdvice: "Agle 3 din Gehun aur Sarson ki bijai ke liye perfect hain! Mitti me 78% nami aur 24°C temp hai.",
                 listenSowing: "Listen Audio Alert",
                 profilerTitle: "Mitti & Zameen Profiler",
-                speakInput: "Voice Input",
+                speakInput: "AgriNayan Bol",
                 villageLabel: "Village / Gaon",
                 districtLabel: "District / Zila",
                 soilLabel: "Soil Type",
-                soilLoam: "Loam Soil (Domat / Matiyar)",
+                soilLoam: "Loam Soil (Domat)",
                 soilClay: "Clay Soil (Kali Chikni)",
-                soilSandy: "Sandy Loam (Balui Domat)",
+                soilSandy: "Sandy Loam (Balui)",
                 soilAlluvial: "Alluvial Soil (Jalodh)",
                 seasonLabel: "Planting Season",
-                seasonRabi: "Rabi (Winter - Rabi)",
-                seasonKharif: "Kharif (Monsoon - Kharif)",
-                seasonZaid: "Zaid (Summer - Zaid)",
+                seasonRabi: "Rabi (Winter)",
+                seasonKharif: "Kharif (Monsoon)",
+                seasonZaid: "Zaid (Summer)",
                 landSizeLabel: "Land Area (Acres)",
                 budgetLabel: "Farmer Budget (₹)",
                 waterLabel: "Water Source (Paani Ki Suvidha)",
@@ -961,7 +1247,7 @@
                 navBazaar: "कृषि बाज़ार",
                 navSchemes: "सरकारी योजनाएं",
                 navTutorial: "वेबसाइट गाइड",
-                speakQuestion: "प्रश्न बोलें",
+                speakQuestion: "कृषि नयन बोलें",
                 demoBarTitle: "त्वरित परीक्षण मोड:",
                 demoBarSub: "रमेश कुमार (रामपुर, यूपी) के लिए नमूना डेटा भरने के लिए क्लिक करें।",
                 btnLoadDemo: "डेमो किसान डेटा भरें",
@@ -976,9 +1262,9 @@
                 sowingAdvice: "अगले 3 दिन गेहूं और सरसों की बुवाई के लिए उत्तम हैं! मिट्टी में 78% नमी और 24°C तापमान है।",
                 listenSowing: "ऑडियो अलर्ट सुनें",
                 profilerTitle: "मिट्टी और भूमि प्रोफाइलर",
-                speakInput: "वॉयस इनपुट",
-                villageLabel: "गांव",
-                districtLabel: "जिला",
+                speakInput: "कृषि नयन बोलें",
+                villageLabel: "गांव का नाम",
+                districtLabel: "जिले का नाम",
                 soilLabel: "मिट्टी का प्रकार",
                 soilLoam: "दोमट मिट्टी",
                 soilClay: "चिकनी मिट्टी",
@@ -1036,112 +1322,187 @@
                 verifierTitle: "पात्रता सत्यापन फॉर्म",
                 tutTitle: "कृषि नयन कैसे काम करता है - गाइड",
                 tutSubtitle: "वीडियो भाषा और विषय चुनकर विस्तृत गाइड देखें।"
-            },
-            kn: {
-                topTag: "ಅಗ್ರಿ‌ನಯನ್ AI ಸಹಾಯಕ",
-                helpline: "ಉಚಿತ ಸಹಾಯವಾಣಿ: 1800-AGRI-NAYAN (1800-247-4620)",
-                voiceBtn: "ಆಡಿಯೋ ಎಚ್ಚರಿಕೆ",
-                tagline: "ನಿಖರ ಕೃಷಿ ಸಹ-ಪೈಲಟ್",
-                navDash: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
-                navCareFarm: "ಕೇರ್ ಫಾರ್ಮ್ ನೋಡಿ",
-                navBioEconomy: "ಬಯೋ-ಎಕಾನಮಿ",
-                navBazaar: "ಅಗ್ರಿ ಬಜಾರ್",
-                navSchemes: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು",
-                navTutorial: "ವೆಬ್‌ಸೈಟ್ ಮಾರ್ಗದರ್ಶಿ",
-                speakQuestion: "ಪ್ರಶ್ನೆ ಕೇಳಿ",
-                demoBarTitle: "ತ್ವರಿತ ಪರೀಕ್ಷಾ ಮೋಡ್:",
-                demoBarSub: "ರಮೇಶ್ ಕುಮಾರ್ ಅವರ ಮಾದರಿ ಡೇಟಾವನ್ನು ತುಂಬಲು ಕ್ಲಿಕ್ ಮಾಡಿ.",
-                btnLoadDemo: "ಡೆಮೊ ರೈತರ ಡೇಟಾ ಲೋಡ್ ಮಾಡಿ",
-                ayushGuideTitle: "ಆಯುಷ್ ಅವರ ಮಾರ್ಗದರ್ಶಿ",
-                ayushGuideBody: "ಅಗ್ರಿ‌ನಯನ್‌ಗೆ ಸ್ವಾಗತ! ಮಣ್ಣಿನ ಹಂಚಿಕೆಯನ್ನು ಪರೀಕ್ಷಿಸಲು ಮತ್ತು ಯೋಜನೆಗಳನ್ನು ಪರಿಶೀಲಿಸಲು ಟ್ಯಾಬ್‌ಗಳನ್ನು ಬಳಸಿ.",
-                btnWatchTutorial: "ಟ್ಯುಟೋರಿಯಲ್ ವೀಕ್ಷಿಸಿ",
-                activeStatus: "ಸಕ್ರಿಯ ಕ್ಷೇತ್ರ ಮೇಲ್ವಿಚಾರಣೆ",
-                dashTitle: "ಸ್ಮಾರ್ಟ್ AI ನಿಖರ ಕೃಷಿ ಸಹ-ಪೈಲಟ್",
-                dashSubtitle: "ಮಣ್ಣಿನ ವಿವರಗಳು ಮತ್ತು ಜಮೀನಿನ ಗಾತ್ರವನ್ನು ನಮೂದಿಸಿ. ಬೆಳೆ ಹಂಚಿಕೆ ಅನುಪಾತ ಮತ್ತು ಮಂಡಿ ದರಗಳನ್ನು ಪಡೆಯಿರಿ.",
-                sowingWindowTitle: "ಬಿತ್ತನೆ ಎಚ್ಚರಿಕೆ (ಸೂಕ್ತ ಸಮಯ)",
-                perfectBadge: "ಉತ್ತಮ ಸಮಯ",
-                sowingAdvice: "ಮುಂದಿನ 3 ದಿನಗಳು ಗೋಧಿ ಮತ್ತು ಸಾಸಿವೆ ಬಿತ್ತನೆಗೆ ಅತ್ಯುತ್ತಮವಾಗಿವೆ! ಮಣ್ಣಿನಲ್ಲಿ 78% ತೇವಾಂಶವಿದೆ.",
-                listenSowing: "ಆಡಿಯೋ ಎಚ್ಚರಿಕೆ ಆಲಿಸಿ",
-                profilerTitle: "ಮಣ್ಣು ಮತ್ತು ಜಮೀನಿನ ಪ್ರೊಫೈಲರ್",
-                speakInput: "ಧ್ವನಿ ನಮೂದು",
-                villageLabel: "ಗ್ರಾಮ",
-                districtLabel: "ಜಿಲ್ಲೆ",
-                soilLabel: "ಮಣ್ಣಿನ ಪ್ರಕಾರ",
-                soilLoam: "ಗೋಡು ಮಣ್ಣು",
-                soilClay: "ಜಿಗುಟು ಮಣ್ಣು",
-                soilSandy: "ಮರಳು ಮಣ್ಣು",
-                soilAlluvial: "ಸರೋವರ ಮಣ್ಣು",
-                seasonLabel: "ಬಿತ್ತನೆ ಋತು",
-                seasonRabi: "ರಬಿ (ಚಳಿಗಾಲ)",
-                seasonKharif: "ಖರೀಫ್ (ಮುಂಗಾರು)",
-                seasonZaid: "ಜೈದ್ (ಬೇಸಿಗೆ)",
-                landSizeLabel: "ಜಮೀನಿನ ವಿಸ್ತೀರ್ಣ (ಎಕರೆ)",
-                budgetLabel: "ರೈತರ ಬಜೆಟ್ (₹)",
-                waterLabel: "ನೀರಿನ ಮೂಲ",
-                waterHigh: "ಕೊಳವೆಬಾವಿ + ಕಾಲುವೆ",
-                waterMed: "ಹನಿ ನೀರಾವರಿ",
-                waterLow: "ಮಳೆ ಆಶ್ರಿತ ಮಾತ್ರ",
-                btnCalcStrategy: "AI ಬೆಳೆ ಯೋಜನೆಯನ್ನು ತಯಾರಿಸಿ",
-                chartTitle: "ಬೆಳೆ ಜಮೀನು ಹಂಚಿಕೆ ಅನುಪಾತ",
-                profitBadge: "ಅಂದಾಜು ಲಾಭ: +38.5%",
-                copilotInsight: "ಸಹ-ಪೈಲಟ್ ಆಡಿಯೋ ಮಾಹಿತಿ:",
-                cropInsightText: "60% ಗೋಧಿ ಮತ್ತು 25% ಸಾಸಿವೆ ಬೆಳೆಯುವುದರಿಂದ ಮಣ್ಣಿನಲ್ಲಿ ನೈಟ್ರೋಜನ್ ಕಾಯ್ದುಕೊಳ್ಳಬಹುದು.",
-                mandiTitle: "ನೇರ ಮಂಡಿ ಬೆಳೆ ದರಗಳು",
-                cropWheat: "ಗೋಧಿ (HD-3086)",
-                cropMustard: "ಸಾಸಿವೆ (ಪೂಸಾ)",
-                cropStubble: "ಭತ್ತದ ಹುಲ್ಲು",
-                careBadge: "ದೈನಂದಿನ ಕ್ಷೇತ್ರ ಮೇಲ್ವಿಚಾರಣೆ",
-                careTitle: "ಕೇರ್ ಫಾರ್ಮ್ - ದೈನಂದಿನ ಪರಿಶೀಲನಾ ಪಟ್ಟಿ",
-                careSubtitle: "ಕೀಟಗಳ ದಾಳಿಯನ್ನು ತಡೆಗಟ್ಟಲು ಪ್ರತಿದಿನ ಈ ಪರಿಶೀಲನಾ ಪಟ್ಟಿಯನ್ನು ಬಳಸಿ.",
-                progressLabel: "ಪರಿಶೀಲನಾ ಪಟ್ಟಿ ಪ್ರಗತಿ",
-                chk1Title: "1. ಜಮೀನಿನ ನೈರ್ಮಲ್ಯ ಪರೀಕ್ಷೆ",
-                chk1Sub: "ಪ್ಲಾಸ್ಟಿಕ್ ತ್ಯಾಜ್ಯ ಅಥವಾ ಶಿಲೀಂಧ್ರಕ್ಕಾಗಿ ಚರಂಡಿಗಳನ್ನು ಪರೀಕ್ಷಿಸಿ.",
-                chk2Title: "2. ಮಣ್ಣಿನ ತೇವಾಂಶ ಮಟ್ಟದ ಪರೀಕ್ಷೆ",
-                chk2Sub: "ಮೇಲಿನ 2 ಇಂಚು ಮಣ್ಣು ತೇವವಾಗಿದೆ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ.",
-                chk3Title: "3. ಕಳೆ ಬೆಳೆಗಳ ಪರಿಶೀಲನೆ",
-                chk3Sub: "ಗೊಬ್ಬರವನ್ನು ಹೀರಿಕೊಳ್ಳುವ ಮೊದಲು ಸಾಲುಗಳ ನಡುವೆ ಕಳೆಗಳನ್ನು ಗುರುತಿಸಿ.",
-                chk4Title: "4. ಹನಿ ನೀರಾವರಿ ಪೈಪ್ ಪರೀಕ್ಷೆ",
-                chk4Sub: "ಪಂಪ್ ಒತ್ತಡ ಮತ್ತು ಸೋಲಾರ್ ಬ್ಯಾಟರಿಯನ್ನು ಪರೀಕ್ಷಿಸಿ.",
-                chk5Title: "5. ಕೀಟಗಳ ದಾಳಿ ಪರೀಕ್ಷೆ",
-                chk5Sub: "ಎಲೆಗಳ ಕೆಳಭಾಗದಲ್ಲಿ ಕೀಟಗಳ ಚುಕ್ಕೆಗಳನ್ನು ಪರೀಕ್ಷಿಸಿ.",
-                bioTag: "ತ್ಯಾಜ್ಯದಿಂದ ಆದಾಯ ಯೋಜನೆ",
-                bioTitle: "ಸುಸ್ಥಿರತೆ ಮತ್ತು ಜೈವಿಕ ಆರ್ಥಿಕತೆ",
-                bioSubtitle: "ಕೃಷಿ ತ್ಯಾಜ್ಯವನ್ನು ಸುಡುವ ಬದಲು ಹೆಚ್ಚುವರಿ ಆದಾಯವಾಗಿ ಪರಿವರ್ತಿಸಿ.",
-                bio1Title: "1. ಹುಲ್ಲಿನಿಂದ ಬಯೋ-ಚಾರ್",
-                bio1Desc: "ಭತ್ತದ ಹುಲ್ಲನ್ನು ಸಂಗ್ರಹಿಸಿ ಬಯೋ-ಪವರ್ ಪ್ಲಾಂಟ್‌ಗೆ ಮಾರಿ.",
-                bio1Rev: "ಅಂದಾಜು ಆದಾಯ: ₹1,800 - ₹2,500 / ಟನ್",
-                bio2Title: "2. ಅಣಬೆ ಕೃಷಿ",
-                bio2Desc: "ಗೋಧಿ ಮತ್ತು ಭತ್ತದ ಹುಲ್ಲನ್ನು ಅಣಬೆ ಬೆಳೆಯಲು ಬಳಸಿ.",
-                bio2Rev: "ಅಂದಾಜು ಆದಾಯ: ₹120 - ₹180 / ಕೆಜಿ",
-                bio3Title: "3. ಸಾವಯವ ಎರೆಹುಳು ಗೊಬ್ಬರ",
-                bio3Desc: "ಕೊಳೆಯುವ ತ್ಯಾಜ್ಯವನ್ನು ಎರೆಹುಳು ಗೊಬ್ಬರವಾಗಿ ಪರಿವರ್ತಿಸಿ.",
-                bio3Rev: "ಅಂದಾಜು ಆದಾಯ: ₹8 - ₹12 / ಕೆಜಿ",
-                bazaarTitle: "ಅಗ್ರಿ ಬಜಾರ್: ಕಡಿಮೆ ವೆಚ್ಚದ ಉಪಕರಣಗಳು",
-                bazaarSubtitle: "ಸಬ್ಸಿಡಿ ದರದಲ್ಲಿ ಉಪಕರಣಗಳನ್ನು ಖರೀದಿಸಿ.",
-                schemesTitle: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು ಮತ್ತು ಸಬ್ಸಿಡಿ ಪರೀಕ್ಷಕ",
-                schemesSub: "ನಿಮ್ಮ ಅರ್ಹತೆಯನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಅಧಿಕೃತ ಪೋರ್ಟಲ್‌ಗಳಿಗೆ ಭೇಟಿ ನೀಡಿ.",
-                verifierTitle: "ಅರ್ಹತಾ ಪರಿಶೀಲನೆ ನಮೂನೆ",
-                tutTitle: "ಅಗ್ರಿ‌ನಯನ್ ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ - ಮಾರ್ಗದರ್ಶಿ",
-                tutSubtitle: "ವೀಡಿಯೊ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ ಮತ್ತು ಮಾರ್ಗದರ್ಶಿಯನ್ನು ವೀಕ್ಷಿಸಿ."
             }
         };
 
-        const voicePersonas = {
-            ramesh: { name: "Ramesh Bhaiya", langCode: "hi-IN", pitch: 0.85, rate: 0.9 },
-            priya: { name: "Agri Didi Priya", langCode: "hi-IN", pitch: 1.15, rate: 1.0 },
-            gurpreet: { name: "Kisan Guru Gurpreet", langCode: "pa-IN", pitch: 0.95, rate: 1.0 },
-            srinivas: { name: "Raitu Mitra Srinivas", langCode: "te-IN", pitch: 0.9, rate: 1.0 }
+        const bioModalData = {
+            biochar: {
+                icon: "fa-fire-flame-simple",
+                iconBg: "bg-amber-100 text-amber-700",
+                tag: "High Power Plant Demand",
+                title: "Paddy Stubble to Bio-Char & Fuel Pellets",
+                overview: "Collect unburnt paddy straw directly from harvested fields using tractors and balers. Compress biomass into dense pellet fuel with high calorific value (~3800-4200 kcal/kg) for coal co-firing in thermal power plants or slow pyrolyze into carbon-rich Bio-Char.",
+                workflow: [
+                    { step: "Step 1: In-Field Baling", desc: "Collect loose stubble using tractor-pulled rake and round/square baler." },
+                    { step: "Step 2: Moisture Reduction", desc: "Sun-dry straw bales to lower moisture content below 12-14%." },
+                    { step: "Step 3: Shredding & Pelleting", desc: "Pass straw through hammer mill shredder and press via ring-die pelletizer." },
+                    { step: "Step 4: Off-Take & Pyrolysis", desc: "Bag pellets for power plant supply or convert to Bio-Char soil conditioner." }
+                ],
+                financials: {
+                    setup: "₹8.5 Lakhs (Micro Unit)",
+                    opex: "₹450 / Ton Straw",
+                    revenue: "₹2,850 / Ton Pellets",
+                    profit: "₹1,800 - ₹2,500 / Ton Net"
+                },
+                machinery: [
+                    "Tractor-Operated Round Straw Baler (50 HP+)",
+                    "Industrial Hammer Mill Shredder (10-15 HP)",
+                    "Ring-Die Biomass Pelletizer (200-500 Kg/Hr)",
+                    "Bio-Char Pyrolysis Retort Kiln (Optional)"
+                ],
+                buyers: "NTPC Thermal Power Plants, Local Paper Mills, Brick Kilns, FPOs, Fertilizer Companies.",
+                subsidies: "50% Capital Grant under Central Sub-Mission on Agricultural Mechanization (SMAM) & State Paddy Straw Subsidy.",
+                quality: "Moisture &lt; 10%, Ash Content &lt; 8%, Calorific Value &gt; 3800 kcal/kg, zero sand contamination."
+            },
+            mushroom: {
+                icon: "fa-stroopwafel",
+                iconBg: "bg-emerald-100 text-emerald-700",
+                tag: "Quick 25-Day Crop Cycle",
+                title: "Oyster & Milky Mushroom Cultivation Beds",
+                overview: "Sterilize chopped paddy straw using lime water treatment or steam sterilization to construct mushroom spawn substrate beds. Yields fresh high-protein Oyster mushrooms within 20-25 days using low-cost bamboo thatched sheds.",
+                workflow: [
+                    { step: "Step 1: Straw Chopping & Washing", desc: "Chop straw to 2-3 inch pieces and soak in 2% lime water solution." },
+                    { step: "Step 2: Substrate Sterilization", desc: "Steam sterilize substrate or hot-water dip for 45 minutes." },
+                    { step: "Step 3: Polybag Spawning", desc: "Layer substrate with Oyster mushroom spawn in perforated plastic bags." },
+                    { step: "Step 4: Harvesting & Drying", desc: "Maintain 85% humidity in dark shed; pick 3 flushes over 30 days." }
+                ],
+                financials: {
+                    setup: "₹35,000 (100-Bag Shed)",
+                    opex: "₹25 / Kg Produced",
+                    revenue: "₹150 / Kg Fresh Sale",
+                    profit: "₹125 / Kg Net Profit"
+                },
+                machinery: [
+                    "Motorized Straw Cutter / Chaff Cutter",
+                    "Steam Sterilization Boiler Drum",
+                    "Digital Hygrometer & Temperature Sensor",
+                    "Micro-Sprinkler Fogger Nozzles"
+                ],
+                buyers: "Local Vegetable Mandis, Hotels, Restaurants, Supermarkets, Dehydrated Mushroom Powder Buyers.",
+                subsidies: "40% Subsidy under National Horticulture Mission (NHM) for Smallholders.",
+                quality: "Free from mold contamination, crisp white caps, harvested prior to spore shedding."
+            },
+            vermi: {
+                icon: "fa-worm",
+                iconBg: "bg-purple-100 text-purple-700",
+                tag: "100% Organic Fertilizer",
+                title: "Premium Vermicomposting & Liquid Vermiwash",
+                overview: "Construct raised brick beds or HDPE vermi-beds. Mix decomposed agricultural waste straw with cow dung (1:3 ratio) and release Eisenia fetida earthworms. Converts waste into organic vermicompost in 45-60 days along with liquid vermiwash nutrient spray.",
+                workflow: [
+                    { step: "Step 1: Bed Preparation", desc: "Set up 12x4x2 ft HDPE UV-stabilized vermi-beds under shade." },
+                    { step: "Step 2: Partial Decomposition", desc: "Layer waste straw with cow dung for 10 days to cool off heat." },
+                    { step: "Step 3: Worm Inoculation", desc: "Add 2-3 Kg Eisenia fetida earthworms per 100 sq ft bed." },
+                    { step: "Step 4: Sieving & Bagging", desc: "Sieve finished black granular compost and collect liquid vermiwash." }
+                ],
+                financials: {
+                    setup: "₹18,000 (3 Beds Unit)",
+                    opex: "₹2.50 / Kg Produced",
+                    revenue: "₹10 / Kg Compost + ₹40/L Vermiwash",
+                    profit: "₹7.50 / Kg Net Margin"
+                },
+                machinery: [
+                    "HDPE UV-Stabilized Vermi-Beds (12x4x2 Ft)",
+                    "Rotary Sieving Mesh Drum (Manual or Electric)",
+                    "Earthworm Culture (Eisenia Fetida Species)",
+                    "Vermiwash Collection Bucket Assembly"
+                ],
+                buyers: "Organic Farming Stores, Nursery Owners, Polyhouse Vegetable Growers, FPO Retail outlets.",
+                subsidies: "₹50,000 Grant per cluster under Paramparagat Krishi Vikas Yojana (PKVY).",
+                quality: "Moisture 15-20%, Carbon to Nitrogen Ratio (C:N) &lt; 20:1, zero weed seeds."
+            },
+            cbg: {
+                icon: "fa-gas-pump",
+                iconBg: "bg-blue-100 text-blue-700",
+                tag: "SATAT Govt Scheme Guaranteed Off-Take",
+                title: "Compressed Biogas (CBG / Bio-CNG) Digestate",
+                overview: "Process high-cellulose paddy straw through anaerobic digestion in continuous stirred-tank reactors (CSTR). Bio-gas is purified using PSA gas scrubbers to achieve >90% Methane purity and compressed into cylinders for vehicle fuel and industrial heating.",
+                workflow: [
+                    { step: "Step 1: Mechanical Pre-Treatment", desc: "Shred straw and treat with mild alkali solution to break lignin." },
+                    { step: "Step 2: Anaerobic Digestion", desc: "Feed slurry into digester tanks with mesophilic bacteria at 37°C." },
+                    { step: "Step 3: Gas Scrubbing & PSA", desc: "Remove H2S and CO2 to achieve 92%+ Methane purity." },
+                    { step: "Step 4: Compression & Off-Take", desc: "Compress gas to 200 bar and load into cascades for PSU oil outlets." }
+                ],
+                financials: {
+                    setup: "₹1.5 - ₹3.0 Cr (5 Ton Unit)",
+                    opex: "₹22 / Kg CBG",
+                    revenue: "₹46 - ₹54 / Kg Off-Take",
+                    profit: "₹24 - ₹32 / Kg Net Profit"
+                },
+                machinery: [
+                    "Submerged Anaerobic CSTR Digester Tanks",
+                    "Pressure Swing Adsorption (PSA) Gas Purifier",
+                    "Biogas Compressor (200 Bar Rating)",
+                    "Fermented Organic Manure (FOM) Filter Press"
+                ],
+                buyers: "Indian Oil (IOCL), HPCL, BPCL retail gas stations under SATAT initiative.",
+                subsidies: "₹4.0 Crore Capital Subsidy per 4.8 Ton CBG Plant under MNRE National Bioenergy Programme.",
+                quality: "Methane content &gt; 90%, H2S &lt; 20 PPM, CO2 &lt; 4%, Moisture Free."
+            },
+            silage: {
+                icon: "fa-cow",
+                iconBg: "bg-teal-100 text-teal-700",
+                tag: "High Dairy Demand",
+                title: "Paddy Straw Silage & Enrichment Fodder Blocks",
+                overview: "Enhance crude protein content of paddy straw from 3% to 8% by treating chopped straw with 4% Urea, 2% Molasses, and mineral mixture. Compress into airtight wrapped silage bales for long-term storage and drought fodder supply.",
+                workflow: [
+                    { step: "Step 1: Fine Chaffing", desc: "Chop straw to 1-2 cm pieces using heavy-duty chaff cutters." },
+                    { step: "Step 2: Urea-Molasses Solution", desc: "Dissolve 4 Kg Urea + 2 Kg Molasses in 40 Liters water per 100 Kg straw." },
+                    { step: "Step 3: Spraying & Mixing", desc: "Thoroughly spray solution over straw layers and mix evenly." },
+                    { step: "Step 4: Compaction & Wrapping", desc: "Pack tightly into plastic baling silage bags or silo pits for 21 days." }
+                ],
+                financials: {
+                    setup: "₹1.2 Lakhs (Baler + Cutter)",
+                    opex: "₹2.20 / Kg Block",
+                    revenue: "₹5.50 / Kg Sale Price",
+                    profit: "₹3.30 / Kg Net Margin"
+                },
+                machinery: [
+                    "High-Capacity Electric Chaff Cutter (5 HP)",
+                    "Hydraulic Fodder Block Press / Silage Baler",
+                    "Stretch Film Silage Wrapper Machine",
+                    "Motorized Chemical Solution Sprayer"
+                ],
+                buyers: "Commercial Dairy Farms, Gaushalas, State Animal Husbandry Department Fodder Banks.",
+                subsidies: "50% Grant under National Livestock Mission (NLM) Fodder Development Component.",
+                quality: "Crude protein &gt; 7.5%, pH 4.2-4.5, sweet fermented aroma, free from black mold."
+            },
+            pulp: {
+                icon: "fa-box-open",
+                iconBg: "bg-indigo-100 text-indigo-700",
+                tag: "Eco-Friendly Packaging Demand",
+                title: "Agri-Paper Pulp & Molded Packaging Board",
+                overview: "Extract unbleached cellulose pulp from paddy straw using mild chemical digestion. Supplies local paper mills and eco-packaging factories producing egg trays, fruit cartons, and single-use biodegradable tableware.",
+                workflow: [
+                    { step: "Step 1: Straw Washing & Cutting", desc: "Clean sand/dust from straw and chop into 1 inch fibers." },
+                    { step: "Step 2: Chemical Digestion", desc: "Digest straw with 8% Caustic Soda solution at 95°C for 2 hours." },
+                    { step: "Step 3: Washing & Refining", desc: "Wash chemical liquor and refine cellulose fibers in beater mill." },
+                    { step: "Step 4: Pulp Drying & Baling", desc: "Press wet pulp into sheets or supply liquid slurry directly to mills." }
+                ],
+                financials: {
+                    setup: "₹25 - ₹40 Lakhs (Pulp Mill)",
+                    opex: "₹8.50 / Kg Pulp",
+                    revenue: "₹18.00 / Kg Sale Value",
+                    profit: "₹9.50 / Kg Net Profit"
+                },
+                machinery: [
+                    "Biomass Hydrapulper Digester Tank",
+                    "Valley Beater Fiber Refiner Machine",
+                    "De-Watering Screw Press Filter",
+                    "Molded Pulp Tableware Thermoforming Machine"
+                ],
+                buyers: "Corrugated Box Manufacturers, Biodegradable Packaging Mills, Export Packaging Suppliers.",
+                subsidies: "35% Grant under Prime Minister Scheme for Formalisation of Micro Food Processing Enterprises (PMFME).",
+                quality: "Cellulose purity &gt; 65%, fiber length 1.2-1.5 mm, ash content &lt; 5%."
+            }
         };
 
         let currentLang = 'hinglish';
-        let activeVoicePersona = 'ramesh';
         let cropChartInstance = null;
         let recognition = null;
         let isListening = false;
         let synth = window.speechSynthesis;
         let systemVoices = [];
 
-        // LOAD SYSTEM VOICES ASYNCHRONOUSLY FOR CHROME/ANDROID/IOS/WINDOWS
         function loadSystemVoices() {
             if ('speechSynthesis' in window) {
                 systemVoices = window.speechSynthesis.getVoices();
@@ -1152,69 +1513,130 @@
             loadSystemVoices();
         }
 
-        // FULL MULTI-LANGUAGE TRANSLATION ENGINE
         function changeLanguage(langKey) {
             currentLang = langKey;
-            const dict = translations[langKey] || translations['hinglish'];
+            try { localStorage.setItem('agriNayanLang', langKey); } catch (e) {}
 
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (dict[key] !== undefined) {
-                    el.innerText = dict[key];
+            const customLanguages = ['en', 'hinglish', 'hi'];
+            if (customLanguages.includes(langKey)) {
+                // Clear Google Translate so the custom dictionary can be used cleanly.
+                document.cookie = 'googtrans=;path=/;max-age=0';
+                document.cookie = 'googtrans=;path=/;domain=' + location.hostname + ';max-age=0';
+                const dict = translations[langKey] || translations.hinglish;
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (dict[key] !== undefined) el.innerText = dict[key];
+                });
+                document.documentElement.lang = langKey === 'hinglish' ? 'en' : langKey;
+                runAIEngine();
+                return;
+            }
+
+            // Regional languages use Google Translate for the complete page,
+            // including elements without data-i18n attributes.
+            const applyGoogleLanguage = () => {
+                const combo = document.querySelector('.goog-te-combo');
+                if (combo) {
+                    combo.value = langKey;
+                    combo.dispatchEvent(new Event('change'));
+                } else {
+                    setTimeout(applyGoogleLanguage, 400);
                 }
-            });
-
+            };
+            applyGoogleLanguage();
             runAIEngine();
         }
 
-        function setVoicePersona(personaKey) {
-            activeVoicePersona = personaKey;
-        }
-
-        // KANNADA & REGIONAL VOICE SYNTHESIS WITH PHONETIC AUDIO FALLBACK
         function speakCurrentSowingAlert() {
             if (!('speechSynthesis' in window)) {
-                alert("Audio Speech Synthesis is not supported on this browser.");
+                alert("Speech Synthesis is not supported in this browser.");
                 return;
             }
-            synth.cancel(); // Stop any currently playing audio
+            synth.cancel();
 
-            let textToSpeak = "Namaste Kisan Bhai. Rampur Varanasi me agle 3 din Gehun aur Sarson ki bijai ke liye sabse behtar hain. Mitti me nami 78 percent hai.";
+            let textToSpeak = "Namaste Kisan Bhai. Rampur Varanasi me agle 3 din Gehun aur Sarson ki bijai ke liye sabse behtar hain.";
             let targetLang = "hi-IN";
 
-            if (currentLang === 'kn') {
-                // Check if native Kannada voice pack is installed
-                loadSystemVoices();
-                const hasKannadaVoice = systemVoices.some(v => v.lang.startsWith('kn') || v.lang.includes('kn'));
+            const langScriptMap = {
+                hi: "नमस्कार किसान भाई। अगले 3 दिन गेहूं और सरसों की बुवाई के लिए उत्तम हैं।",
+                kn: "ನಮಸ್ಕಾರ ರೈತ ಬಂಧು. ಮುಂದಿನ 3 ದಿನಗಳು ಗೋಧಿ ಮತ್ತು ಸಾಸಿವೆ ಬಿತ್ತನೆಗೆ ಅತ್ಯುತ್ತಮವಾಗಿದೆ.",
+                te: "నమస్కారం రైతు సోదరా. రాబోయే 3 రోజులు గోధుమలు మరియు ఆవాలు విత్తడానికి చాలా అనుకూలం.",
+                ta: "வணக்கம் விவசாயி സഹോദரரே. அடுத்த 3 நாட்கள் கோதுமை மற்றும் கடுகு விதைக்க மிகவும் ஏற்றது.",
+                mr: "नमस्कार शेतकरी बंधूंनो. पुढील ३ दिवस गहू आणि मोहरीच्या पेरणीसाठी उत्तम आहेत.",
+                pa: "ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਕਿਸਾਨ ਵੀਰੋ। ਅਗਲੇ 3 ਦਿਨ ਕਣਕ ਅਤੇ ਸਰ੍ਹੋਂ ਦੀ ਬੀਜਾਈ ਲਈ ਬਹੁਤ ਵਧੀਆ ਹਨ।",
+                gu: "નમસ્તે ખેડૂત ભાઈ. આગામી 3 દિવસ ઘઉં અને રાયડાની વાવણી માટે ઉત્તમ છે.",
+                bn: "নমস্কার কৃষক ভাই। আগামী ৩ দিন গম ও সরিষা বপনের জন্য সেরা সময়।",
+                ml: "നമസ്കാരം കർഷക സഹോദരാ. അടുത്ത 3 ദിവസങ്ങൾ ഗോതമ്പും കടുക് വിതയ്ക്കാൻ ഏറ്റവും അനുയോജ്യമാണ്.",
+                en: "Hello Farmer! The next 3 days are ideal for sowing Wheat and Mustard in your farm."
+            };
 
-                if (hasKannadaVoice) {
-                    textToSpeak = "ನಮಸ್ಕಾರ ರೈತ ಬಂಧು. ಅಗ್ರಿನಯನ್ ಎಐ ಪ್ರಕಾರ ಮುಂದಿನ 3 ದಿನಗಳು ಗೋಧಿ ಮತ್ತು ಸಾಸಿವೆ ಬಿತ್ತನೆಗೆ ಅತ್ಯುತ್ತಮವಾಗಿದೆ.";
-                    targetLang = "kn-IN";
-                } else {
-                    // PHONETIC FALLBACK: Reads Kannada spoken text cleanly using available Indian voice pack
-                    textToSpeak = "Namaskara Raita Bandhu. Agrinayan AI prakara mundina 3 dinagalu godhi mattu sasive bittanege atyuttamavagide.";
-                    targetLang = "hi-IN";
-                }
-            } else if (currentLang === 'hi') {
-                textToSpeak = "नमस्कार किसान भाई। अगले 3 दिन गेहूं और सरसों की बुवाई के लिए उत्तम हैं। मिट्टी में 78% नमी है।";
-                targetLang = "hi-IN";
-            } else if (currentLang === 'en') {
-                textToSpeak = "Hello Farmer! The next 3 days are optimal for sowing Wheat and Mustard in your farm.";
-                targetLang = "en-IN";
+            const langCodeMap = {
+                hi: "hi-IN", kn: "kn-IN", te: "te-IN", ta: "ta-IN", mr: "mr-IN",
+                pa: "pa-IN", gu: "gu-IN", bn: "bn-IN", ml: "ml-IN", en: "en-IN"
+            };
+
+            if (langScriptMap[currentLang]) {
+                textToSpeak = langScriptMap[currentLang];
+                targetLang = langCodeMap[currentLang] || "hi-IN";
             }
 
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
-            
-            // Search matching system voice
+            loadSystemVoices();
             const matchedVoice = systemVoices.find(v => v.lang.startsWith(targetLang) || v.lang.includes(targetLang.split('-')[0]));
+
             if (matchedVoice) {
                 utterance.voice = matchedVoice;
             }
             utterance.lang = targetLang;
             utterance.rate = 0.9;
-            utterance.pitch = 1.0;
 
             synth.speak(utterance);
+        }
+
+        function openBioModal(modelKey) {
+            const data = bioModalData[modelKey] || bioModalData['biochar'];
+            
+            document.getElementById('bioModalIcon').className = `w-12 h-12 rounded-2xl ${data.iconBg} flex items-center justify-center text-xl font-bold shadow-sm`;
+            document.getElementById('bioModalIcon').innerHTML = `<i class="fa-solid ${data.icon}"></i>`;
+            document.getElementById('bioModalTag').innerText = data.tag;
+            document.getElementById('bioModalTitle').innerText = data.title;
+            document.getElementById('bioModalOverview').innerText = data.overview;
+
+            const wfContainer = document.getElementById('bioModalWorkflow');
+            wfContainer.innerHTML = '';
+            data.workflow.forEach(item => {
+                const box = document.createElement('div');
+                box.className = 'bg-slate-50 p-3 rounded-xl border border-slate-200';
+                box.innerHTML = `<span class="font-extrabold text-agri-700 text-xs block">${item.step}</span><p class="text-xs text-slate-600 mt-0.5">${item.desc}</p>`;
+                wfContainer.appendChild(box);
+            });
+
+            const finContainer = document.getElementById('bioModalFinancials');
+            finContainer.innerHTML = `
+                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="text-slate-400 text-[10px] block uppercase">Setup Capital</span><span class="font-bold text-white text-xs">${data.financials.setup}</span></div>
+                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="text-slate-400 text-[10px] block uppercase">Operational Cost</span><span class="font-bold text-amber-400 text-xs">${data.financials.opex}</span></div>
+                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="text-slate-400 text-[10px] block uppercase">Gross Revenue</span><span class="font-bold text-emerald-400 text-xs">${data.financials.revenue}</span></div>
+                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="text-slate-400 text-[10px] block uppercase">Net Profit Margin</span><span class="font-bold text-emerald-300 text-xs">${data.financials.profit}</span></div>
+            `;
+
+            const machContainer = document.getElementById('bioModalMachinery');
+            machContainer.innerHTML = '';
+            data.machinery.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-100';
+                li.innerHTML = `<i class="fa-solid fa-check text-emerald-600"></i> <span>${item}</span>`;
+                machContainer.appendChild(li);
+            });
+
+            document.getElementById('bioModalBuyers').innerText = data.buyers;
+            document.getElementById('bioModalSubsidies').innerText = data.subsidies;
+            document.getElementById('bioModalQuality').innerHTML = data.quality;
+
+            document.getElementById('bioModal').classList.remove('hidden');
+        }
+
+        function closeBioModal() {
+            document.getElementById('bioModal').classList.add('hidden');
         }
 
         function updateChecklist() {
@@ -1222,7 +1644,6 @@
             document.getElementById('checklistProgress').innerText = `${checkedCount} of 5 Completed`;
         }
 
-        // DEMO FARMER DATA LOADER
         function loadDemoFarmerData() {
             document.getElementById('profVillage').value = 'Rampur';
             document.getElementById('profDistrict').value = 'Varanasi';
@@ -1235,7 +1656,6 @@
             alert('Demo Farmer Data Loaded: Ramesh Kumar (10 Acres, Rampur, Varanasi, Budget ₹75,000)');
         }
 
-        // SCHEMES ELIGIBILITY CHECKER
         function checkEligibility() {
             const land = document.getElementById('schLandSize').value;
             const category = document.getElementById('schCategory').value;
@@ -1264,7 +1684,6 @@
             }
         }
 
-        // TUTORIAL ENGINE
         function updateTutorialVideo() {
             const lang = document.getElementById('tutLangSelect').value;
             const topic = document.getElementById('tutTopicSelect').value;
@@ -1375,16 +1794,16 @@
 
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                alert("Speech recognition is not supported on this browser.");
+                handleQuickQuery('weather');
                 return;
             }
 
             recognition = new SpeechRecognition();
-            recognition.lang = 'hi-IN';
+            recognition.lang = currentLang === 'hi' ? 'hi-IN' : (currentLang === 'kn' ? 'kn-IN' : 'hi-IN');
             
             recognition.onstart = function() {
                 isListening = true;
-                document.getElementById('micStatusText').innerText = "Listening...";
+                document.getElementById('micStatusText').innerText = "Listening... Speak your question now";
                 document.getElementById('modalMicBtn').classList.add('pulse-mic');
             };
 
@@ -1392,23 +1811,55 @@
                 const transcript = event.results[0][0].transcript;
                 document.getElementById('userSpokenText').innerText = `"${transcript}"`;
                 
-                let reply = "Aapke 10 acre khet ke liye 6 acre gehun aur 2.5 acre sarson sabse zyada munafa degi.";
-                if (transcript.includes('mandi') || transcript.includes('rate')) {
+                let reply = "Aapke khet ke liye 60% gehun aur 25% sarson sabse zyada munafa degi.";
+                if (transcript.includes('mandi') || transcript.includes('rate') || transcript.includes('price')) {
                     reply = "Aaj Khanna mandi me gehun 2350 rupaye prati quintal hai.";
+                } else if (transcript.includes('water') || transcript.includes('paani') || transcript.includes('irrigation')) {
+                    reply = "Mitti me 78% nami hai. Agle 2 din paani dene ki zaroorat nahi hai.";
                 }
                 document.getElementById('aiSpokenReply').innerText = reply;
                 speakCurrentSowingAlert();
+            };
+
+            recognition.onerror = function() {
+                stopListening();
+                handleQuickQuery('weather');
             };
 
             recognition.onend = stopListening;
             recognition.start();
         }
 
+        function handleQuickQuery(type) {
+            const queries = {
+                weather: {
+                    q: "Agle 3 din mausam aur bijai ka kya haal hai?",
+                    a: "Agle 3 din Gehun aur Sarson ki bijai ke liye perfect hain! Mitti me 78% nami hai."
+                },
+                fertilizer: {
+                    q: "Gehun me kitna DAP aur Urea daalein?",
+                    a: "Per acre 50 Kg DAP aur 45 Kg Urea ki pehli खुराक dalein."
+                },
+                pmkisan: {
+                    q: "PM-KISAN ki agli kist kab aayegi?",
+                    a: "Aapka bank A/C Aadhaar se linked hai. Agli kist DPT se seedhe aayegi."
+                },
+                stubble: {
+                    q: "Parali bechkar kitni kamai hogi?",
+                    a: "Baler se parali ekttha karke Bio-Power plant ko Rs 1800-2500 per ton me bechein."
+                }
+            };
+            const item = queries[type] || queries['weather'];
+            document.getElementById('userSpokenText').innerText = `"${item.q}"`;
+            document.getElementById('aiSpokenReply').innerText = item.a;
+            speakCurrentSowingAlert();
+        }
+
         function stopListening() {
             isListening = false;
             if (recognition) recognition.stop();
             document.getElementById('modalMicBtn').classList.remove('pulse-mic');
-            document.getElementById('micStatusText').innerText = "Click mic to start speaking...";
+            document.getElementById('micStatusText').innerText = "Click mic to speak query...";
         }
 
         function openVoiceModal() {
@@ -1421,16 +1872,10 @@
             document.getElementById('voiceModal').classList.add('hidden');
         }
 
-        function startFormVoiceInput() {
-            openVoiceModal();
-            setTimeout(toggleSpeechRecognition, 300);
-        }
-
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
             document.getElementById('tab-' + tabId).classList.remove('hidden');
 
-            // Desktop Nav Highlight
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('text-agri-700', 'bg-agri-50', 'border', 'border-agri-200', 'font-semibold');
                 btn.classList.add('text-slate-600', 'font-medium');
@@ -1441,7 +1886,6 @@
                 activeBtn.classList.remove('text-slate-600', 'font-medium');
             }
 
-            // Mobile Nav Highlight
             const mobBtns = ['dashboard', 'carefarm', 'bioeconomy', 'agribazaar', 'schemes', 'tutorial'];
             mobBtns.forEach(id => {
                 const mBtn = document.getElementById('mob-' + id);
@@ -1459,9 +1903,30 @@
 
         window.onload = function() {
             runAIEngine();
-            changeLanguage('hinglish');
             updateTutorialVideo();
+            let savedLanguage = 'hinglish';
+            try { savedLanguage = localStorage.getItem('agriNayanLang') || 'hinglish'; } catch (e) {}
+            const languageSelect = document.getElementById('langSelect');
+            if (languageSelect) languageSelect.value = savedLanguage;
+            currentLang = savedLanguage;
+            if (['en', 'hinglish', 'hi'].includes(savedLanguage)) {
+                changeLanguage(savedLanguage);
+            }
         };
     </script>
+
+    <!-- Google Translate fallback for the eight regional languages. -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,hi,kn,te,ta,mr,pa,gu,bn,ml',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
