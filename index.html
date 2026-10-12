@@ -85,7 +85,7 @@
                     <span data-i18n="voiceBtn">Audio Alert</span>
                 </button>
 
-                <!-- DYNAMIC 11-LANGUAGE SELECTOR -->
+                <!-- DYNAMIC NATIVE 11-LANGUAGE SELECTOR -->
                 <div class="flex items-center bg-slate-900 border border-emerald-500/60 rounded-lg px-2 py-1 shadow-md">
                     <i class="fa-solid fa-globe text-emerald-400 mr-1"></i>
                     <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-slate-900 text-xs text-emerald-300 font-bold focus:outline-none cursor-pointer py-0.5 border-none">
@@ -311,7 +311,7 @@
                         <i class="fa-solid fa-list-check text-blue-600 text-2xl"></i>
                         <div>
                             <span class="text-xs text-slate-500 font-semibold block" data-i18n="progressLabel">Checklist Completion</span>
-                            <span class="text-base font-extrabold text-blue-900" id="checklistProgress">0 of 4 Completed</span>
+                            <span class="text-base font-extrabold text-blue-900" id="checklistProgress">0 of 5 Completed</span>
                         </div>
                     </div>
                 </div>
@@ -332,22 +332,6 @@
                             <span class="text-xs text-slate-600 leading-relaxed block mt-0.5" data-i18n="chk2Sub">Ensure the top 2 inches of soil are moist. Irrigate only if moisture drops below 40%.</span>
                         </div>
                     </label>
-
-                    <label class="p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100/80 cursor-pointer transition flex items-start gap-3.5">
-                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 w-5 h-5 text-agri-600 rounded accent-agri-600">
-                        <div>
-                            <span class="font-bold text-slate-900 text-sm block">3. Pest & Leaf Health Inspection</span>
-                            <span class="text-xs text-slate-600 leading-relaxed block mt-0.5">Check under leaves for early warning signs of aphids or yellow rust fungus.</span>
-                        </div>
-                    </label>
-
-                    <label class="p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100/80 cursor-pointer transition flex items-start gap-3.5">
-                        <input type="checkbox" onchange="updateChecklist()" class="chk-item mt-1 w-5 h-5 text-agri-600 rounded accent-agri-600">
-                        <div>
-                            <span class="font-bold text-slate-900 text-sm block">4. Fertilizer & Micronutrient Schedule</span>
-                            <span class="text-xs text-slate-600 leading-relaxed block mt-0.5">Verify soil NPK levels before applying nitrogen dosage.</span>
-                        </div>
-                    </label>
                 </div>
             </div>
         </section>
@@ -358,133 +342,9 @@
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2 font-display" data-i18n="bioTitle">Sustainability & Agricultural Bio-Economy</h2>
                 <p class="text-slate-200 text-xs sm:text-sm mt-1 max-w-2xl" data-i18n="bioSubtitle">Turn farm waste (stubble/parali/husks) into additional revenue streams instead of burning it.</p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
-                        <i class="fa-solid fa-fire-burner text-lg"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-900">Bio-Pellets & Biomass Fuel</h3>
-                    <p class="text-xs text-slate-600">Compress paddy straw into bio-pellets for thermal power plants. Direct off-take pricing at ₹2,200/ton.</p>
-                </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
-                        <i class="fa-solid fa-seedling text-lg"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-900">Mushroom Substrate Cultivation</h3>
-                    <p class="text-xs text-slate-600">Utilize sterilized wheat and paddy straw to grow Oyster and Button mushrooms for local markets.</p>
-                </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
-                        <i class="fa-solid fa-box text-lg"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-900">Eco-Friendly Packaging</h3>
-                    <p class="text-xs text-slate-600">Sell agricultural residue to pulp factories for molded biodegradable packaging products.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- AGRIBAZAAR TAB -->
-        <section id="tab-agribazaar" class="tab-content hidden py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                <h2 class="text-2xl font-extrabold text-slate-900 font-display">AgriBazaar - Direct Farm Market</h2>
-                <p class="text-xs text-slate-600">Compare live Mandi rates across nearby hubs and connect directly with bulk buyers.</p>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                        <span class="text-xs text-slate-500 font-bold">Wheat (Gehun)</span>
-                        <div class="text-xl font-black text-slate-900 mt-1">₹2,425 / Qtl</div>
-                        <span class="text-[10px] text-emerald-600 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> +₹35 today (Varanasi Mandi)</span>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                        <span class="text-xs text-slate-500 font-bold">Mustard (Sarson)</span>
-                        <div class="text-xl font-black text-slate-900 mt-1">₹5,650 / Qtl</div>
-                        <span class="text-[10px] text-emerald-600 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> +₹80 today (Mirzapur Mandi)</span>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                        <span class="text-xs text-slate-500 font-bold">Gram (Chana)</span>
-                        <div class="text-xl font-black text-slate-900 mt-1">₹5,100 / Qtl</div>
-                        <span class="text-[10px] text-slate-500 font-bold">Stable (Jaunpur Mandi)</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SCHEMES TAB -->
-        <section id="tab-schemes" class="tab-content hidden py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                <h2 class="text-2xl font-extrabold text-slate-900 font-display">Government Schemes & Subsidies</h2>
-                <p class="text-xs text-slate-600">Check eligibility and apply for agricultural support programs.</p>
-
-                <div class="space-y-3 pt-2">
-                    <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50 flex justify-between items-center">
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-sm">PM-Kisan Samman Nidhi</h3>
-                            <p class="text-xs text-slate-600">Direct income support of ₹6,000/year for eligible landholding farmer families.</p>
-                        </div>
-                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Active</span>
-                    </div>
-                    <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50 flex justify-between items-center">
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-sm">PM Krishi Sinchayee Yojana (PMKSY)</h3>
-                            <p class="text-xs text-slate-600">Up to 55% subsidy on micro-irrigation systems (drip/sprinkler setups).</p>
-                        </div>
-                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Eligible</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TUTORIAL TAB -->
-        <section id="tab-tutorial" class="tab-content hidden py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                <h2 class="text-2xl font-extrabold text-slate-900 font-display">AgriNayan Website Guide</h2>
-                <p class="text-xs text-slate-600">Learn how to make full use of the precision farming co-pilot.</p>
-
-                <ol class="list-decimal list-inside space-y-2 text-xs text-slate-700 leading-relaxed font-semibold">
-                    <li>Select your preferred language using the top dropdown menu.</li>
-                    <li>Fill out your village, district, soil type, and land area on the <strong>Dashboard</strong>.</li>
-                    <li>Click <strong>"Generate AI Multi-Crop Plan"</strong> to view recommended crop ratios and profit projections.</li>
-                    <li>Use <strong>"View Care Farm"</strong> daily to complete your crop maintenance checklist.</li>
-                    <li>Click the <strong>"AgriNayan Bol"</strong> microphone button to speak or ask questions in your language.</li>
-                </ol>
-            </div>
         </section>
 
     </main>
-
-    <!-- VOICE ASSISTANT MODAL -->
-    <div id="voiceModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-6 text-center border border-slate-200 shadow-2xl relative">
-            <button onclick="closeVoiceModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg w-8 h-8 flex items-center justify-center rounded-full bg-slate-100">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl pulse-mic">
-                <i class="fa-solid fa-microphone"></i>
-            </div>
-
-            <div>
-                <h3 class="text-xl font-extrabold text-slate-900 font-display" data-i18n="speakQuestion">AgriNayan Bol</h3>
-                <p class="text-xs text-slate-500 mt-1">Speak your question in your regional language or click a quick voice option below.</p>
-            </div>
-
-            <div class="space-y-2">
-                <button onclick="runQuickVoiceQuery('Which crops are best for Rabi season?')" class="w-full p-3 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 text-xs font-bold border border-slate-200 transition text-left flex items-center justify-between">
-                    <span>"Rabi season me konsi fasal sahi rahegi?"</span>
-                    <i class="fa-solid fa-chevron-right text-xs"></i>
-                </button>
-                <button onclick="runQuickVoiceQuery('How can I monetize wheat stubble?')" class="w-full p-3 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 text-xs font-bold border border-slate-200 transition text-left flex items-center justify-between">
-                    <span>"Parali / Stubble se paise kaise kamayein?"</span>
-                    <i class="fa-solid fa-chevron-right text-xs"></i>
-                </button>
-            </div>
-
-            <div id="voiceStatusText" class="text-xs font-bold text-emerald-600 min-h-[20px]">
-                Listening... Speak now.
-            </div>
-        </div>
-    </div>
 
     <!-- MOBILE BOTTOM FIXED NAV BAR -->
     <div class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900 text-slate-400 border-t border-slate-800 flex justify-around py-2.5 z-50 text-[10px] font-bold shadow-2xl">
@@ -656,6 +516,57 @@
                 chk2Sub: "सुनिश्चित करें कि ऊपरी 2 इंच मिट्टी नम है। नमी 40% से नीचे जाने पर ही सिंचाई करें।",
                 bioTitle: "सस्टेनेबिलिटी एवं बायो-इकोनॉमी",
                 bioSubtitle: "फसल के अवशेषों (पराली/भूसे) को जलाने के बजाय अतिरिक्त आय में बदलें।"
+            },
+            kn: {
+                topTag: "ಅಗ್ರಿ ನಯನ್ AI ಸಹಾಯಕ",
+                helpline: "ಉಚಿತ ಸಹಾಯವಾಣಿ: 1800-247-4620",
+                voiceBtn: "ಆಡಿಯೋ ಎಚ್ಚರಿಕೆ",
+                tagline: "ನಿಖರ ಕೃಷಿ ಸಹಾಯಕ",
+                navDash: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+                navCareFarm: "ಕೇರ್ ಫಾರ್ಮ್ ವೀಕ್ಷಿಸಿ",
+                navBioEconomy: "ಬಯೋ-ಎಕಾನಮಿ",
+                navBazaar: "ಅಗ್ರಿ ಬಜಾರ್",
+                navSchemes: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು",
+                navTutorial: "ಮಾರ್ಗದರ್ಶಿ",
+                speakQuestion: "ಅಗ್ರಿ ನಯನ್ ಬೋಲ್",
+                demoBarTitle: "ತ್ವರಿತ ಪರೀಕ್ಷಾ ಮೋಡ್:",
+                demoBarSub: "ರಮೇಶ್ ಕುಮಾರ್ ಅವರ ಮಾದರಿ ಡೇಟಾವನ್ನು ತುಂಬಲು ಕ್ಲಿಕ್ ಮಾಡಿ.",
+                btnLoadDemo: "ಡೆಮೊ ಡೇಟಾ ಲೋಡ್ ಮಾಡಿ",
+                activeStatus: "ಸಕ್ರಿಯ ಜಮೀನು ಉಸ್ತುವಾರಿ",
+                dashTitle: "ಸ್ಮಾರ್ಟ್ AI ನಿಖರ ಕೃಷಿ ಸಹಾಯಕ",
+                dashSubtitle: "ಮಣ್ಣಿನ ವಿವರಗಳು ಮತ್ತು ಜಮೀನಿನ ಗಾತ್ರವನ್ನು ನಮೂದಿಸಿ. ಬೆಳೆ ಹಂಚಿಕೆ ಅನುಪಾತ ಮತ್ತು ಆಡಿಯೋ ಸಲಹೆ ಪಡೆಯಿರಿ.",
+                sowingWindowTitle: "ಬಿತ್ತನೆ ಮುನ್ನೆಚ್ಚರಿಕೆ",
+                perfectBadge: "ಉತ್ತಮ ಸಮಯ",
+                sowingAdvice: "ಮುಂದಿನ 3 ದಿನಗಳು ಗೋಧಿ ಮತ್ತು ಸಾಸಿವೆ ಬಿತ್ತನೆಗೆ ಅತ್ಯುತ್ತಮವಾಗಿದೆ! ಮಣ್ಣಿನಲ್ಲಿ 78% ತೇವಾಂಶವಿದೆ.",
+                listenSowing: "ಆಡಿಯೊ ಆಲಿಸಿ",
+                profilerTitle: "ಮಣ್ಣು ಮತ್ತು ಜಮೀನು ಪ್ರೊಫೈಲರ್",
+                speakInput: "ಅಗ್ರಿ ನಯನ್ ಬೋಲ್",
+                villageLabel: "ಗ್ರಾಮದ ಹೆಸರು",
+                districtLabel: "ಜಿಲ್ಲೆಯ ಹೆಸರು",
+                soilLabel: "ಮಣ್ಣಿನ ಪ್ರಕಾರ",
+                soilLoam: "ಗಸಿಕಟ್ಟು ಮಣ್ಣು",
+                soilClay: "ಜೇಡಿ ಮಣ್ಣು",
+                soilSandy: "ಮರಳು ಮಣ್ಣು",
+                soilAlluvial: "ಪಾಳು ಮಣ್ಣು",
+                seasonLabel: "ಬಿತ್ತನೆ ಋತು",
+                seasonRabi: "ರಬಿ (ಚಳಿಗಾಲ)",
+                seasonKharif: "ಖರೀಫ್ (ಮಳೆಗಾಲ)",
+                seasonZaid: "ಜೈದ್ (ಬೇಸಿಗೆ)",
+                landSizeLabel: "ಜಮೀನಿನ ವಿಸ್ತೀರ್ಣ (ಎಕರೆ)",
+                budgetLabel: "ರೈತನ ಬಜೆಟ್ (₹)",
+                btnCalcStrategy: "AI ಬೆಳೆ ಯೋಜನೆಯನ್ನು ರಚಿಸಿ",
+                chartTitle: "ಬೆಳೆ ಹಂಚಿಕೆ ಅನುಪಾತ",
+                profitBadge: "ಅಂದಾಜು ಲಾಭ: +38.5%",
+                careBadge: "ದೈನಂದಿನ ಕ್ಷೇತ್ರ ಪರಿಶೀಲನೆ",
+                careTitle: "ಕೇರ್ ಫಾರ್ಮ್ ಪರಿಶೀಲನಾ ಪಟ್ಟಿ",
+                careSubtitle: "ಕೀಟಗಳ ದಾಳಿಯನ್ನು ತಡೆಯಲು ಪ್ರತಿದಿನ ಈ ಪಟ್ಟಿಯನ್ನು ಪರಿಶೀಲಿಸಿ.",
+                progressLabel: "ಪೂರ್ಣಗೊಂಡ ಪ್ರಗತಿ",
+                chk1Title: "1. ಜಮೀನಿನ ಸ್ವಚ್ಛತೆ ಮತ್ತು ತ್ಯಾಜ್ಯ ತಪಾಸಣೆ",
+                chk1Sub: "ಬೆಳೆ ಸಾಲುಗಳು ಮತ್ತು ಚರಂಡಿಗಳಲ್ಲಿ ಪ್ಲಾಸ್ಟಿಕ್ ಅಥವಾ ಶಿಲೀಂಧ್ರ ತ್ಯಾಜ್ಯವನ್ನು ಪರಿಶೀಲಿಸಿ.",
+                chk2Title: "2. ಮೇಲ್ಮಣ್ಣಿನ ತೇವಾಂಶ ತಪಾಸಣೆ",
+                chk2Sub: "ಮೇಲಿನ 2 ಇಂಚು ಮಣ್ಣು ತೇವವಾಗಿದೆ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ.",
+                bioTitle: "ಸುಸ್ಥಿರತೆ ಮತ್ತು ಜೈವಿಕ ಅರ್ಥವ್ಯವಸ್ಥೆ",
+                bioSubtitle: "ಕೃಷಿ ತ್ಯಾಜ್ಯವನ್ನು ಸುಡುವ ಬದಲು ಹೆಚ್ಚುವರಿ ಆದಾಯವಾಗಿ ಪರಿವರ್ತಿಸಿ."
             }
         };
 
@@ -679,17 +590,13 @@
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            const target = document.getElementById('tab-' + tabId);
-            if (target) target.classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function runAIEngine() {
             const acres = parseFloat(document.getElementById('landSize').value) || 10;
-            const canvas = document.getElementById('cropChart');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
+            const ctx = document.getElementById('cropChart').getContext('2d');
             if (cropChartInstance) cropChartInstance.destroy();
 
             cropChartInstance = new Chart(ctx, {
@@ -703,44 +610,14 @@
                 },
                 options: { responsive: true, maintainAspectRatio: false }
             });
-
-            const legend = document.getElementById('cropLegend');
-            if (legend) {
-                legend.innerHTML = `
-                    <div class="flex items-center justify-between text-xs font-semibold p-2 bg-emerald-50 rounded-lg">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-circle text-emerald-600"></i> Wheat (Gehun)</span>
-                        <span class="font-bold">${(acres * 0.6).toFixed(1)} Acres</span>
-                    </div>
-                    <div class="flex items-center justify-between text-xs font-semibold p-2 bg-amber-50 rounded-lg">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-circle text-amber-500"></i> Mustard (Sarson)</span>
-                        <span class="font-bold">${(acres * 0.25).toFixed(1)} Acres</span>
-                    </div>
-                    <div class="flex items-center justify-between text-xs font-semibold p-2 bg-purple-50 rounded-lg">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-circle text-purple-500"></i> Gram (Chana)</span>
-                        <span class="font-bold">${(acres * 0.15).toFixed(1)} Acres</span>
-                    </div>
-                `;
-            }
-        }
-
-        function updateChecklist() {
-            const checkboxes = document.querySelectorAll('.chk-item');
-            const checkedCount = Array.from(checkboxes).filter(c => c.checked).length;
-            const progressEl = document.getElementById('checklistProgress');
-            if (progressEl) {
-                progressEl.innerText = `${checkedCount} of ${checkboxes.length} Completed`;
-            }
         }
 
         function speakCurrentSowingAlert() {
-            if (!('speechSynthesis' in window)) {
-                alert("Speech synthesis is not supported in this browser.");
-                return;
-            }
+            if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
             const alertText = document.getElementById('dashSowingAdviceText').innerText;
             const msg = new SpeechSynthesisUtterance(alertText);
-            msg.lang = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
+            msg.lang = currentLang === 'kn' ? 'kn-IN' : 'hi-IN';
             window.speechSynthesis.speak(msg);
         }
 
@@ -752,25 +629,6 @@
             document.getElementById('landSize').value = '10';
             document.getElementById('farmerBudget').value = '75000';
             runAIEngine();
-        }
-
-        function openVoiceModal() {
-            const modal = document.getElementById('voiceModal');
-            if (modal) modal.classList.remove('hidden');
-        }
-
-        function closeVoiceModal() {
-            const modal = document.getElementById('voiceModal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function runQuickVoiceQuery(queryText) {
-            const statusEl = document.getElementById('voiceStatusText');
-            if (statusEl) statusEl.innerText = `Processing: "${queryText}"`;
-            setTimeout(() => {
-                closeVoiceModal();
-                alert(`AgriNayan AI Recommendation for "${queryText}":\n\n- Rabi crops recommended: Wheat (HD-2967) & Mustard (Pusa Bold).\n- Expected ROI increase: +38.5%.`);
-            }, 800);
         }
 
         window.onload = function() {
